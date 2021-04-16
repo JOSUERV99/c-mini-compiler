@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>clexergenerator</groupId>
+  <artifactId>clexergenerator</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>C-Lexer-Generator</name>
+  <description>A lexical analyser generator that takes as input a specification with a set of regular expressions (.flex) and generates a lexer written in Java for the allowed language (C)</description>
+  <properties>
+  	<maven.compiler.source>14</maven.compiler.source>
+    <maven.compiler.target>14</maven.compiler.target>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>14</source>
+          <target>14</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/Thumbs.db</exclude>
+          </excludes>
+          <archive>
+            <manifest>
+              <mainClass>Main</mainClass>
+              <packageName>src/main/java/clexergenerator</packageName>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix />
+            </manifest>
+            <manifestEntries>
+              <mode>development</mode>
+              <url>${pom.url}</url>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>de.jflex</groupId>
+        <artifactId>jflex-maven-plugin</artifactId>
+        <version>1.8.2</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>
