@@ -1,7 +1,10 @@
 package clexergenerator;
 
-import types.TokenType;
 import types.Token;
+import types.OperatorToken;
+import types.KeywordToken;
+import types.LiteralToken;
+import types.IdentifierToken;
 
 %%
 %class GeneratedLexer
@@ -79,12 +82,11 @@ Identifier	   = [a-bA-B][a-zA-Z0-9_]*
 %%
 <YYINITIAL> {
 	
-  {KeyWord}						 { return new Token(TokenType.KEYWORD);  }
-  {Operator}					 { return new Token(TokenType.OPERATOR); }
+  {KeyWord}						 { return new KeywordToken(yyline, yycolumn, yytext());  }
+  {Operator}					 { return new OperatorToken(yyline, yycolumn, yytext()); }
   
+
   {WhiteSpace}                   { /* do nothing */ }
-  
-  
 }
 
 /* error fallback */

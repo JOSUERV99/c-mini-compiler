@@ -2,12 +2,10 @@ package types;
 
 public class Token {
 
-	public TokenType type;
-	public int start, length, lineNumber;
+	public int line, column;
 	public String value;
 	
-	 public Token(TokenType type, int start, int lineNumber, String value) {
-	        this.type = type;
+	 public Token(int line, int column, String value) {
 	        this.start = start;
 	        this.lineNumber = lineNumber;
 	        this.value = value;

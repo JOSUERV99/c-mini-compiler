@@ -4,8 +4,11 @@
 
 package clexergenerator;
 
-import types.TokenType;
 import types.Token;
+import types.OperatorToken;
+import types.KeywordToken;
+import types.LiteralToken;
+import types.IdentifierToken;
 
 
 // See https://github.com/jflex-de/jflex/issues/222
@@ -707,12 +710,12 @@ class GeneratedLexer {
             // fall through
           case 6: break;
           case 3:
-            { return new Token(TokenType.KEYWORD);
+            { return new KeywordToken(yyline, yycolumn, yytext());
             }
             // fall through
           case 7: break;
           case 4:
-            { return new Token(TokenType.OPERATOR);
+            { return new OperatorToken(yyline, yycolumn, yytext());
             }
             // fall through
           case 8: break;
