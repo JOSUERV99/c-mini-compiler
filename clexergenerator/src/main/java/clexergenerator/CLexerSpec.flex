@@ -1,26 +1,26 @@
+package clexergenerator;
+
 import types.TokenType;
 import types.Token;
 
+%%
 %class GeneratedLexer
 %type Token
 %scanerror IllegalTokenException
 %unicode
-
 %{
 	/*class content*/
 %}
 
 /* Regex patterns definition */
-
-// basic rules
 LineEnd    = \r|\n|\r\n
-WhiteSpace = {LineTerminator} | [ \t\f]
+WhiteSpace = {LineEnd} | [ \t\f]
 
-// literal definition
+/* numbers */
 LDecimalInteger = [0-9]
-LHexaInteger = 0[x|X]{[0-9a-f]|[0-9A-F]}
+LHexaInteger = 0[x|X]([0-9a-f]*|[0-9A-F]*)
 
-// operators
+/* operators */
 AritmeticOperator 		= "/"  | "+"  | "-"  | "*"  | "%" 
 SeparatorOperator 		= ","  
 CompareOperator   		= ">=" | "<=" | "<"  | ">"  | "!=" | "||"  | "&&"  | "=="
@@ -35,15 +35,9 @@ WrapperOperators        = "("  | ")"  | "["  | "]"  | "{"  | "}"
 InstructionEndOperator  = ";"  
 PointerOperator			= "->" | "*"  /* WARNING */
 
-Operator = 
-	AritmeticOperator | SeparatorOperator | CompareOperator | BinaryOperator | CrossAsigAritOperator | CrossAsiBinOperator |
-	TernaryOperator | AsigOperator | ShiftOperator | PropOperator | WrapperOperators | InstructionEndOperator | PointerOperator
-	
-// comments
-OneLineComment = //[^*]{LineEnd}
-BlockComment   = 
+Operator = AritmeticOperator | SeparatorOperator | CompareOperator | BinaryOperator | CrossAsigAritOperator | CrossAsiBinOperator | TernaryOperator | AsigOperator | ShiftOperator | PropOperator | WrapperOperators | InstructionEndOperator | PointerOperator
 
-// token types
+/* token types */
 KeyWord = 
 	  "auto"
 	| "break"
