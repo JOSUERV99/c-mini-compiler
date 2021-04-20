@@ -700,7 +700,7 @@ class GeneratedLexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { throw new IllegalTokenException("Illegal character <" + yytext() + ">");
+            { throw new IllegalTokenException("Illegal character <" + yytext() + ">" + "[" + yyline + "," + yycolumn + "]");
             }
             // fall through
           case 5: break;

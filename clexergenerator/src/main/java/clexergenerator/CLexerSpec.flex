@@ -90,4 +90,4 @@ Identifier	   = [a-bA-B][a-zA-Z0-9_]*
 }
 
 /* error fallback */
-[^]                              { throw new IllegalTokenException("Illegal character <" + yytext() + ">"); }
+[^]                              { throw new IllegalTokenException("Illegal character <" + yytext() + ">" + "[" + yyline + "," + yycolumn + "]"); }

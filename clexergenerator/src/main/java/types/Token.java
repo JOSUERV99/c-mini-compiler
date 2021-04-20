@@ -6,8 +6,8 @@ public class Token {
 	public String value;
 	
 	 public Token(int line, int column, String value) {
-	        this.start = start;
-	        this.lineNumber = lineNumber;
+	        this.line = line;
+	        this.column = column;
 	        this.value = value;
 	 }
 	
