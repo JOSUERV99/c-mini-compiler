@@ -8,10 +8,13 @@ import types.IdentifierToken;
 import types.IllegalTokenException;
 
 %%
-%class GeneratedLexer
+%public
+%class CLexer
 %type Token
 %scanerror IllegalTokenException
 %unicode
+%line
+%column
 %{
 	/*class content*/
 %}
@@ -22,7 +25,7 @@ WhiteSpace = {LineEnd} | [ \t\f]
 
 /* numbers */
 LDecimalInteger = [0-9]
-LHexaInteger = 0[x|X]([0-9a-f]*|[0-9A-F]*)
+LHexaInteger = 0[x|X]([0-9a-f][0-9a-f]*|[0-9A-F][0-9A-F]*)
 
 /* operators */
 AritmeticOperator 		= "/"  | "+"  | "-"  | "*"  | "%" 
@@ -32,14 +35,29 @@ BinaryOperator    		= "&"  | "^"  | "|"  | 	"!" | "~"
 CrossAsigAritOperator   = "+=" | "-=" | "*=" | "/=" | "--" | "++" | "%="
 CrossAsiBinOperator     = "&=" | "^=" | "|=" | "<<="| ">>=" 
 TernaryOperator 		= "?"  | ":"
-AsigOperator			= "="  |
+AsigOperator			= "="  
 ShiftOperator 			= ">>" | "<<" 
 PropOperator			= "."
 WrapperOperators        = "("  | ")"  | "["  | "]"  | "{"  | "}"
 InstructionEndOperator  = ";"  
 PointerOperator			= "->" | "*"  /* WARNING */
 
-Operator = AritmeticOperator | SeparatorOperator | CompareOperator | BinaryOperator | CrossAsigAritOperator | CrossAsiBinOperator | TernaryOperator | AsigOperator | ShiftOperator | PropOperator | WrapperOperators | InstructionEndOperator | PointerOperator
+Test = "+" | "-" | ">="	
+
+Operator = 
+	{AritmeticOperator} | 
+	{CompareOperator} | 
+	{CompareOperator} | 
+	{BinaryOperator} | 
+	{CrossAsigAritOperator} | 
+	{CrossAsiBinOperator} | 
+	{TernaryOperator} | 
+	{AsigOperator} | 
+	{ShiftOperator} | 
+	{PropOperator} | 
+	{WrapperOperators} | 
+	{InstructionEndOperator} | 
+	{PointerOperator}
 
 /* token types */
 KeyWord = 
@@ -76,19 +94,19 @@ KeyWord =
 	| "volatile"
 	| "while"
 
-Identifier	   = [a-bA-B][a-zA-Z0-9_]*
-
-%state STRING
+Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
 
 %%
 <YYINITIAL> {
 	
-  {KeyWord}						 { return new KeywordToken(yyline, yycolumn, yytext());  }
-  {Operator}					 { return new OperatorToken(yyline, yycolumn, yytext()); }
-  
+  {KeyWord}	{ return new KeywordToken(yyline, yycolumn, yytext());  }
+  {Operator} { return new OperatorToken(yyline, yycolumn, yytext()); }  
+  {Identifier} { return new IdentifierToken(yyline, yycolumn, yytext()); }
 
   {WhiteSpace}                   { /* do nothing */ }
 }
+
+
 
 /* error fallback */
 [^]                              { throw new IllegalTokenException("Illegal character <" + yytext() + ">" + "[" + yyline + "," + yycolumn + "]"); }
