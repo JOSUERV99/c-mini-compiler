@@ -50,6 +50,8 @@ public class Tokenizer {
 				System.out.println(ex.getMessage()); 
 			}	
 		}
+		
+		this.lexer.yyclose();
 	}
 
 	public HashMap<String, Token> getTokenMap() {

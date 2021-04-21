@@ -23,9 +23,28 @@ import types.IllegalTokenException;
 LineEnd    = \r|\n|\r\n
 WhiteSpace = {LineEnd} | [ \t\f]
 
+/* literal values */
+
 /* numbers */
-LDecimalInteger = [0-9]
-LHexaInteger = 0[x|X]([0-9a-f][0-9a-f]*|[0-9A-F][0-9A-F]*)
+DecimalInteger = 0 | [1-9][0-9]*
+HexaInteger = 0[x|X]([0-9a-f][0-9a-f]*|[0-9A-F][0-9A-F]*)
+FloatValue = {DecimalInteger}.{DecimalInteger}(f)?(F)?
+
+/* characters */
+CharSimpleValue = '[A-Za-z0-9!_$%#@&]'
+CharScapeSequence = '[^\\|\r|\n|\b|\t]'
+
+CharValue = {CharSimpleValue} | {CharScapeSequence}
+
+/* 'boolean' */
+BooleanValues = "true" | "false"
+
+Literal =  
+	{HexaInteger} |
+	{FloatValue} |
+	{DecimalInteger} |
+	{CharValue} |
+	{BooleanValues}
 
 /* operators */
 AritmeticOperator 		= "/"  | "+"  | "-"  | "*"  | "%" 
@@ -40,9 +59,7 @@ ShiftOperator 			= ">>" | "<<"
 PropOperator			= "."
 WrapperOperators        = "("  | ")"  | "["  | "]"  | "{"  | "}"
 InstructionEndOperator  = ";"  
-PointerOperator			= "->" | "*"  /* WARNING */
-
-Test = "+" | "-" | ">="	
+PointerOperator			= "->" | "*"
 
 Operator = 
 	{AritmeticOperator} | 
@@ -56,6 +73,7 @@ Operator =
 	{ShiftOperator} | 
 	{PropOperator} | 
 	{WrapperOperators} | 
+	{SeparatorOperator} |
 	{InstructionEndOperator} | 
 	{PointerOperator}
 
@@ -99,9 +117,14 @@ Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
 %%
 <YYINITIAL> {
 	
-  {KeyWord}	{ return new KeywordToken(yyline, yycolumn, yytext());  }
-  {Operator} { return new OperatorToken(yyline, yycolumn, yytext()); }  
-  {Identifier} { return new IdentifierToken(yyline, yycolumn, yytext()); }
+  {KeyWord}	
+  	{ return new KeywordToken(yyline, yycolumn, yytext());  }
+  {Literal}
+   	{ return new LiteralToken(yyline, yycolumn, yytext()); }
+  {Operator} 
+  	{ return new OperatorToken(yyline, yycolumn, yytext()); }  
+  {Identifier} 
+  	{ return new IdentifierToken(yyline, yycolumn, yytext()); }
 
   {WhiteSpace}                   { /* do nothing */ }
 }
@@ -109,4 +132,4 @@ Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
 
 
 /* error fallback */
-[^]                              { throw new IllegalTokenException("Illegal character <" + yytext() + ">" + "[" + yyline + "," + yycolumn + "]"); }
+[^]                              { throw new IllegalTokenException("Illegal character <" + yytext() + ">" + "[Line:" + yyline + ",Column:" + yycolumn + "]"); }
