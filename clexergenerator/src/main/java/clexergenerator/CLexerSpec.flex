@@ -1,10 +1,11 @@
-package clexergenerator;
+package generated;
 
 import types.Token;
 import types.OperatorToken;
 import types.KeywordToken;
 import types.LiteralToken;
 import types.IdentifierToken;
+import types.IllegalTokenException;
 
 %%
 %class GeneratedLexer
