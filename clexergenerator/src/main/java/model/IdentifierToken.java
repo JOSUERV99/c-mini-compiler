@@ -1,4 +1,4 @@
-package types;
+package model;
 
 public class IdentifierToken extends Token {
 	

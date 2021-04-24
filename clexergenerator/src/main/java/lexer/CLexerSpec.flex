@@ -1,11 +1,15 @@
-package generated;
+package lexer;
 
-import types.Token;
-import types.OperatorToken;
-import types.KeywordToken;
-import types.LiteralToken;
-import types.IdentifierToken;
-import types.IllegalTokenException;
+import model.Token;
+import model.OperatorToken;
+import model.KeywordToken;
+import model.LiteralToken;
+import model.IdentifierToken;
+
+import validation.TokenError;
+import validation.IllegalTokenException;
+
+import java.util.ArrayList;
 
 %%
 %public
@@ -17,7 +21,16 @@ import types.IllegalTokenException;
 %column
 %{
 	// string generation with STRING state
-	StringBuffer stringBuilder = new StringBuffer();
+	private StringBuffer stringBuilder = new StringBuffer();
+
+	// error lists
+	ArrayList<TokenError> errorList = new ArrayList<>();
+
+	public ArrayList<TokenError> getErrorList() {
+		ArrayList<TokenError> errorsList = (ArrayList<TokenError>) this.errorList.clone();
+		this.errorList.clear();
+		return errorsList;
+	}
 %}
 
 /* Regex patterns definition */
@@ -155,4 +168,8 @@ Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
 }
 
 /* error fallback */
-[^]                              { throw new IllegalTokenException("Illegal character <" + yytext() + ">" + "[Line:" + yyline + ",Column:" + yycolumn + "]"); }
+[^]                              
+{ 
+	this.errorList.add(new TokenError(yyline, yycolumn, yytext()));
+	throw new IllegalTokenException("Illegal character <" + yytext() + ">" + "[Line:" + yyline + ",Column:" + yycolumn + "]"); 
+}

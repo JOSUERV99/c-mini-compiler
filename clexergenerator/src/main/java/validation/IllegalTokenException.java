@@ -1,4 +1,4 @@
-package types;
+package validation;
 
 public class IllegalTokenException extends Exception {
 

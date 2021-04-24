@@ -1,19 +1,22 @@
-package clexergenerator;
+package handler;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import generated.CLexer;
-import types.IllegalTokenException;
-import types.Token;
+import lexer.CLexer;
+import validation.IllegalTokenException;
+import model.Token;
+import validation.TokenError;
 
 public class Tokenizer {
 
 	private BufferedReader fileBuffer;
 	private HashMap<String, Token> tokenMap;
+	private ArrayList<TokenError> errorList;
 	private CLexer lexer;
 	
 	public Tokenizer(String filePath) throws FileNotFoundException {
@@ -23,6 +26,7 @@ public class Tokenizer {
 	}
 
 	public void generateTokens() throws IOException, IllegalTokenException {
+		
 		while(!this.lexer.yyatEOF()) 
 		{
 			try 
@@ -47,19 +51,36 @@ public class Tokenizer {
 			}
 			catch (IllegalTokenException ex) 
 			{
-				System.out.println(ex.getMessage()); 
+				
 			}	
 		}
 		
 		this.lexer.yyclose();
+		
+		// get error list
+		this.errorList = this.lexer.getErrorList();
 	}
-
+	
 	public HashMap<String, Token> getTokenMap() {
 		return tokenMap;
 	}
 
 	public void setTokenMap(HashMap<String, Token> tokenMap) {
 		this.tokenMap = tokenMap;
+	}
+	
+	public ArrayList<TokenError> getErrorList() {
+		return errorList;
+	}
+
+	public void setErrorList(ArrayList<TokenError> errorList) {
+		this.errorList = errorList;
+	}
+	
+	public String log(String filePath) {
+		return "\nGenerated tokens: "+this.getTokenMap().size() + 
+				"\nGenerated errors: "+this.getErrorList().size() +
+				"\nFrom ["+filePath+"]\n";
 	}
 
 	@Override

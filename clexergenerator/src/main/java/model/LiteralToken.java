@@ -1,4 +1,4 @@
-package types;
+package model;
 
 public class LiteralToken extends Token {
 	

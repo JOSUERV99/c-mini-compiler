@@ -1,4 +1,4 @@
-package types;
+package model;
 
 public class Token {
 
@@ -54,7 +54,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [type=" + type +"," + " line=" + line + ", column=" + column + ", appearances=" + appearances + ", value=" + value + "]";
+		return "Token [\n\ttype=" + type +"," + "\n\tline=" + line + ",\n\tcolumn=" + column + ",\n\tappearances=" + appearances + ",\n\tvalue=" + value + "\n]\n";
 	}
 
 	
