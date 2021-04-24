@@ -7,7 +7,7 @@ import validation.IllegalTokenException;
 
 public class Test {
 
-	private static String defaultTestFile = "src/main/java/test/operators.c";
+	private static String defaultTestFile = "src/main/java/test/program.c";
 	
 	private static String welcomeMessage = "  ___                            ___  \r\n"
 			+ " (o o)                          (o o) \r\n"

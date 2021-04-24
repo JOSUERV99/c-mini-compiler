@@ -48,24 +48,28 @@ Comment = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
 
 /* literal values */
 /* numbers */
-DecimalInteger = 0 | [1-9][0-9]* /* include octal representation */
+DecimalInteger = 0|[1-9][0-9]* 
+OctalValue = 0+[0-7]*
 HexaValue = 0[x|X]([0-9a-f][0-9a-f]*|[0-9A-F][0-9A-F]*)
-FloatValue = {DecimalInteger}.[0-9]*
+FloatValue = [0-9]*\.|\.[0-9]*|{DecimalInteger}.([0-9])*
+ExponentialNotation = {DecimalInteger}.[0-9]+([eE][+\-]?[0-9]+)
 
 /* characters */
-CharSimpleValue = '[A-Za-z0-9!_$%#@&]'
-CharScapeSequence = '\\[r|n|b|t]'
-CharValue = {CharSimpleValue} | {CharScapeSequence}
+CharScapeSequence = '\\[r|f|a|e|n|v|b|t|\\|']'
+CharSingleValue = '([a-zA-Z0-9]|[!\"#%&\'\(\)\*\+,\-./:;<=>\?\[\]\^_\{\|\}~])'
+CharValue = {CharScapeSequence} | {CharSingleValue}
 
 /* string */
 StringDefinition = \"[^*]\"
 
 Literal =  
 	{HexaValue} |
-	{FloatValue} |
 	{DecimalInteger} |
+	{FloatValue} |
 	{CharValue} |
-	{StringDefinition}
+	{OctalValue} |
+	{StringDefinition} | 
+	{ExponentialNotation}
 
 /* operators */
 AritmeticOperator 		= "/"  | "+"  | "-"  | "*"  | "%" 
@@ -145,7 +149,7 @@ Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
   	{ return new KeywordToken(yyline, yycolumn, yytext());  }
   {Literal}
    	{ return new LiteralToken(yyline, yycolumn, yytext()); }
-  {Operator} 
+	     {Operator} 
   	{ return new OperatorToken(yyline, yycolumn, yytext()); }
   {Identifier} 
   	{ return new IdentifierToken(yyline, yycolumn, yytext()); }

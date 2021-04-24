@@ -37,6 +37,6 @@ public class TokenError {
 
 	@Override
 	public String toString() {
-		return "TokenError [\nline=" + line + ",\ncolumn=" + column + ",\nvalue=" + value + "]\n";
+		return "TokenError [\n\tline=" + line + ",\n\tcolumn=" + column + ",\n\tvalue=" + value + "\n]\n";
 	}
 }
