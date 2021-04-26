@@ -41,11 +41,7 @@ public class Tokenizer {
 				}
 				else 
 				{
-					this.tokenMap.get(
-						token.getValue()
-					).setAppearances(
-						this.tokenMap.get(token.getValue()).getAppearances() + 1
-					);
+					this.tokenMap.get(token.getValue()).addAppearance(token);
 				}
 				
 			}

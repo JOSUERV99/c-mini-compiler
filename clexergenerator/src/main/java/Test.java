@@ -8,6 +8,7 @@ import validation.IllegalTokenException;
 public class Test {
 
 	private static String defaultTestFile = "clexergenerator/src/main/java/test/errors.c";
+	private static Scanner scanner = new Scanner(System.in);
 	
 	private static String welcomeMessage = "  ___                            ___  \r\n"
 			+ " (o o)                          (o o) \r\n"
@@ -15,14 +16,32 @@ public class Test {
 			+ "--m-m----------------------------m-m--\n"
 			+ "Authors: Josue Rojas & Andrew Gutierrez";
 	
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		
-		Test.tokenizerTest(
-			Test.requestFilename()
-		);
+		Test.tokenizerTest();
+		
+		System.out.println("Press Any Key To Exit...");
+        scanner.nextLine();
 	}
 	
-	public static void tokenizerTest(String filePath) {
+	public static void tokenizerTest() {
+			
+		String filePath = Test.requestFilename();
+	
+		while (true)
+		{	
+			if (filePath.equals("exit")) return;
+		
+			if (!new File(filePath).exists())
+			{
+				System.out.println("El archivo ["+filePath+"] no existe o su direccion no es valida");
+				
+			}
+			else break;
+			
+			filePath = Test.requestFilename();
+		}
 		
 		try 
 		{	
@@ -52,25 +71,9 @@ public class Test {
 	
 	private static String requestFilename() {
 		
-		System.out.println(welcomeMessage);
-		Scanner inputScanner = new Scanner(System.in);
-		
-	    System.out.print("\n=> Enter the input filename: ");
-	    String filename = inputScanner.nextLine();
-	    
-	    inputScanner.close();	
-
-	    // check if file exists
-		try {
-			File temp = new File(filename);
-			if (!temp.exists())
-			{
-				filename = defaultTestFile;
-			}
-		} catch (Exception e) {
-			filename = defaultTestFile;
-		}
-	    
-	    return filename;
+		System.out.println(welcomeMessage);		
+	    System.out.print("\n=> Enter the input filename or 'exit': ");
+	    return scanner.nextLine();
 	}
+
 }

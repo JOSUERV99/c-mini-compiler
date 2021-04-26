@@ -2,13 +2,9 @@
 
 echo #####################################
 echo ##   Andrew JGC y Josue Rojas Vega ##
-echo ##   Este archivo ejecuta y compi- ##
-echo ##   la el proyecto del escanner   ##
+echo ##   Este archivo ejecuta el       ##
+echo ##   el scanner lexico             ##
 echo #####################################
 echo :> Compilando el proyecto....
 
-call Compile.bat
-
-echo Ejecutando el programa...
-
-call Run.bat
+java -jar clexer.jar

@@ -1,39 +1,40 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Token {
 
-	private int line, column, appearances;
 	private String value, type;
+	private ArrayList<TokenPosition> positions;
 	
-	 public Token(int line, int column, String value) {
-        this.line = line;
-        this.column = column;
+	public Token(int line, int column, String value) {
+        this.positions = new ArrayList<>();
+        this.addAppearance(line, column);
         this.value = value;
-        this.appearances = 1; 
-	 }
+	}
+	
+	public void addAppearance(Token token) {
+		
+		int line   = token.getPositions().get(0).getLine();
+		int column = token.getPositions().get(0).getColumn();
+		
+		this.positions.add(new TokenPosition(line, column));
+	}
+	
+	public void addAppearance(int line, int column) {
+		this.positions.add(new TokenPosition(line, column));
+	}
 	 
 	public int getAppearances() {
-		return appearances;
+		return this.positions.size();
 	}
 	
-	public void setAppearances(int appearances) {
-		this.appearances = appearances;
+	public ArrayList<TokenPosition> getPositions() {
+		return positions;
 	}
 
-	public int getLine() {
-		return line;
-	}
-
-	public void setLine(int line) {
-		this.line = line;
-	}
-
-	public int getColumn() {
-		return column;
-	}
-
-	public void setColumn(int column) {
-		this.column = column;
+	public void setPositions(ArrayList<TokenPosition> positions) {
+		this.positions = positions;
 	}
 
 	public String getValue() {
@@ -54,8 +55,6 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [\n\ttype=" + type +"," + "\n\tline=" + line + ",\n\tcolumn=" + column + ",\n\tappearances=" + appearances + ",\n\tvalue=" + value + "\n]\n";
+		return "Token [\nvalue=" + value + ",\ntype=" + type + ",\nappearances=" + this.getAppearances() + ",\npositions=" + positions + "\n]\n";
 	}
-
-	
 }
