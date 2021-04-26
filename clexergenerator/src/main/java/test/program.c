@@ -10,6 +10,8 @@ void testOperators() {
     float x = 0.000e-12;
     float y = 1.421E12;
 
+    int var = -104.22;
+
     char a = 'a';
     char b = 'z';
     char c = 'A';

@@ -3,12 +3,13 @@ package validation;
 public class TokenError {
 
 	private int line, column;
-	private String value;
+	private String value, message;
 	
-	public TokenError(int line, int column, String value) {
+	public TokenError(int line, int column, String value, String message) {
 		this.line = line;
 		this.column = column;
 		this.value = value;
+		this.message = message;
 	}
 
 	public int getLine() {
@@ -35,8 +36,16 @@ public class TokenError {
 		this.value = value;
 	}
 
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
 	@Override
 	public String toString() {
-		return "TokenError [\n\tline=" + line + ",\n\tcolumn=" + column + ",\n\tvalue=" + value + "\n]\n";
+		return "TokenError [\n\tline=" + line + ",\n\tcolumn=" + column + ",\n\tvalue=" + value + ",\n\tmessage=" + message +"\n]\n";
 	}
 }

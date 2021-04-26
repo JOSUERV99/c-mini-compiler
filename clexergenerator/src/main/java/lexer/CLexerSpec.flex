@@ -38,8 +38,14 @@ LineEnd    = \r|\n|\r\n
 WhiteSpace = {LineEnd} | [ \t\f]
 InputCharacter = [^\r\n]
 
-/* comments */
+/* helpers */
+XIdentifierWithWrongStart = [0-9][a-zA-Z0-9_]*
+XLiteralHexadecimalWithNotAllowedDigits = 0[x|X]([G-Z]+|[g-z]+)
+XLiteralOctalWithNotAllowedDigits  = 0+[0-7]*[8-9]+[0-7]*
+XLiteralIntegerWithNotAllowedDigits = [1-9]+[A-Za-z]+
+XNotAllowedChars = [^a-zA-Z0-9!\"#%&\'\(\)\*\+,\-\./:;<=>\?\[\]\^_\{\|\}\~]
 
+/* comments */
 TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 EndOfLineComment     = "//" {InputCharacter}* {LineEnd}?
 DocumentationComment = "/**" {CommentContent} "*"+ "/"
@@ -48,11 +54,12 @@ Comment = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
 
 /* literal values */
 /* numbers */
-DecimalInteger = 0|[1-9][0-9]* 
-OctalValue = 0+[0-7]*
+NumberSign = [+\-]?
+DecimalInteger = 0|([1-9][0-9]*) 
+OctalValue = 0+[0-7]+
 HexaValue = 0[x|X]([0-9a-f][0-9a-f]*|[0-9A-F][0-9A-F]*)
-FloatValue = [0-9]*\.|\.[0-9]*|{DecimalInteger}.([0-9])*
-ExponentialNotation = {DecimalInteger}.[0-9]+([eE][+\-]?[0-9]+)
+FloatValue = {NumberSign}([0-9]+\.|\.[0-9]+|{DecimalInteger}\.([0-9])*)
+ExponentialNotation = {NumberSign}{DecimalInteger}.[0-9]+([eE][+\-]?[0-9]+)
 
 /* characters */
 CharScapeSequence = '\\[r|f|a|e|n|v|b|t|\\|']'
@@ -143,19 +150,29 @@ Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
 %state STRING
 %%
 <YYINITIAL> {
+	
   \"  { stringBuilder.setLength(0); yybegin(STRING); }  
-
+ 
   {KeyWord}	
   	{ return new KeywordToken(yyline, yycolumn, yytext());  }
   {Literal}
    	{ return new LiteralToken(yyline, yycolumn, yytext()); }
-	     {Operator} 
+  {Operator} 
   	{ return new OperatorToken(yyline, yycolumn, yytext()); }
   {Identifier} 
   	{ return new IdentifierToken(yyline, yycolumn, yytext()); }
 
-  {WhiteSpace}                   { /* do nothing */ }
-  {Comment}                   { /* do nothing */ }
+  {XLiteralHexadecimalWithNotAllowedDigits} 
+  	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal hexadecimal value must contain 0-9 or (a-f|A-F) "));  }
+  {XLiteralOctalWithNotAllowedDigits} 
+  	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal octal value must contain [0-7] digits"));  }
+  {XLiteralIntegerWithNotAllowedDigits} 
+  	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal integer value must contain [0-9] digits"));  }
+  {XIdentifierWithWrongStart} 
+  	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Identifier cannot start with number(s)"));  }
+
+  {WhiteSpace} | {Comment}
+  	{ /* do nothing */ }
 }
 
 <STRING> {
@@ -174,6 +191,6 @@ Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
 /* error fallback */
 [^]                              
 { 
-	this.errorList.add(new TokenError(yyline, yycolumn, yytext()));
+	this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Illegal character"));
 	throw new IllegalTokenException("Illegal character <" + yytext() + ">" + "[Line:" + yyline + ",Column:" + yycolumn + "]"); 
 }
