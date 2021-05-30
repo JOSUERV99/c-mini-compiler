@@ -18,7 +18,7 @@ init with {:  :};
 scan with {: return this.s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
-terminal IDENT,KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST,
+terminal EPSYLON,IDENT,KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST,
     KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE,
     KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO,
     KW_IF,KW_INT,KW_LONG,KW_REGISTER,KW_RETURN,
@@ -49,9 +49,9 @@ non terminal function_declaration, keyword_types, parameters, parameter;
 
 start with function_declaration;
 
-function_declaration ::= keyword_types IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERKEYPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR;
+function_declaration ::= keyword_types IDENT OP_WRAPPERPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR ;
 
 parameters ::= parameter OP_COMMA parameters | parameter;
-parameter ::= keyword_types IDENT | epsylon;
+parameter ::= keyword_types IDENT:id | EPSYLON;
 keyword_types ::= KW_INT | KW_CHAR | KW_LONG | KW_SHORT | KW_VOID;
-epsylon :: = { /* empty definition */ };
+EPSYLON ::= { /* empty definition */ };
