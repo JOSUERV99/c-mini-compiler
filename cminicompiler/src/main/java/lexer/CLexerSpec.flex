@@ -10,13 +10,17 @@ import validation.TokenError;
 import validation.IllegalTokenException;
 
 import java.util.ArrayList;
+import java_cup.runtime.*;
+import parser.sym;
 
 %%
 %public
 %class CLexer
-%type Token
+%type Symbol
+%implements sym
 %scanerror IllegalTokenException
 %unicode
+%cup
 %line
 %column
 %{
@@ -32,6 +36,8 @@ import java.util.ArrayList;
 		return errorsList;
 	}
 %}
+
+
 
 /* Regex patterns definition */
 LineEnd    = \r|\n|\r\n
@@ -62,7 +68,7 @@ FloatValue = {NumberSign}([0-9]+\.|\.[0-9]+|{DecimalInteger}\.([0-9])*)
 ExponentialNotation = {NumberSign}{DecimalInteger}.[0-9]+([eE][+\-]?[0-9]+)
 
 /* characters */
-CharScapeSequence = '\\[r|f|a|e|n|v|b|t|\\|']'
+CharScapeSequence = '\\[0|r|f|a|e|n|v|b|t|\\|']'
 CharSingleValue = '([a-zA-Z0-9]|[!\"#%&\'\(\)\*\+,\-./:;<=>\?\[\]\^_\{\|\}~])'
 CharValue = {CharScapeSequence} | {CharSingleValue}
 
@@ -147,20 +153,198 @@ KeyWord =
 /* identifiers */
 Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
 
+
+/* SYMBOLS def */
+
+/*kw*/
+KW_AUTO = "auto"
+KW_BREAK = "break"
+KW_CASE = "case"
+KW_CHAR = "char"
+KW_CONST = "const"
+KW_CONTINUE = "continue"
+KW_DEFAULT = "default"
+KW_DO = "do"
+KW_DOUBLE = "double"
+KW_ELSE = "else"
+KW_ENUM = "enum"
+KW_EXTERN = "extern"
+KW_FLOAT = "float"
+KW_FOR = "for"
+KW_GOTO = "goto"
+KW_IF = "if"
+KW_INT = "int"
+KW_LONG = "long"
+KW_REGISTER = "register"
+KW_RETURN = "return"
+KW_SHORT = "short"
+KW_SIGNED = "signed"
+KW_SIZEOF = "sizeof"
+KW_STATIC = "static"
+KW_STRUCT = "struct"
+KW_SWITCH = "switch"
+KW_TYPEDEF = "typedef"
+KW_UNION = "union"
+KW_UNSIGNED = "unsigned"
+KW_VOID = "void"
+KW_VOLATILE = "volatile"
+KW_WHILE = "while"
+
+/*op*/
+OP_DIV = "/"
+OP_PLUS = "+"
+OP_MINUS = "-"
+OP_MULT = "*"
+OP_MOD = "%"
+OP_COMMA = ","
+OP_GTE = ">="
+OP_LTE = "<="
+OP_LT = "<"
+OP_GT = ">"
+OP_NOTEQUALCOMP = "!="
+OP_ORCOMP = "||"
+OP_ANDCOMP = "&&"
+OP_EQUALCOMP = "=="
+OP_AND = "&"
+OP_XOR = "^"
+OP_OR = "|"
+OP_NOT = "~"
+OP_NEGATION = "!"
+OP_PLUSASSIGN = "+="
+OP_MINUSASSIGN = "-="
+OP_MULTASSIGN = "*="
+OP_DIVASSIGN = "/="
+OP_MINUSMINUSASSIGN = "--"
+OP_PLUSPLUSASSIGN = "++"
+OP_MODASSIGN = "%="
+OP_ANDASSIGN = "&="
+OP_NOTASSIGN = "^="
+OP_ORASSIGN = "|="
+OP_SHIFTLEFTASSIGN = "<<="
+OP_SHIFTRIGHTASSIGN = ">>="
+OP_TERNARYOPERATORQUESTIONMARK = "?"
+OP_TERNARYOPERATIONDOUBLEDOT = ":"
+OP_ASIG = "="
+OP_SHIFTOPRIGHT = ">>"
+OP_SHIFTOPLEFT = "<<"
+OP_PROPOPERATOR = "."
+OP_WRAPPERPARENTHESISLEFT = "("
+OP_WRAPPERPARENTHESISRIGHT = ")"
+OP_WRAPPERSQUAREPARENTHESISLEFT = "["
+OP_WRAPPERSQUAREPARENTHESISRIGHT = "]"
+OP_WRAPPERKEYPARENTHESISLEFT = "{"
+OP_WRAPPERKEYPARENTHESISRIGHT = "}"
+OP_INSTRUCTIONENDOPERATOR = ";"
+OP_POINTEROPERATOR = "->"
+OP_POINTEROPERATORASTERISC = "*"
+
+/*literals*/
+LIT_HEXVALUE = {HexaValue}
+LIT_DECIMALVALUE = {DecimalInteger}
+LIT_FLOATVALUE = {FloatValue}
+LIT_CHARVALUE = {CharValue}
+LIT_OCTALVALUE = {OctalValue}
+LIT_STRINGDEF = {StringDefinition}
+LIT_EXPONENTIALDEF = {ExponentialNotation}
+
+/*identifier*/
+IDENT = {Identifier}
+
 %state STRING
 %%
 <YYINITIAL> {
 	
   \"  { stringBuilder.setLength(0); yybegin(STRING); }  
  
-  {KeyWord}	
-  	{ return new KeywordToken(yyline, yycolumn, yytext());  }
-  {Literal}
-   	{ return new LiteralToken(yyline, yycolumn, yytext()); }
-  {Operator} 
-  	{ return new OperatorToken(yyline, yycolumn, yytext()); }
-  {Identifier} 
-  	{ return new IdentifierToken(yyline, yycolumn, yytext()); }
+	{KW_AUTO} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_AUTO);}
+	{KW_BREAK} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_BREAK);}
+	{KW_CASE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_CASE);}
+	{KW_CHAR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_CHAR);}
+	{KW_CONST} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_CONST);}
+	{KW_CONTINUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_CONTINUE);}
+	{KW_DEFAULT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_DEFAULT);}
+	{KW_DO} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_DO);}
+	{KW_DOUBLE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_DOUBLE);}
+	{KW_ELSE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_ELSE);}
+	{KW_ENUM} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_ENUM);}
+	{KW_EXTERN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_EXTERN);}
+	{KW_FLOAT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_FLOAT);}
+	{KW_FOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_FOR);}
+	{KW_GOTO} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_GOTO);}
+	{KW_IF} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_IF);}
+	{KW_INT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_INT);}
+	{KW_LONG} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_LONG);}
+	{KW_REGISTER} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_REGISTER);}
+	{KW_RETURN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_RETURN);}
+	{KW_SHORT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_SHORT);}
+	{KW_SIGNED} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_SIGNED);}
+	{KW_SIZEOF} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_SIZEOF);}
+	{KW_STATIC} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_STATIC);}
+	{KW_STRUCT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_STRUCT);}
+	{KW_SWITCH} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_SWITCH);}
+	{KW_TYPEDEF} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_TYPEDEF);}
+	{KW_UNION} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_UNION);}
+	{KW_UNSIGNED} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_UNSIGNED);}
+	{KW_VOID} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_VOID);}
+	{KW_VOLATILE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_VOLATILE);}
+	{KW_WHILE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_WHILE);}
+	
+    {LIT_HEXVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_HEXVALUE);}
+	{LIT_DECIMALVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_DECIMALVALUE);}    
+	{LIT_FLOATVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_FLOATVALUE);}        
+	{LIT_CHARVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_CHARVALUE);}
+	{LIT_OCTALVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_OCTALVALUE);}        
+	{LIT_STRINGDEF} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_STRINGDEF);}
+	{LIT_EXPONENTIALDEF} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_EXPONENTIALDEF);}
+
+	{OP_DIV} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIV);}
+	{OP_PLUS} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUS);}
+	{OP_MINUS} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUS);}
+	{OP_MULT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULT);}
+	{OP_MOD} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MOD);}
+	{OP_COMMA} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_COMMA);}
+	{OP_GTE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GTE);}
+	{OP_LTE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LTE);}
+	{OP_LT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LT);}
+	{OP_GT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GT);}
+	{OP_NOTEQUALCOMP} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTEQUALCOMP);}
+	{OP_ORCOMP} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORCOMP);}
+	{OP_ANDCOMP} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDCOMP);}
+	{OP_EQUALCOMP} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_EQUALCOMP);}
+	{OP_AND} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_AND);}
+	{OP_XOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_XOR);}
+	{OP_OR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_OR);}
+	{OP_NOT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOT);}
+	{OP_NEGATION} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NEGATION);}
+	{OP_PLUSASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSASSIGN);}
+	{OP_MINUSASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSASSIGN);}
+	{OP_MULTASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULTASSIGN);}
+	{OP_DIVASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIVASSIGN);}
+	{OP_MINUSMINUSASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSMINUSASSIGN);}
+	{OP_PLUSPLUSASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSPLUSASSIGN);}
+	{OP_MODASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MODASSIGN);}
+	{OP_ANDASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDASSIGN);}
+	{OP_NOTASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTASSIGN);}
+	{OP_ORASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORASSIGN);}
+	{OP_SHIFTLEFTASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTLEFTASSIGN);}
+	{OP_SHIFTRIGHTASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTRIGHTASSIGN);}
+	{OP_TERNARYOPERATORQUESTIONMARK} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATORQUESTIONMARK);}
+	{OP_TERNARYOPERATIONDOUBLEDOT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATIONDOUBLEDOT);}
+	{OP_ASIG} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ASIG);}
+	{OP_SHIFTOPRIGHT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPRIGHT);}
+	{OP_SHIFTOPLEFT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPLEFT);}
+	{OP_PROPOPERATOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PROPOPERATOR);}
+	{OP_WRAPPERPARENTHESISLEFT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISLEFT);}
+	{OP_WRAPPERPARENTHESISRIGHT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISRIGHT);}
+	{OP_WRAPPERSQUAREPARENTHESISLEFT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISLEFT);}
+	{OP_WRAPPERSQUAREPARENTHESISRIGHT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISRIGHT);}
+	{OP_WRAPPERKEYPARENTHESISLEFT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISLEFT);}
+	{OP_WRAPPERKEYPARENTHESISRIGHT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISRIGHT);}
+	{OP_INSTRUCTIONENDOPERATOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_INSTRUCTIONENDOPERATOR);}
+	{OP_POINTEROPERATOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATOR);}
+	{OP_POINTEROPERATORASTERISC} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATORASTERISC);}
+
+    {IDENT} { return new IdentifierToken(yyline, yycolumn, yytext()).createSymbol(sym.IDENT); }
 
   {XLiteralHexadecimalWithNotAllowedDigits} 
   	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal hexadecimal value must contain 0-9 or (a-f|A-F) "));  }
@@ -178,7 +362,7 @@ Identifier	   = [a-zA-Z_][a-zA-Z0-9_]*
 <STRING> {
 	\"                             { 
 		yybegin(YYINITIAL);
-		return new LiteralToken(yyline, yycolumn, stringBuilder.toString()); 
+		return new LiteralToken(yyline, yycolumn, stringBuilder.toString()).createSymbol(sym.LIT_STRINGDEF); 
 	}
 	[^\n\r\"\\]+                   { stringBuilder.append( yytext() ); }
 	\\t                            { stringBuilder.append('\t'); }

@@ -1,34 +1,43 @@
 package model;
 
 import java.util.ArrayList;
+import java_cup.runtime.Symbol;
 
 public class Token {
 
 	private String value, type;
-	private ArrayList<TokenPosition> positions;
-	
+	private int line, column;
+	private ArrayList<TokenPosition> positions = new ArrayList<>();
+
 	public Token(int line, int column, String value) {
-        this.positions = new ArrayList<>();
-        this.addAppearance(line, column);
-        this.value = value;
+
+		this.line = line;
+		this.column = column;
+		this.value = value;
+
+		this.addAppearance(line, column);
 	}
-	
+
+	public Symbol createSymbol(int id) {
+		return new Symbol(id, line, column, value);
+	}
+
 	public void addAppearance(Token token) {
-		
-		int line   = token.getPositions().get(0).getLine();
+
+		int line = token.getPositions().get(0).getLine();
 		int column = token.getPositions().get(0).getColumn();
-		
+
 		this.positions.add(new TokenPosition(line, column));
 	}
-	
+
 	public void addAppearance(int line, int column) {
 		this.positions.add(new TokenPosition(line, column));
 	}
-	 
+
 	public int getAppearances() {
 		return this.positions.size();
 	}
-	
+
 	public ArrayList<TokenPosition> getPositions() {
 		return positions;
 	}
@@ -44,7 +53,7 @@ public class Token {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	public String getType() {
 		return type;
 	}
@@ -55,6 +64,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [\nvalue=" + value + ",\ntype=" + type + ",\nappearances=" + this.getAppearances() + ",\npositions=" + positions + "\n]\n";
+		return "Token [\nvalue=" + value + ",\ntype=" + type + ",\nappearances=" + this.getAppearances()
+				+ ",\npositions=" + positions + "\n]\n";
 	}
 }

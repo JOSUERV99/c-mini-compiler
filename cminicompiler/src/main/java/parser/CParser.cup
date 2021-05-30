@@ -1,0 +1,57 @@
+/* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
+import java_cup.runtime.*;
+import lexer.CLexer;
+
+/* define how to connect to the scanner! */
+parser code {:
+    // Connect this parser to a scanner!
+    CLexer s;
+    CParser() {}
+
+    public void setLexer(CLexer lexer) {
+        this.s = lexer;
+    }
+
+:}
+
+init with {:  :};
+scan with {: return this.s.next_token(); :};
+
+/* Terminals (tokens returned by the scanner). */
+terminal IDENT,KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST,
+    KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE,
+    KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO,
+    KW_IF,KW_INT,KW_LONG,KW_REGISTER,KW_RETURN,
+    KW_SHORT,KW_SIGNED,KW_SIZEOF,KW_STATIC,KW_STRUCT,
+    KW_SWITCH,KW_TYPEDEF,KW_UNION,KW_UNSIGNED,KW_VOID,
+    KW_VOLATILE,KW_WHILE,OP_DIV,OP_PLUS,OP_MINUS,
+    OP_MULT,OP_MOD,OP_COMMA,OP_GTE,OP_LTE,
+    OP_LT,OP_GT,OP_NOTEQUALCOMP,OP_ORCOMP,OP_ANDCOMP,
+    OP_EQUALCOMP,OP_AND,OP_XOR,OP_OR,OP_NOT,
+    OP_NEGATION,OP_PLUSASSIGN,OP_MINUSASSIGN,OP_MULTASSIGN,OP_DIVASSIGN,
+    OP_MINUSMINUSASSIGN,OP_PLUSPLUSASSIGN,OP_MODASSIGN,OP_ANDASSIGN,OP_NOTASSIGN,
+    OP_ORASSIGN,OP_SHIFTLEFTASSIGN,OP_SHIFTRIGHTASSIGN,OP_TERNARYOPERATORQUESTIONMARK,OP_TERNARYOPERATIONDOUBLEDOT,
+    OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR,OP_WRAPPERPARENTHESISLEFT,
+    OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT,
+    OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
+
+/* Non Terminals (generated using the terminals tokens) */
+
+/* int factorial(int n); */
+
+/*
+    Parametros       	->	Parametro , Parametros | Parametro
+    Parametro        	-> 	Tipo Identifier  | ε
+    Tipo             	-> 	int | char | long | short  | void 
+*/  
+
+non terminal function_declaration, keyword_types, parameters, parameter;
+
+start with function_declaration;
+
+function_declaration ::= keyword_types IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERKEYPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR;
+
+parameters ::= parameter OP_COMMA parameters | parameter;
+parameter ::= keyword_types IDENT | epsylon;
+keyword_types ::= KW_INT | KW_CHAR | KW_LONG | KW_SHORT | KW_VOID;
+epsylon :: = { /* empty definition */ };
