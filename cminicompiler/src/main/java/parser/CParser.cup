@@ -36,22 +36,98 @@ terminal EPSYLON,IDENT,KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST,
     OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
 
 /* Non Terminals (generated using the terminals tokens) */
+non terminal function_declaration, keyword_types, 
+    parameters, parameter, program_definition, literal, expresion,
+    global, variable, binary_operators, variable_definition, expresion_1;
 
-/* int factorial(int n); */
+start with program_definition;
 
-/*
-    Parametros       	->	Parametro , Parametros | Parametro
-    Parametro        	-> 	Tipo Identifier  | ε
-    Tipo             	-> 	int | char | long | short  | void 
-*/  
+program_definition ::= 
+      function_declaration:fd program_definition:pd 
+    | global:g program_definition:pd
+    | EPSYLON 
+    ;
 
-non terminal function_declaration, keyword_types, parameters, parameter;
+function_declaration ::= 
+    keyword_types IDENT OP_WRAPPERPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR
+    ;
 
-start with function_declaration;
+global ::= 
+    variable:v OP_INSTRUCTIONENDOPERATOR
+    ;
 
-function_declaration ::= keyword_types IDENT OP_WRAPPERPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR ;
+variable ::= 
+    keyword_types:kt variable_definition:vd 
+    ;
 
-parameters ::= parameter OP_COMMA parameters | parameter;
-parameter ::= keyword_types IDENT:id | EPSYLON;
-keyword_types ::= KW_INT | KW_CHAR | KW_LONG | KW_SHORT | KW_VOID;
-EPSYLON ::= { /* empty definition */ };
+variable_definition ::= 
+      IDENT 								
+    | IDENT OP_ASIG expresion:e					
+    | IDENT OP_COMMA variable_definition:vd 
+    | IDENT OP_ASIG expresion:e OP_COMMA variable_definition:vd 
+    ;
+
+expresion ::= 
+      literal									
+    | IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT 				
+    | IDENT 								
+    | OP_AND expresion:e2 expresion_1:e1
+    | OP_DIV expresion:e2 expresion_1:e1
+    ;
+
+expresion_1 ::= 
+      literal expresion_1						
+    | IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT expresion_1			
+    | IDENT expresion_1
+    | EPSYLON
+    ;
+
+// binary_operators ::= 
+//       OP_AND 
+//     | OP_DIV
+//     | OP_PLUS
+//     | OP_EQUALCOMP
+//     | OP_GT
+//     | OP_LTE
+//     | OP_GTE
+//     | OP_LT
+//     | OP_NOTEQUALCOMP
+//     | OP_MINUS
+//     | OP_MULT
+//     | OP_OR
+//     | OP_MOD
+//     | OP_XOR
+//     ;
+
+literal ::= 
+      LIT_CHARVALUE 
+    | LIT_DECIMALVALUE 
+    | LIT_EXPONENTIALDEF 
+    | LIT_FLOATVALUE 
+    | LIT_HEXVALUE
+    | LIT_OCTALVALUE
+    | LIT_STRINGDEF
+    ;
+
+parameters ::= 
+      parameter OP_COMMA parameters 
+    | parameter
+    ;
+
+parameter ::= 
+      keyword_types IDENT:id 
+    | EPSYLON
+    ;
+
+keyword_types ::= 
+      KW_INT 
+    | KW_CHAR 
+    | KW_LONG 
+    | KW_SHORT 
+    | KW_VOID
+    | KW_FLOAT
+    ;
+
+EPSYLON ::= 
+    { /* empty definition */ }
+    ;
