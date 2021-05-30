@@ -249,6 +249,7 @@ LIT_EXPONENTIALDEF = {ExponentialNotation}
 
 /*identifier*/
 IDENT = {Identifier}
+//<<EOF>> { return token( sym.EOF ); }
 
 %state STRING
 %%
@@ -288,63 +289,65 @@ IDENT = {Identifier}
 	{KW_VOID} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_VOID);}
 	{KW_VOLATILE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_VOLATILE);}
 	{KW_WHILE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_WHILE);}
-	
-    {LIT_HEXVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_HEXVALUE);}
-	{LIT_DECIMALVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_DECIMALVALUE);}    
-	{LIT_FLOATVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_FLOATVALUE);}        
-	{LIT_CHARVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_CHARVALUE);}
-	{LIT_OCTALVALUE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_OCTALVALUE);}        
-	{LIT_STRINGDEF} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_STRINGDEF);}
-	{LIT_EXPONENTIALDEF} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_EXPONENTIALDEF);}
+		
+	{LIT_HEXVALUE} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_HEXVALUE);}
+	{LIT_DECIMALVALUE} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_DECIMALVALUE);}
+	{LIT_FLOATVALUE} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_FLOATVALUE);}
+	{LIT_CHARVALUE} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_CHARVALUE);}
+	{LIT_OCTALVALUE} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_OCTALVALUE);}
+	{LIT_STRINGDEF} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_STRINGDEF);}
+	{LIT_EXPONENTIALDEF} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_EXPONENTIALDEF);}
 
-	{OP_DIV} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIV);}
-	{OP_PLUS} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUS);}
-	{OP_MINUS} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUS);}
-	{OP_MULT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULT);}
-	{OP_MOD} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MOD);}
-	{OP_COMMA} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_COMMA);}
-	{OP_GTE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GTE);}
-	{OP_LTE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LTE);}
-	{OP_LT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LT);}
-	{OP_GT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GT);}
-	{OP_NOTEQUALCOMP} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTEQUALCOMP);}
-	{OP_ORCOMP} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORCOMP);}
-	{OP_ANDCOMP} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDCOMP);}
-	{OP_EQUALCOMP} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_EQUALCOMP);}
-	{OP_AND} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_AND);}
-	{OP_XOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_XOR);}
-	{OP_OR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_OR);}
-	{OP_NOT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOT);}
-	{OP_NEGATION} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NEGATION);}
-	{OP_PLUSASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSASSIGN);}
-	{OP_MINUSASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSASSIGN);}
-	{OP_MULTASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULTASSIGN);}
-	{OP_DIVASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIVASSIGN);}
-	{OP_MINUSMINUSASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSMINUSASSIGN);}
-	{OP_PLUSPLUSASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSPLUSASSIGN);}
-	{OP_MODASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MODASSIGN);}
-	{OP_ANDASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDASSIGN);}
-	{OP_NOTASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTASSIGN);}
-	{OP_ORASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORASSIGN);}
-	{OP_SHIFTLEFTASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTLEFTASSIGN);}
-	{OP_SHIFTRIGHTASSIGN} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTRIGHTASSIGN);}
-	{OP_TERNARYOPERATORQUESTIONMARK} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATORQUESTIONMARK);}
-	{OP_TERNARYOPERATIONDOUBLEDOT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATIONDOUBLEDOT);}
-	{OP_ASIG} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ASIG);}
-	{OP_SHIFTOPRIGHT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPRIGHT);}
-	{OP_SHIFTOPLEFT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPLEFT);}
-	{OP_PROPOPERATOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PROPOPERATOR);}
-	{OP_WRAPPERPARENTHESISLEFT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISLEFT);}
-	{OP_WRAPPERPARENTHESISRIGHT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISRIGHT);}
-	{OP_WRAPPERSQUAREPARENTHESISLEFT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISLEFT);}
-	{OP_WRAPPERSQUAREPARENTHESISRIGHT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISRIGHT);}
-	{OP_WRAPPERKEYPARENTHESISLEFT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISLEFT);}
-	{OP_WRAPPERKEYPARENTHESISRIGHT} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISRIGHT);}
-	{OP_INSTRUCTIONENDOPERATOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_INSTRUCTIONENDOPERATOR);}
-	{OP_POINTEROPERATOR} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATOR);}
-	{OP_POINTEROPERATORASTERISC} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATORASTERISC);}
+	{OP_DIV} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIV);}
+	{OP_PLUS} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUS);}
+	{OP_MINUS} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUS);}
+	{OP_MULT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULT);}
+	{OP_MOD} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MOD);}
+	{OP_COMMA} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_COMMA);}
+	{OP_GTE} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GTE);}
+	{OP_LTE} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LTE);}
+	{OP_LT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LT);}
+	{OP_GT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GT);}
+	{OP_NOTEQUALCOMP} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTEQUALCOMP);}
+	{OP_ORCOMP} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORCOMP);}
+	{OP_ANDCOMP} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDCOMP);}
+	{OP_EQUALCOMP} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_EQUALCOMP);}      
+	{OP_AND} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_AND);}
+	{OP_XOR} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_XOR);}
+	{OP_OR} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_OR);}
+	{OP_NOT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOT);}
+	{OP_NEGATION} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NEGATION);}
+	{OP_PLUSASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSASSIGN);}
+	{OP_MINUSASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSASSIGN);}
+	{OP_MULTASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULTASSIGN);}
+	{OP_DIVASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIVASSIGN);}
+	{OP_MINUSMINUSASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSMINUSASSIGN);}
+	{OP_PLUSPLUSASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSPLUSASSIGN);}
+	{OP_MODASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MODASSIGN);}
+	{OP_ANDASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDASSIGN);}
+	{OP_NOTASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTASSIGN);}
+	{OP_ORASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORASSIGN);}
+	{OP_SHIFTLEFTASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTLEFTASSIGN);}
+	{OP_SHIFTRIGHTASSIGN} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTRIGHTASSIGN);}
+	{OP_TERNARYOPERATORQUESTIONMARK} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATORQUESTIONMARK);}
+	{OP_TERNARYOPERATIONDOUBLEDOT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATIONDOUBLEDOT);}
+	{OP_ASIG} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ASIG);}
+	{OP_SHIFTOPRIGHT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPRIGHT);}
+	{OP_SHIFTOPLEFT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPLEFT);}
+	{OP_PROPOPERATOR} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PROPOPERATOR);}
+	{OP_WRAPPERPARENTHESISLEFT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISLEFT);}
+	{OP_WRAPPERPARENTHESISRIGHT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISRIGHT);}
+	{OP_WRAPPERSQUAREPARENTHESISLEFT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISLEFT);}
+	{OP_WRAPPERSQUAREPARENTHESISRIGHT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISRIGHT);}
+	{OP_WRAPPERKEYPARENTHESISLEFT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISLEFT);}
+	{OP_WRAPPERKEYPARENTHESISRIGHT} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISRIGHT);}
+	{OP_INSTRUCTIONENDOPERATOR} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_INSTRUCTIONENDOPERATOR);}
+	{OP_POINTEROPERATOR} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATOR);}
+	{OP_POINTEROPERATORASTERISC} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATORASTERISC);}
 
     {IDENT} { return new IdentifierToken(yyline, yycolumn, yytext()).createSymbol(sym.IDENT); }
+	
+	
 
   {XLiteralHexadecimalWithNotAllowedDigits} 
   	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal hexadecimal value must contain 0-9 or (a-f|A-F) "));  }

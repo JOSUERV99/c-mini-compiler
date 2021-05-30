@@ -6,7 +6,6 @@ import lexer.CLexer;
 parser code {:
     // Connect this parser to a scanner!
     CLexer s;
-    CParser() {}
 
     public void setLexer(CLexer lexer) {
         this.s = lexer;
@@ -35,21 +34,33 @@ terminal EPSYLON,IDENT,KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST,
     OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT,
     OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
 
+terminal EOFl
+
 /* Non Terminals (generated using the terminals tokens) */
 non terminal function_declaration, keyword_types, 
-    parameters, parameter, program_definition, literal, expresion,
-    global, variable, binary_operators, variable_definition, expresion_1;
+    parameters, parameter, program_definition,
+    global, variable, variable_definition;
 
-start with program_definition;
+non terminal expression, expression_f ,expression_1, expression_1_f, expression_binary_operators, expression_literal;
+//Program Start non termi
+non terminal start_program;
+
+start with start_program;
+
+https://stackoverflow.com/questions/44091680/java-cup-runtime-symbol-eof-has-not-been-declared
+//https://www.cs.auckland.ac.nz/courses/compsci330s1c/lectures/330ChaptersPDF/Chapt4.pdf
+start_program ::= 
+    program_definition
+    ;
 
 program_definition ::= 
       function_declaration:fd program_definition:pd 
-    | global:g program_definition:pd
-    | EPSYLON 
+    | global:g program_definition:pd    
+    | EOF
     ;
 
 function_declaration ::= 
-    keyword_types IDENT OP_WRAPPERPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR
+    keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR
     ;
 
 global ::= 
@@ -62,51 +73,49 @@ variable ::=
 
 variable_definition ::= 
       IDENT 								
-    | IDENT OP_ASIG expresion:e					
+    | IDENT OP_ASIG expression:e					
     | IDENT OP_COMMA variable_definition:vd 
-    | IDENT OP_ASIG expresion:e OP_COMMA variable_definition:vd 
+    | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd 
     ;
 
-expresion ::= 
-      literal									
+expression ::= 
+      expression_literal									
     | IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT 				
-    | IDENT 								
-    | OP_AND expresion:e2 expresion_1:e1
-    | OP_DIV expresion:e2 expresion_1:e1
+    | IDENT 
+    | expression_binary_operators
     ;
 
-expresion_1 ::= 
-      literal expresion_1						
-    | IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT expresion_1			
-    | IDENT expresion_1
+expression_1 ::= 					
+      IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT expression_1			
+    | IDENT expression_1
     | EPSYLON
     ;
 
-// binary_operators ::= 
-//       OP_AND 
-//     | OP_DIV
-//     | OP_PLUS
-//     | OP_EQUALCOMP
-//     | OP_GT
-//     | OP_LTE
-//     | OP_GTE
-//     | OP_LT
-//     | OP_NOTEQUALCOMP
-//     | OP_MINUS
-//     | OP_MULT
-//     | OP_OR
-//     | OP_MOD
-//     | OP_XOR
-//     ;
+expression_binary_operators ::= 
+      OP_AND expression:e2 expression_1:e1
+    | OP_DIV expression:e2 expression_1:e1
+    | OP_PLUS expression:e2 expression_1:e1
+    | OP_EQUALCOMP expression:e2 expression_1:e1
+    | OP_GT expression:e2 expression_1:e1
+    | OP_LTE expression:e2 expression_1:e1
+    | OP_GTE expression:e2 expression_1:e1
+    | OP_LT expression:e2 expression_1:e1
+    | OP_NOTEQUALCOMP expression:e2 expression_1:e1
+    | OP_MINUS expression:e2 expression_1:e1
+    | OP_MULT expression:e2 expression_1:e1
+    | OP_OR expression:e2 expression_1:e1
+    | OP_MOD expression:e2 expression_1:e1
+    | OP_XOR expression:e2 expression_1:e1
+    ;
 
-literal ::= 
-      LIT_CHARVALUE 
-    | LIT_DECIMALVALUE 
-    | LIT_EXPONENTIALDEF 
-    | LIT_FLOATVALUE 
-    | LIT_HEXVALUE
-    | LIT_OCTALVALUE
-    | LIT_STRINGDEF
+expression_literal ::= 
+      LIT_CHARVALUE expression:e2 expression_1:e1
+    | LIT_DECIMALVALUE expression:e2 expression_1:e1
+    | LIT_EXPONENTIALDEF expression:e2 expression_1:e1
+    | LIT_FLOATVALUE expression:e2 expression_1:e1
+    | LIT_HEXVALUE expression:e2 expression_1:e1
+    | LIT_OCTALVALUE expression:e2 expression_1:e1
+    | LIT_STRINGDEF expression:e2 expression_1:e1
     ;
 
 parameters ::= 

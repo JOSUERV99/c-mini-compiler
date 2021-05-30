@@ -958,7 +958,8 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
             zzDoEOF();
-          { return new java_cup.runtime.Symbol(sym.EOF); }
+          {   return new Symbol(sym.EOF);
+ }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
@@ -974,7 +975,7 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 101: break;
           case 3:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NEGATION);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NEGATION);
             }
             // fall through
           case 102: break;
@@ -984,87 +985,87 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 103: break;
           case 5:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MOD);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MOD);
             }
             // fall through
           case 104: break;
           case 6:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_AND);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_AND);
             }
             // fall through
           case 105: break;
           case 7:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISLEFT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISLEFT);
             }
             // fall through
           case 106: break;
           case 8:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISRIGHT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERPARENTHESISRIGHT);
             }
             // fall through
           case 107: break;
           case 9:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULT);
             }
             // fall through
           case 108: break;
           case 10:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUS);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUS);
             }
             // fall through
           case 109: break;
           case 11:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_COMMA);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_COMMA);
             }
             // fall through
           case 110: break;
           case 12:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUS);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUS);
             }
             // fall through
           case 111: break;
           case 13:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PROPOPERATOR);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PROPOPERATOR);
             }
             // fall through
           case 112: break;
           case 14:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIV);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIV);
             }
             // fall through
           case 113: break;
           case 15:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_DECIMALVALUE);
+            { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_DECIMALVALUE);
             }
             // fall through
           case 114: break;
           case 16:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATIONDOUBLEDOT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATIONDOUBLEDOT);
             }
             // fall through
           case 115: break;
           case 17:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_INSTRUCTIONENDOPERATOR);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_INSTRUCTIONENDOPERATOR);
             }
             // fall through
           case 116: break;
           case 18:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LT);
             }
             // fall through
           case 117: break;
           case 19:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ASIG);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ASIG);
             }
             // fall through
           case 118: break;
           case 20:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GT);
             }
             // fall through
           case 119: break;
           case 21:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATORQUESTIONMARK);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_TERNARYOPERATORQUESTIONMARK);
             }
             // fall through
           case 120: break;
@@ -1074,37 +1075,37 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 121: break;
           case 23:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISLEFT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISLEFT);
             }
             // fall through
           case 122: break;
           case 24:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISRIGHT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERSQUAREPARENTHESISRIGHT);
             }
             // fall through
           case 123: break;
           case 25:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_XOR);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_XOR);
             }
             // fall through
           case 124: break;
           case 26:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISLEFT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISLEFT);
             }
             // fall through
           case 125: break;
           case 27:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_OR);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_OR);
             }
             // fall through
           case 126: break;
           case 28:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISRIGHT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_WRAPPERKEYPARENTHESISRIGHT);
             }
             // fall through
           case 127: break;
           case 29:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOT);
             }
             // fall through
           case 128: break;
@@ -1125,67 +1126,67 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 131: break;
           case 33:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTEQUALCOMP);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTEQUALCOMP);
             }
             // fall through
           case 132: break;
           case 34:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MODASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MODASSIGN);
             }
             // fall through
           case 133: break;
           case 35:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDCOMP);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDCOMP);
             }
             // fall through
           case 134: break;
           case 36:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ANDASSIGN);
             }
             // fall through
           case 135: break;
           case 37:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULTASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MULTASSIGN);
             }
             // fall through
           case 136: break;
           case 38:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSPLUSASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSPLUSASSIGN);
             }
             // fall through
           case 137: break;
           case 39:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_PLUSASSIGN);
             }
             // fall through
           case 138: break;
           case 40:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSMINUSASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSMINUSASSIGN);
             }
             // fall through
           case 139: break;
           case 41:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_MINUSASSIGN);
             }
             // fall through
           case 140: break;
           case 42:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATOR);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATOR);
             }
             // fall through
           case 141: break;
           case 43:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_FLOATVALUE);
+            { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_FLOATVALUE);
             }
             // fall through
           case 142: break;
           case 44:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIVASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_DIVASSIGN);
             }
             // fall through
           case 143: break;
           case 45:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_OCTALVALUE);
+            { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_OCTALVALUE);
             }
             // fall through
           case 144: break;
@@ -1205,32 +1206,32 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 147: break;
           case 49:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPLEFT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPLEFT);
             }
             // fall through
           case 148: break;
           case 50:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LTE);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_LTE);
             }
             // fall through
           case 149: break;
           case 51:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_EQUALCOMP);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_EQUALCOMP);
             }
             // fall through
           case 150: break;
           case 52:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GTE);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_GTE);
             }
             // fall through
           case 151: break;
           case 53:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPRIGHT);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTOPRIGHT);
             }
             // fall through
           case 152: break;
           case 54:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_NOTASSIGN);
             }
             // fall through
           case 153: break;
@@ -1245,12 +1246,12 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 155: break;
           case 57:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORASSIGN);
             }
             // fall through
           case 156: break;
           case 58:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORCOMP);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_ORCOMP);
             }
             // fall through
           case 157: break;
@@ -1275,17 +1276,17 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 161: break;
           case 63:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_STRINGDEF);
+            { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_STRINGDEF);
             }
             // fall through
           case 162: break;
           case 64:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_CHARVALUE);
+            { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_CHARVALUE);
             }
             // fall through
           case 163: break;
           case 65:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_HEXVALUE);
+            { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_HEXVALUE);
             }
             // fall through
           case 164: break;
@@ -1295,12 +1296,12 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 165: break;
           case 67:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTLEFTASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTLEFTASSIGN);
             }
             // fall through
           case 166: break;
           case 68:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTRIGHTASSIGN);
+            { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_SHIFTRIGHTASSIGN);
             }
             // fall through
           case 167: break;
@@ -1355,7 +1356,7 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
             // fall through
           case 177: break;
           case 79:
-            { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_EXPONENTIALDEF);
+            { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_EXPONENTIALDEF);
             }
             // fall through
           case 178: break;
