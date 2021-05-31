@@ -35,9 +35,7 @@ terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR,OP_WRAPPERPARENT
 terminal OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
 terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
 /* Non Terminals (generated using the terminals tokens) */
-non terminal function_declaration, keyword_types, 
-    parameters, parameter, program_definition,
-    global, variable, variable_definition;
+non terminal function_declaration, keyword_types,parameters, parameter, program_definition,global, variable, variable_definition;
 
 non terminal expression, expression_f ,expression_1, expression_1_f, expression_binary_operators, expression_literal;
 //Program Start non termi
@@ -54,11 +52,11 @@ start_program ::=
 program_definition ::= 
       function_declaration:fd program_definition:pd 
     | global:g program_definition:pd    
-    | OP_INSTRUCTIONENDOPERATOR
+    | 
     ;
 
 function_declaration ::= 
-      keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR
+      keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR
     | keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR;
 
 global ::= 
@@ -83,11 +81,10 @@ expression ::=
     | expression_binary_operators
     ;
 
-expression_1 ::= 					
-      IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT expression_1			
-    | IDENT expression_1
-    | EPSYLON
-    ;
+// expression_1 ::= 					
+//       IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT expression_1			
+//     | IDENT expression_1
+//     |;
 
 expression_binary_operators ::= 
       OP_AND expression:e2 expression_1:e1
@@ -118,8 +115,7 @@ expression_literal ::=
 
 parameters ::= 
       parameter OP_COMMA parameters 
-    | parameter
-    ;
+    | parameter;
 
 parameter ::= 
       keyword_types IDENT:id;
@@ -131,8 +127,4 @@ keyword_types ::=
     | KW_SHORT 
     | KW_VOID
     | KW_FLOAT
-    ;
-
-EPSYLON ::= 
-    { /* empty definition */ }
     ;
