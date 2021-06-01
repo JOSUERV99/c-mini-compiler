@@ -41,11 +41,14 @@ terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC
 non terminal function_declaration_0, function_declaration_1, function_declaration, keyword_types, parameters, parameter, parameters_definition, parameter_definition, program_definition;
 non terminal gramatic_body_0, gramatic_body;
 //Non-terminal expressions
-non terminal expression_0, expression, expression_atomic, expression_unary_operator, expression_binary_operators;
+non terminal instruction, expression_0, expression, expression_atomic, expression_unary_operator, expression_binary_operators;
 //Non-terminal Variables
 non terminal global, constant, variable, variable_definition;
 //Non-terminal Estrucutura Control
-non terminal control_structure, control_if, control_switch, control_while, control_for;
+non terminal control_structure, control_if, control_if_else, control_else, control_switch, control_switch_case, control_while, control_for, control_for_intruction;
+
+//Non-terminal
+non terminal error_if_condicion, error_if_parentesis;
 
 //Program Start non termi
 non terminal start_program;
@@ -118,7 +121,7 @@ function_declaration_1 ::=
 /*
 CuerpoGramatica  	-> 	Variables ; CuerpoGramatica 		|
 						Constantes CuerpoGramatica 			|
-						Expresion CuerpoGramatica			|
+						Expresion ; CuerpoGramatica			|
 						EstructuraControl CuerpoGramatica 	|
 						Instruccion CuerpoGramatica 		|
 						{ CuerpoGramatica } 				| { ε }
@@ -131,11 +134,114 @@ gramatic_body::=
 
 gramatic_body_0 ::=
       constant gramatic_body_0
-    | variable OP_INSTRUCTIONENDOPERATOR gramatic_body_0 
-    | expression OP_INSTRUCTIONENDOPERATOR gramatic_body_0
-    | OP_WRAPPERKEYPARENTHESISLEFT gramatic_body_0 OP_WRAPPERKEYPARENTHESISRIGHT 
+    | variable    OP_INSTRUCTIONENDOPERATOR  gramatic_body_0 
+    | expression  OP_INSTRUCTIONENDOPERATOR  gramatic_body_0
+    | instruction OP_INSTRUCTIONENDOPERATOR  gramatic_body_0
+    | OP_WRAPPERKEYPARENTHESISLEFT           gramatic_body_0 OP_WRAPPERKEYPARENTHESISRIGHT 
     |
     ;
+
+/*
+EstructuraControl	->  Control-If | Control-Switch | Control-While | Control-For
+*/
+control_structure::=
+      control_if
+    | control_switch
+    | control_while
+    | control_for
+;
+
+
+/*
+Control-If       	->	Control-If-Else 		| 												
+						if ( ERROR-If )			|
+						if ERROR-If-Parentesis	|
+*/
+control_if ::=
+      control_if_else
+    | KW_IF OP_WRAPPERPARENTHESISLEFT error_if_condicion OP_WRAPPERPARENTHESISRIGHT
+    | KW_IF error_if_parentesis
+;
+
+/*
+ERROR-If-condicion	->	*Terminar*
+*/
+error_if_condicion::=
+
+;
+
+
+/*
+ERROR-if-parentesis
+*/
+error_if_parentesis::=
+
+;
+
+
+/*
+Control-If-Else     ->	if ( Expresion ) { CuerpoGramatica } Control-Else |
+						if ( Expresion ) Instruccion         Control-Else |
+*/
+control_if_else::=
+      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body                               control_else
+    | KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT instruction     OP_INSTRUCTIONENDOPERATOR   control_else
+;
+
+
+/*
+Control-Else		-> 	else { CuerpoGramatica } 	|
+						else Instruccion 			| ε 
+*/
+control_else::=
+
+;
+
+
+/*
+Control-Switch   	-> 	switch ( Literal ){ CuerpoGramatica } |
+						switch ( Literal ){ Control-Switch-Case }
+*/
+control_switch::=
+
+;
+
+
+/*
+Control-Switch-Case ->  case Literal : CuerpoGramatica 	   	|
+						case Literal : Control-Switch-Case 	|
+						default : CuerpoGramatica			|
+						default : Control-Switch-Case
+*/
+ control_switch_case::=
+
+ ;
+
+
+/*
+Control-While		->	while ( Expresion )	|
+						while ( Expresion ) CuerpoGramatica 
+*/
+control_while::=
+
+;
+
+
+/*
+Control-For			->	for ( Expresion ; For-Instruccion ; For-Instruccion )	|
+						for ( Expresion ; For-Instruccion ; For-Instruccion ) CuerpoGramatica 
+*/
+control_for::=
+
+;
+
+
+/*
+For-Instruccion		->	Expresion | Identifier = Expresion | ε 
+*/
+ control_for_intruction::=
+
+;
 
 
 /*
@@ -171,6 +277,15 @@ variable_definition ::=
     | IDENT OP_ASIG expression:e					
     | IDENT OP_COMMA variable_definition:vd 
     | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd 
+    ;
+
+/*
+Instruccion      	-> 	Expresion ; | Identifier = Expresion ; | ;
+*/
+instruction ::=
+      expression
+    | IDENT OP_ASIG expression
+    |
     ;
 
 
