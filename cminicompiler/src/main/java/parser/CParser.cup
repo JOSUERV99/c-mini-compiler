@@ -35,12 +35,25 @@ terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR;
 terminal OP_WRAPPERPARENTHESISLEFT,OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
 terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
 /* Non Terminals (generated using the terminals tokens) */
-non terminal function_declaration, keyword_types,parameters,parameter,parameters_definition, parameter_definition, program_definition,global, variable, variable_definition;
 
+
+//Non-terminals function
+non terminal function_declaration_0, function_declaration_1, function_declaration, keyword_types, parameters, parameter, parameters_definition, parameter_definition, program_definition;
+non terminal gramatic_body_0, gramatic_body;
+//Non-terminal expressions
 non terminal expression_0, expression, expression_atomic, expression_unary_operator, expression_binary_operators;
+//Non-terminal Variables
+non terminal global, constant, variable, variable_definition;
+//Non-terminal Estrucutura Control
+non terminal control_structure, control_if, control_switch, control_while, control_for;
+
 //Program Start non termi
 non terminal start_program;
 
+//precedence gramatic body
+precedence left     OP_WRAPPERKEYPARENTHESISLEFT, OP_WRAPPERKEYPARENTHESISRIGHT;
+precedence left     OP_WRAPPERPARENTHESISLEFT, OP_WRAPPERPARENTHESISRIGHT;
+//precedence operators expression
 precedence left     OP_PLUS, OP_MINUS;
 precedence left     OP_MULT, OP_DIV;
 precedence left     OP_TERNARYOPERATORQUESTIONMARK, OP_TERNARYOPERATIONDOUBLEDOT;
@@ -71,6 +84,7 @@ precedence nonassoc
     , OP_DIVASSIGN
     , OP_MODASSIGN
     ;
+
 start with start_program;
 
 //https://stackoverflow.com/questions/44091680/java-cup-runtime-symbol-eof-has-not-been-declared
@@ -81,19 +95,73 @@ start_program ::=
 
 program_definition ::= 
       function_declaration:fd program_definition:pd 
-    | global:g program_definition:pd    
-    | expression OP_INSTRUCTIONENDOPERATOR
+    | global:g program_definition:pd      
+    |
+    ;
+/*
+Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} |
+			 Tipo Identifier ( Parametros )
+*/
+function_declaration ::= 
+      keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT  function_declaration_0 function_declaration_1
+    ;
+function_declaration_0 ::=
+      parameters_definition OP_WRAPPERPARENTHESISRIGHT 
+    | OP_WRAPPERPARENTHESISRIGHT 
+    ;
+function_declaration_1 ::=
+      OP_INSTRUCTIONENDOPERATOR
+    | gramatic_body
+    ;
+
+
+/*
+CuerpoGramatica  	-> 	Variables ; CuerpoGramatica 		|
+						Constantes CuerpoGramatica 			|
+						Expresion CuerpoGramatica			|
+						EstructuraControl CuerpoGramatica 	|
+						Instruccion CuerpoGramatica 		|
+						{ CuerpoGramatica } 				| { ε }
+
+*/
+gramatic_body::=
+      OP_WRAPPERKEYPARENTHESISLEFT                  OP_WRAPPERKEYPARENTHESISRIGHT 
+    | OP_WRAPPERKEYPARENTHESISLEFT gramatic_body_0  OP_WRAPPERKEYPARENTHESISRIGHT 
+    ;  
+
+gramatic_body_0 ::=
+      constant gramatic_body_0
+    | variable OP_INSTRUCTIONENDOPERATOR gramatic_body_0 
+    | expression OP_INSTRUCTIONENDOPERATOR gramatic_body_0
+    | OP_WRAPPERKEYPARENTHESISLEFT gramatic_body_0 OP_WRAPPERKEYPARENTHESISRIGHT 
     |
     ;
 
-function_declaration ::= 
-      keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT parameters_definition OP_WRAPPERPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR
-    | keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR;
 
+/*
+Global           	-> 	Variable ;
+*/
 global ::= 
     variable:v OP_INSTRUCTIONENDOPERATOR
     ;
 
+
+/*
+Constante        	-> 	const Tipo Identifier = literal ;
+*/
+constant ::=
+    KW_CONST keyword_types IDENT OP_ASIG expression_atomic OP_INSTRUCTIONENDOPERATOR
+    ;
+
+
+/*
+Variable         	-> 	Tipo NombreVariable 
+
+NombreVariable   	-> 	Identifier 								|
+						Identifier = Expresion 					|
+						Identifier, NombreVariable 				|
+						Identifier = Expresion, NombreVariable 
+*/
 variable ::= 
     keyword_types:kt variable_definition:vd 
     ;
@@ -105,15 +173,16 @@ variable_definition ::=
     | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd 
     ;
 
+
 /*
-Expresion        	->	expression_atomic						|
+Expresion        	->	Literal									|
  						Identifier (Parametros) 				|
  						Identifier 								|
  						Expresion BinaryOperator Expresion      |
  						Expresion CompareOperator Expresion 	|
- 						Expresion AritmeticOperator Expresion  	
+ 						Expresion AritmeticOperator Expresion  	|
+ 						Expresion BinaryOperator Expresion	
 */
-
 expression ::=    
       OP_WRAPPERPARENTHESISLEFT expression_0 OP_WRAPPERPARENTHESISRIGHT
     | expression_0
@@ -123,7 +192,7 @@ expression_0 ::=
       expression_atomic
     | expression_unary_operator expression  
     | expression expression_binary_operators expression 
-    | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT
+    | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
     ;
     
 
@@ -180,18 +249,24 @@ expression_binary_operators ::=
     | OP_MODASSIGN
     ;
 
+
 parameters ::= 
       parameter OP_COMMA parameters 
     | parameter;
 
 parameter ::= 
-    expression;
+      expression
+    ;
+
 parameters_definition ::= 
       parameter_definition OP_COMMA parameters_definition 
     | parameter_definition;
 
 parameter_definition ::= 
-      keyword_types IDENT:id;
+      keyword_types IDENT:id
+    | KW_CONST keyword_types IDENT
+    | KW_CONST keyword_types IDENT OP_ASIG expression_atomic
+      ;
 
 keyword_types ::= 
       KW_INT 
