@@ -17,7 +17,7 @@ init with {:  :};
 scan with {: return this.s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
-terminal IDENT, EPSYLON;
+terminal IDENT;
 terminal KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST;
 terminal KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
 terminal KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO;
@@ -31,16 +31,46 @@ terminal OP_EQUALCOMP,OP_AND,OP_XOR,OP_OR,OP_NOT;
 terminal OP_NEGATION,OP_PLUSASSIGN,OP_MINUSASSIGN,OP_MULTASSIGN,OP_DIVASSIGN;
 terminal OP_MINUSMINUSASSIGN,OP_PLUSPLUSASSIGN,OP_MODASSIGN,OP_ANDASSIGN,OP_NOTASSIGN;
 terminal OP_ORASSIGN,OP_SHIFTLEFTASSIGN,OP_SHIFTRIGHTASSIGN,OP_TERNARYOPERATORQUESTIONMARK,OP_TERNARYOPERATIONDOUBLEDOT;
-terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR,OP_WRAPPERPARENTHESISLEFT;
-terminal OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
+terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR;
+terminal OP_WRAPPERPARENTHESISLEFT,OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
 terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
 /* Non Terminals (generated using the terminals tokens) */
-non terminal function_declaration, keyword_types,parameters, parameter, program_definition,global, variable, variable_definition;
+non terminal function_declaration, keyword_types,parameters,parameter,parameters_definition, parameter_definition, program_definition,global, variable, variable_definition;
 
-non terminal expression, expression_f ,expression_1, expression_1_f, expression_binary_operators, expression_literal;
+non terminal expression_0, expression, expressions_of_unary_op, expressions_of_binary_op, expressions_of_binary_op_1, expressions_of_ternary_op,expression_atomic, expression_unary_operator, expression_binary_operators;
 //Program Start non termi
 non terminal start_program;
 
+precedence left     OP_PLUS, OP_MINUS;
+precedence left     OP_MULT, OP_DIV;
+precedence left     OP_TERNARYOPERATORQUESTIONMARK, OP_TERNARYOPERATIONDOUBLEDOT;
+precedence nonassoc 
+    //RELATIONAL OPERATORS 
+      OP_LT
+    , OP_LTE
+    , OP_GT 
+    , OP_GTE 
+    , OP_EQUALCOMP
+    , OP_NOTEQUALCOMP
+    //LOGICAL OPERATORS
+    , OP_ANDCOMP
+    , OP_ORCOMP
+    , OP_NEGATION
+    //BITWISE OPERATORS  
+    , OP_AND 
+    , OP_OR 
+    , OP_SHIFTOPLEFT
+    , OP_SHIFTOPRIGHT
+    , OP_NOT
+    , OP_XOR
+    //ASSIGMENT OPERATORS
+    , OP_ASIG
+    , OP_PLUSASSIGN
+    , OP_MINUSASSIGN
+    , OP_MULTASSIGN
+    , OP_DIVASSIGN
+    , OP_MODASSIGN
+    ;
 start with start_program;
 
 //https://stackoverflow.com/questions/44091680/java-cup-runtime-symbol-eof-has-not-been-declared
@@ -52,11 +82,12 @@ start_program ::=
 program_definition ::= 
       function_declaration:fd program_definition:pd 
     | global:g program_definition:pd    
-    | 
+    | expression OP_INSTRUCTIONENDOPERATOR
+    |
     ;
 
 function_declaration ::= 
-      keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR
+      keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT parameters_definition OP_WRAPPERPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR
     | keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT OP_INSTRUCTIONENDOPERATOR;
 
 global ::= 
@@ -74,43 +105,79 @@ variable_definition ::=
     | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd 
     ;
 
-expression ::= 
-      expression_literal									
-    | IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT 				
-    | IDENT 
-    | expression_binary_operators
+/*
+Expresion        	->	Literal									|
+ 						Identifier (Parametros) 				|
+ 						Identifier 								|
+ 						Expresion BinaryOperator Expresion      |
+ 						Expresion CompareOperator Expresion 	|
+ 						Expresion AritmeticOperator Expresion  	
+*/
+
+expression ::=    
+      OP_WRAPPERPARENTHESISLEFT expression_0 OP_WRAPPERPARENTHESISRIGHT
+    | expression_0
     ;
 
-// expression_1 ::= 					
-//       IDENT OP_WRAPPERKEYPARENTHESISLEFT parameters:p OP_WRAPPERKEYPARENTHESISRIGHT expression_1			
-//     | IDENT expression_1
-//     |;
+expression_0 ::=
+      expression_atomic
+    | expression_unary_operator expression  
+    | expression expression_binary_operators expression 
+    | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT
+    ;
+    
+
+expression_atomic ::=
+      IDENT
+    | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 				
+    | IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				 
+    | LIT_HEXVALUE
+    | LIT_DECIMALVALUE
+    | LIT_FLOATVALUE
+    | LIT_CHARVALUE
+    | LIT_OCTALVALUE
+    | LIT_STRINGDEF
+    | LIT_EXPONENTIALDEF  
+    ;
+
+expression_unary_operator ::=
+    //UNARY OPERATORS
+      OP_MINUSMINUSASSIGN //--
+    | OP_PLUSPLUSASSIGN   //++
+    ;
 
 expression_binary_operators ::= 
-      OP_AND expression:e2 expression_1:e1
-    | OP_DIV expression:e2 expression_1:e1
-    | OP_PLUS expression:e2 expression_1:e1
-    | OP_EQUALCOMP expression:e2 expression_1:e1
-    | OP_GT expression:e2 expression_1:e1
-    | OP_LTE expression:e2 expression_1:e1
-    | OP_GTE expression:e2 expression_1:e1
-    | OP_LT expression:e2 expression_1:e1
-    | OP_NOTEQUALCOMP expression:e2 expression_1:e1
-    | OP_MINUS expression:e2 expression_1:e1
-    | OP_MULT expression:e2 expression_1:e1
-    | OP_OR expression:e2 expression_1:e1
-    | OP_MOD expression:e2 expression_1:e1
-    | OP_XOR expression:e2 expression_1:e1
-    ;
 
-expression_literal ::= 
-      LIT_CHARVALUE expression:e2 expression_1:e1
-    | LIT_DECIMALVALUE expression:e2 expression_1:e1
-    | LIT_EXPONENTIALDEF expression:e2 expression_1:e1
-    | LIT_FLOATVALUE expression:e2 expression_1:e1
-    | LIT_HEXVALUE expression:e2 expression_1:e1
-    | LIT_OCTALVALUE expression:e2 expression_1:e1
-    | LIT_STRINGDEF expression:e2 expression_1:e1
+    //ARITMHMETIC OPERATORS
+      OP_MINUS 
+    | OP_DIV 
+    | OP_PLUS
+    | OP_MULT
+    //RELATIONAL OPERATORS 
+    | OP_LT
+    | OP_LTE
+    | OP_GT 
+    | OP_GTE 
+    | OP_EQUALCOMP
+    | OP_NOTEQUALCOMP
+    //LOGICAL OPERATORS
+    | OP_ANDCOMP
+    | OP_ORCOMP
+    | OP_NEGATION
+    //BITWISE OPERATORS  
+    | OP_AND 
+    | OP_OR 
+    | OP_SHIFTOPLEFT
+    | OP_SHIFTOPRIGHT
+    | OP_NOT
+    | OP_XOR
+    //ASSIGMENT OPERATORS
+    | OP_ASIG
+    | OP_PLUSASSIGN
+    | OP_MINUSASSIGN
+    | OP_MULTASSIGN
+    | OP_DIVASSIGN
+    | OP_MODASSIGN
     ;
 
 parameters ::= 
@@ -118,6 +185,12 @@ parameters ::=
     | parameter;
 
 parameter ::= 
+    expression;
+parameters_definition ::= 
+      parameter_definition OP_COMMA parameters_definition 
+    | parameter_definition;
+
+parameter_definition ::= 
       keyword_types IDENT:id;
 
 keyword_types ::= 
