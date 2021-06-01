@@ -37,7 +37,7 @@ terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC
 /* Non Terminals (generated using the terminals tokens) */
 non terminal function_declaration, keyword_types,parameters,parameter,parameters_definition, parameter_definition, program_definition,global, variable, variable_definition;
 
-non terminal expression_0, expression, expressions_of_unary_op, expressions_of_binary_op, expressions_of_binary_op_1, expressions_of_ternary_op,expression_atomic, expression_unary_operator, expression_binary_operators;
+non terminal expression_0, expression, expression_atomic, expression_unary_operator, expression_binary_operators;
 //Program Start non termi
 non terminal start_program;
 
@@ -106,7 +106,7 @@ variable_definition ::=
     ;
 
 /*
-Expresion        	->	Literal									|
+Expresion        	->	expression_atomic						|
  						Identifier (Parametros) 				|
  						Identifier 								|
  						Expresion BinaryOperator Expresion      |
