@@ -49,12 +49,12 @@ non terminal  function_declaration_0,
               program_definition
               ;
 
-non terminal  gramatic_body_0,
-              gramatic_body;
+non terminal  gramatic_body;
 //Non-terminal expressions
 non terminal  instruction,
-              expression_0,
               expression,
+              expression_any_type,
+              expression_numeric,
               expression_atomic_0,
               expression_atomic,
               expression_unary_operator,
@@ -69,10 +69,15 @@ non terminal expression_atomic_call_functions_anytype;
 //Non-terminal Variables
 non terminal global, constant, variable, variable_definition;
 //Non-terminal Estrucutura Control
-non terminal control_structure, control_if, control_if_else, control_else, control_switch, control_switch_case, control_while, control_for, control_for_intruction;
+non terminal control_structure, control_if, control_if_else, control_else; 
 
-//Non-terminal
-non terminal error_if_condicion, error_if_parentesis;
+//Non-terminal switch
+non terminal control_switch, control_switch_case;
+
+//Non-terminal ciclos 
+non terminal control_while, control_for, control_for_intruction;
+
+
 
 //Program Start non termi
 non terminal start_program;
@@ -88,6 +93,12 @@ precedence right  OP_INSTRUCTIONENDOPERATOR;
 precedence left KW_ELSE, KW_RETURN;
 precedence right KW_IF;
 precedence nonassoc KW_CONST;
+
+//precedence Switch
+precedence left KW_CASE,KW_SWITCH;
+precedence right KW_BREAK;
+
+
 //precedende variables
 precedence nonassoc KW_INT 
                   , KW_CHAR 
@@ -190,28 +201,9 @@ control_if ::=
     // | KW_IF error_if_parentesis
 ;
 
-/*
-ERROR-If-condicion	->	*Terminar*
-*/
-// error_if_condicion::=
 
-// ;
-
-
-/*
-ERROR-if-parentesis
-*/
-// error_if_parentesis::=
-
-// ;
-
-
-/*
-Control-If-Else     ->	if ( Expresion ) { CuerpoGramatica } Control-Else |
-						if ( Expresion ) Instruccion         Control-Else |
-*/
 control_if_else::=  
-      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body   control_else
+      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
 ;
 
 
@@ -232,8 +224,7 @@ Control-Switch   	-> 	switch ( Literal ){ CuerpoGramatica } |
 						switch ( Literal ){ Control-Switch-Case }
 */
 control_switch::=
-      KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_atomic_literal_int OP_WRAPPERPARENTHESISRIGHT gramatic_body
-    | KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_atomic_literal_int OP_WRAPPERPARENTHESISRIGHT control_switch_case
+      KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
 ;
 
 
@@ -249,23 +240,21 @@ Control-Switch-Case ->
 						default : Control-Switch-Case
 */
 control_switch_case::=
-  KW_CASE expression_atomic_literal_int OP_TERNARYOPERATIONDOUBLEDOT gramatic_body
- ;
+    OP_WRAPPERKEYPARENTHESISLEFT control_switch_case OP_WRAPPERKEYPARENTHESISRIGHT  control_switch_case
+  | KW_CASE expression_numeric  OP_TERNARYOPERATIONDOUBLEDOT                        control_switch_case
+  | KW_BREAK OP_INSTRUCTIONENDOPERATOR                                              control_switch_case
+  | gramatic_body                                                              
+  ;
 
-gramatic_body::=
-      OP_WRAPPERKEYPARENTHESISLEFT  OP_WRAPPERKEYPARENTHESISRIGHT 
-    | gramatic_body_0  
-    ;  
-
-gramatic_body_0 ::=
-      OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body_0  OP_WRAPPERKEYPARENTHESISRIGHT 
-    | constant gramatic_body_0
-    | OP_INSTRUCTIONENDOPERATOR                      gramatic_body_0
-    | variable    OP_INSTRUCTIONENDOPERATOR          gramatic_body_0 
-    | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body_0
-    | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body_0
-    | control_if_else                                gramatic_body_0
-    | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body_0
+gramatic_body ::=
+      OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body  OP_WRAPPERKEYPARENTHESISRIGHT 
+    | constant                                       gramatic_body
+    |             OP_INSTRUCTIONENDOPERATOR          gramatic_body
+    | variable    OP_INSTRUCTIONENDOPERATOR          gramatic_body 
+    | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body
+    | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body
+    | control_structure                              gramatic_body
+    | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body
     |
     ;
 
@@ -344,16 +333,26 @@ Expresion        	->	Literal									|
  						Expresion BinaryOperator Expresion	
 */
 expression ::=    
-      OP_WRAPPERPARENTHESISLEFT expression_0 OP_WRAPPERPARENTHESISRIGHT
-    | expression_0
+      OP_WRAPPERPARENTHESISLEFT expression_any_type OP_WRAPPERPARENTHESISRIGHT
+    | expression_any_type
     ;
 
-expression_0 ::=
+expression_any_type ::=
       expression_atomic
-    | expression_unary_operator expression  
+    | expression_unary_operator IDENT
+    | IDENT expression_unary_operator
     | expression expression_binary_operators expression 
     | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
     ;
+
+expression_numeric ::=
+    IDENT
+  | expression_atomic_literal_int
+  | expression_atomic_call_functions_anytype
+  | expression_unary_operator expression_numeric  
+  | expression_numeric expression_binary_operators expression_numeric 
+  | expression_numeric OP_TERNARYOPERATORQUESTIONMARK expression_numeric OP_TERNARYOPERATIONDOUBLEDOT expression_numeric
+  ;
 
 expression_atomic::=
       IDENT
