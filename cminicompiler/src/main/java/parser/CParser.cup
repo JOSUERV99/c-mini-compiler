@@ -86,7 +86,8 @@ precedence nonassoc     LIT_DECIMALVALUE, LIT_FLOATVALUE, LIT_HEXVALUE, LIT_OCTA
 precedence right  OP_INSTRUCTIONENDOPERATOR;
 //predence If-ELSE
 precedence left KW_ELSE, KW_RETURN;
-
+precedence right KW_IF;
+precedence nonassoc KW_CONST;
 //precedende variables
 precedence nonassoc KW_INT 
                   , KW_CHAR 
@@ -163,8 +164,7 @@ function_declaration_0 ::=
     | OP_WRAPPERPARENTHESISRIGHT 
     ;
 function_declaration_1 ::=
-      OP_INSTRUCTIONENDOPERATOR
-    | gramatic_body
+    gramatic_body
     ;
 
 
@@ -212,7 +212,6 @@ Control-If-Else     ->	if ( Expresion ) { CuerpoGramatica } Control-Else |
 */
 control_if_else::=  
       KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body   control_else
-//    | KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body_0 control_else
 ;
 
 
@@ -223,6 +222,8 @@ Control-Else		-> 	else { CuerpoGramatica } 	|
 control_else::=
       KW_ELSE gramatic_body
     | KW_ELSE instruction
+    | instruction
+    | gramatic_body
 ;
 
 
@@ -251,56 +252,19 @@ control_switch_case::=
   KW_CASE expression_atomic_literal_int OP_TERNARYOPERATIONDOUBLEDOT gramatic_body
  ;
 
-
-/*
-Control-While		->	while ( Expresion )	|
-						while ( Expresion ) CuerpoGramatica 
-*/
-// control_while::=
-
-// ;
-
-
-/*
-Control-For			->	for ( Expresion ; For-Instruccion ; For-Instruccion )	|
-						for ( Expresion ; For-Instruccion ; For-Instruccion ) CuerpoGramatica 
-*/
-// control_for::=
-
-// ;
-
-
-/*
-For-Instruccion		->	Expresion | Identifier = Expresion | ε 
-*/
-//  control_for_intruction::=
-
-// ;
-
-
-/*
-CuerpoGramatica  	-> 	Variables ; CuerpoGramatica 		|
-						Constantes CuerpoGramatica 			|
-						Expresion ; CuerpoGramatica			|
-						EstructuraControl CuerpoGramatica 	|
-						Instruccion CuerpoGramatica 		|
-						{ CuerpoGramatica } 				| { ε }
-
-*/
-
-
 gramatic_body::=
-      OP_WRAPPERKEYPARENTHESISLEFT                  OP_WRAPPERKEYPARENTHESISRIGHT 
-    | OP_WRAPPERKEYPARENTHESISLEFT gramatic_body_0  OP_WRAPPERKEYPARENTHESISRIGHT 
+      OP_WRAPPERKEYPARENTHESISLEFT  OP_WRAPPERKEYPARENTHESISRIGHT 
+    | gramatic_body_0  
     ;  
 
 gramatic_body_0 ::=
-      constant gramatic_body_0
+      OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body_0  OP_WRAPPERKEYPARENTHESISRIGHT 
+    | constant gramatic_body_0
+    | OP_INSTRUCTIONENDOPERATOR                      gramatic_body_0
     | variable    OP_INSTRUCTIONENDOPERATOR          gramatic_body_0 
     | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body_0
     | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body_0
     | control_if_else                                gramatic_body_0
-    | OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body_0  OP_WRAPPERKEYPARENTHESISRIGHT 
     | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body_0
     |
     ;
@@ -367,7 +331,6 @@ instruction ::=
       IDENT OP_ASIG expression
     | variable
     | expression
-    |
     ;
 
 
