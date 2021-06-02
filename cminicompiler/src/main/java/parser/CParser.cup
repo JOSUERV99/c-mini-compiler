@@ -78,9 +78,7 @@ non terminal control_switch, control_switch_case;
 non terminal control_while, control_while_body;
 
 //Non terminal ciclo for
-non terminal control_for, control_for_intruction;
-
-
+non terminal control_for, control_for_instruction, control_for_instruction1, control_for_body;
 
 //Program Start non termi
 non terminal start_program;
@@ -102,7 +100,7 @@ precedence left KW_CASE,KW_SWITCH;
 precedence right KW_BREAK;
 
 //precedence While
-precedence left KW_WHILE;
+precedence left KW_WHILE, KW_FOR;
 
 //precedende variables
 precedence nonassoc KW_INT 
@@ -117,6 +115,7 @@ precedence nonassoc KW_INT
 precedence left     OP_PLUS, OP_MINUS;
 precedence left     OP_MULT, OP_DIV, OP_MOD;
 precedence left     OP_TERNARYOPERATORQUESTIONMARK, OP_TERNARYOPERATIONDOUBLEDOT;
+
 precedence nonassoc 
     //RELATIONAL OPERATORS 
       OP_LT
@@ -183,7 +182,6 @@ function_declaration_1 ::=
     gramatic_body
     ;
 
-
 /*
 EstructuraControl	->  Control-If | Control-Switch | Control-While | Control-For
 */
@@ -191,7 +189,7 @@ control_structure::=
       control_if
     | control_switch
     | control_while
-    //| control_for
+    | control_for
 ;
 
 
@@ -236,6 +234,40 @@ control_while_body::=
   | gramatic_body
   ;
 
+
+/*
+EstructuraControl	->  Control-For
+*/
+
+
+    /*
+        1. declaracion de variables, asignaciones
+        2. expresion
+        3. expresion, asignacion de variable
+    */
+
+control_for ::= 
+    KW_FOR 
+    OP_WRAPPERPARENTHESISLEFT 
+      control_for_instruction OP_INSTRUCTIONENDOPERATOR 
+      expression OP_INSTRUCTIONENDOPERATOR
+      control_for_instruction1
+    OP_WRAPPERPARENTHESISRIGHT
+     gramatic_body
+  ;
+
+control_for_instruction ::=
+    variable
+  | IDENT OP_ASIG expression
+  | expression
+  |
+  ;
+
+control_for_instruction1 ::=
+    IDENT OP_ASIG expression
+  | expression
+  |
+  ;
 
 gramatic_body ::=
       OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body  OP_WRAPPERKEYPARENTHESISRIGHT 
@@ -296,7 +328,6 @@ instruction ::=
     | variable
     | expression
     ;
-
 
 expression ::=    
       OP_WRAPPERPARENTHESISLEFT expression_any_type OP_WRAPPERPARENTHESISRIGHT
