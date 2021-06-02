@@ -74,8 +74,11 @@ non terminal control_structure, control_if, control_if_else, control_else;
 //Non-terminal switch
 non terminal control_switch, control_switch_case;
 
-//Non-terminal ciclos 
-non terminal control_while, control_for, control_for_intruction;
+//Non-terminal ciclo while
+non terminal control_while, control_while_body;
+
+//Non terminal ciclo for
+non terminal control_for, control_for_intruction;
 
 
 
@@ -98,6 +101,8 @@ precedence nonassoc KW_CONST;
 precedence left KW_CASE,KW_SWITCH;
 precedence right KW_BREAK;
 
+//precedence While
+precedence left KW_WHILE;
 
 //precedende variables
 precedence nonassoc KW_INT 
@@ -185,7 +190,7 @@ EstructuraControl	->  Control-If | Control-Switch | Control-While | Control-For
 control_structure::=
       control_if
     | control_switch
-    //| control_while
+    | control_while
     //| control_for
 ;
 
@@ -200,10 +205,6 @@ control_if_else::=
     ;
 
 
-/*
-Control-Else		-> 	else { CuerpoGramatica } 	|
-						else Instruccion 			| ε 
-*/
 control_else::=
       KW_ELSE gramatic_body
     | KW_ELSE instruction
@@ -224,6 +225,17 @@ control_switch_case::=
   | KW_BREAK OP_INSTRUCTIONENDOPERATOR                                              control_switch_case
   | gramatic_body                                                              
   ;
+
+
+control_while::=
+    KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT control_while_body 
+  ;
+
+control_while_body::=
+    KW_BREAK OP_INSTRUCTIONENDOPERATOR control_while_body
+  | gramatic_body
+  ;
+
 
 gramatic_body ::=
       OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body  OP_WRAPPERKEYPARENTHESISRIGHT 
