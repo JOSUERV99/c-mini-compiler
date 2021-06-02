@@ -38,10 +38,34 @@ terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC
 
 
 //Non-terminals function
-non terminal function_declaration_0, function_declaration_1, function_declaration, keyword_types, parameters, parameter, parameters_definition, parameter_definition, program_definition;
-non terminal gramatic_body_0, gramatic_body;
+non terminal  function_declaration_0,
+              function_declaration_1,
+              function_declaration,
+              keyword_types,
+              parameters,
+              parameter,
+              parameters_definition,
+              parameter_definition,
+              program_definition
+              ;
+
+non terminal  gramatic_body_0,
+              gramatic_body;
 //Non-terminal expressions
-non terminal instruction, expression_0, expression, expression_atomic, expression_unary_operator, expression_binary_operators;
+non terminal  instruction,
+              expression_0,
+              expression,
+              expression_atomic_0,
+              expression_atomic,
+              expression_unary_operator,
+              expression_binary_operators
+              ;
+
+non terminal expression_atomic_literal_int,
+             expression_atomic_literal_nonint
+             ;
+
+non terminal expression_atomic_call_functions_anytype;
 //Non-terminal Variables
 non terminal global, constant, variable, variable_definition;
 //Non-terminal Estrucutura Control
@@ -53,12 +77,28 @@ non terminal error_if_condicion, error_if_parentesis;
 //Program Start non termi
 non terminal start_program;
 
+
 //precedence gramatic body
+precedence left     IDENT;
 precedence left     OP_WRAPPERKEYPARENTHESISLEFT, OP_WRAPPERKEYPARENTHESISRIGHT;
 precedence left     OP_WRAPPERPARENTHESISLEFT, OP_WRAPPERPARENTHESISRIGHT;
+precedence nonassoc     LIT_DECIMALVALUE, LIT_FLOATVALUE, LIT_HEXVALUE, LIT_OCTALVALUE, LIT_EXPONENTIALDEF, LIT_CHARVALUE, LIT_STRINGDEF;     
+precedence right  OP_INSTRUCTIONENDOPERATOR;
+//predence If-ELSE
+precedence left KW_ELSE, KW_RETURN;
+
+//precedende variables
+precedence nonassoc KW_INT 
+                  , KW_CHAR 
+                  , KW_LONG 
+                  , KW_SHORT 
+                  , KW_VOID
+                  , KW_FLOAT
+                  , KW_DOUBLE
+                  ;
 //precedence operators expression
 precedence left     OP_PLUS, OP_MINUS;
-precedence left     OP_MULT, OP_DIV;
+precedence left     OP_MULT, OP_DIV, OP_MOD;
 precedence left     OP_TERNARYOPERATORQUESTIONMARK, OP_TERNARYOPERATIONDOUBLEDOT;
 precedence nonassoc 
     //RELATIONAL OPERATORS 
@@ -86,6 +126,16 @@ precedence nonassoc
     , OP_MULTASSIGN
     , OP_DIVASSIGN
     , OP_MODASSIGN
+    , OP_SHIFTLEFTASSIGN
+    , OP_SHIFTRIGHTASSIGN
+    , OP_NOTASSIGN
+    , OP_ORASSIGN
+    , OP_ANDASSIGN
+      //UNARY OPERATORS
+      //--
+    , OP_MINUSMINUSASSIGN 
+      //++
+    , OP_PLUSPLUSASSIGN
     ;
 
 start with start_program;
@@ -119,36 +169,13 @@ function_declaration_1 ::=
 
 
 /*
-CuerpoGramatica  	-> 	Variables ; CuerpoGramatica 		|
-						Constantes CuerpoGramatica 			|
-						Expresion ; CuerpoGramatica			|
-						EstructuraControl CuerpoGramatica 	|
-						Instruccion CuerpoGramatica 		|
-						{ CuerpoGramatica } 				| { ε }
-
-*/
-gramatic_body::=
-      OP_WRAPPERKEYPARENTHESISLEFT                  OP_WRAPPERKEYPARENTHESISRIGHT 
-    | OP_WRAPPERKEYPARENTHESISLEFT gramatic_body_0  OP_WRAPPERKEYPARENTHESISRIGHT 
-    ;  
-
-gramatic_body_0 ::=
-      constant gramatic_body_0
-    | variable    OP_INSTRUCTIONENDOPERATOR  gramatic_body_0 
-    | expression  OP_INSTRUCTIONENDOPERATOR  gramatic_body_0
-    | instruction OP_INSTRUCTIONENDOPERATOR  gramatic_body_0
-    | OP_WRAPPERKEYPARENTHESISLEFT           gramatic_body_0 OP_WRAPPERKEYPARENTHESISRIGHT 
-    |
-    ;
-
-/*
 EstructuraControl	->  Control-If | Control-Switch | Control-While | Control-For
 */
 control_structure::=
       control_if
     | control_switch
-    | control_while
-    | control_for
+    //| control_while
+    //| control_for
 ;
 
 
@@ -159,33 +186,33 @@ Control-If       	->	Control-If-Else 		|
 */
 control_if ::=
       control_if_else
-    | KW_IF OP_WRAPPERPARENTHESISLEFT error_if_condicion OP_WRAPPERPARENTHESISRIGHT
-    | KW_IF error_if_parentesis
+    // | KW_IF OP_WRAPPERPARENTHESISLEFT error_if_condicion OP_WRAPPERPARENTHESISRIGHT
+    // | KW_IF error_if_parentesis
 ;
 
 /*
 ERROR-If-condicion	->	*Terminar*
 */
-error_if_condicion::=
+// error_if_condicion::=
 
-;
+// ;
 
 
 /*
 ERROR-if-parentesis
 */
-error_if_parentesis::=
+// error_if_parentesis::=
 
-;
+// ;
 
 
 /*
 Control-If-Else     ->	if ( Expresion ) { CuerpoGramatica } Control-Else |
 						if ( Expresion ) Instruccion         Control-Else |
 */
-control_if_else::=
-      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body                               control_else
-    | KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT instruction     OP_INSTRUCTIONENDOPERATOR   control_else
+control_if_else::=  
+      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body   control_else
+//    | KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body_0 control_else
 ;
 
 
@@ -194,7 +221,8 @@ Control-Else		-> 	else { CuerpoGramatica } 	|
 						else Instruccion 			| ε 
 */
 control_else::=
-
+      KW_ELSE gramatic_body
+    | KW_ELSE instruction
 ;
 
 
@@ -203,18 +231,24 @@ Control-Switch   	-> 	switch ( Literal ){ CuerpoGramatica } |
 						switch ( Literal ){ Control-Switch-Case }
 */
 control_switch::=
-
+      KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_atomic_literal_int OP_WRAPPERPARENTHESISRIGHT gramatic_body
+    | KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_atomic_literal_int OP_WRAPPERPARENTHESISRIGHT control_switch_case
 ;
 
 
 /*
-Control-Switch-Case ->  case Literal : CuerpoGramatica 	   	|
+Control-Switch-Case ->
+            case Literal : CuerpoGramatica 	   	|
 						case Literal : Control-Switch-Case 	|
+
+            case constante(float string no) : CuerpoGramatica 	   	|
+						case constante(float string no) : Control-Switch-Case 	|
+        
 						default : CuerpoGramatica			|
 						default : Control-Switch-Case
 */
- control_switch_case::=
-
+control_switch_case::=
+  KW_CASE expression_atomic_literal_int OP_TERNARYOPERATIONDOUBLEDOT gramatic_body
  ;
 
 
@@ -222,27 +256,54 @@ Control-Switch-Case ->  case Literal : CuerpoGramatica 	   	|
 Control-While		->	while ( Expresion )	|
 						while ( Expresion ) CuerpoGramatica 
 */
-control_while::=
+// control_while::=
 
-;
+// ;
 
 
 /*
 Control-For			->	for ( Expresion ; For-Instruccion ; For-Instruccion )	|
 						for ( Expresion ; For-Instruccion ; For-Instruccion ) CuerpoGramatica 
 */
-control_for::=
+// control_for::=
 
-;
+// ;
 
 
 /*
 For-Instruccion		->	Expresion | Identifier = Expresion | ε 
 */
- control_for_intruction::=
+//  control_for_intruction::=
 
-;
+// ;
 
+
+/*
+CuerpoGramatica  	-> 	Variables ; CuerpoGramatica 		|
+						Constantes CuerpoGramatica 			|
+						Expresion ; CuerpoGramatica			|
+						EstructuraControl CuerpoGramatica 	|
+						Instruccion CuerpoGramatica 		|
+						{ CuerpoGramatica } 				| { ε }
+
+*/
+
+
+gramatic_body::=
+      OP_WRAPPERKEYPARENTHESISLEFT                  OP_WRAPPERKEYPARENTHESISRIGHT 
+    | OP_WRAPPERKEYPARENTHESISLEFT gramatic_body_0  OP_WRAPPERKEYPARENTHESISRIGHT 
+    ;  
+
+gramatic_body_0 ::=
+      constant gramatic_body_0
+    | variable    OP_INSTRUCTIONENDOPERATOR          gramatic_body_0 
+    | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body_0
+    | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body_0
+    | control_if_else                                gramatic_body_0
+    | OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body_0  OP_WRAPPERKEYPARENTHESISRIGHT 
+    | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body_0
+    |
+    ;
 
 /*
 Global           	-> 	Variable ;
@@ -256,7 +317,7 @@ global ::=
 Constante        	-> 	const Tipo Identifier = literal ;
 */
 constant ::=
-    KW_CONST keyword_types IDENT OP_ASIG expression_atomic OP_INSTRUCTIONENDOPERATOR
+    KW_CONST keyword_types IDENT OP_ASIG expression_atomic_0 OP_INSTRUCTIONENDOPERATOR
     ;
 
 
@@ -282,9 +343,30 @@ variable_definition ::=
 /*
 Instruccion      	-> 	Expresion ; | Identifier = Expresion ; | ;
 */
-instruction ::=
+
+parameters ::= 
+      parameter OP_COMMA parameters 
+    | parameter;
+
+parameter ::= 
       expression
-    | IDENT OP_ASIG expression
+    ;
+
+parameters_definition ::= 
+      parameter_definition OP_COMMA parameters_definition 
+    | parameter_definition;
+
+parameter_definition ::= 
+      keyword_types IDENT:id
+    | KW_CONST keyword_types IDENT
+    | KW_CONST keyword_types IDENT OP_ASIG expression_atomic_0
+      ;
+
+
+instruction ::=
+      IDENT OP_ASIG expression
+    | variable
+    | expression
     |
     ;
 
@@ -309,9 +391,8 @@ expression_0 ::=
     | expression expression_binary_operators expression 
     | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
     ;
-    
 
-expression_atomic ::=
+expression_atomic::=
       IDENT
     | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 				
     | IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				 
@@ -323,6 +404,28 @@ expression_atomic ::=
     | LIT_STRINGDEF
     | LIT_EXPONENTIALDEF  
     ;
+  
+expression_atomic_literal_nonint::=
+      LIT_STRINGDEF
+    | LIT_FLOATVALUE
+    ;
+
+expression_atomic_literal_int ::=
+      			 
+      LIT_HEXVALUE
+    | LIT_DECIMALVALUE
+    | LIT_CHARVALUE
+    | LIT_OCTALVALUE
+    | LIT_EXPONENTIALDEF  
+    ;
+
+
+expression_atomic_call_functions_anytype::=
+
+      IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				
+    | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 	
+    ;
+  
 
 expression_unary_operator ::=
     //UNARY OPERATORS
@@ -337,6 +440,7 @@ expression_binary_operators ::=
     | OP_DIV 
     | OP_PLUS
     | OP_MULT
+    | OP_MOD
     //RELATIONAL OPERATORS 
     | OP_LT
     | OP_LTE
@@ -362,26 +466,12 @@ expression_binary_operators ::=
     | OP_MULTASSIGN
     | OP_DIVASSIGN
     | OP_MODASSIGN
+    | OP_SHIFTLEFTASSIGN
+    | OP_SHIFTRIGHTASSIGN
+    | OP_NOTASSIGN
+    | OP_ORASSIGN
+    | OP_ANDASSIGN
     ;
-
-
-parameters ::= 
-      parameter OP_COMMA parameters 
-    | parameter;
-
-parameter ::= 
-      expression
-    ;
-
-parameters_definition ::= 
-      parameter_definition OP_COMMA parameters_definition 
-    | parameter_definition;
-
-parameter_definition ::= 
-      keyword_types IDENT:id
-    | KW_CONST keyword_types IDENT
-    | KW_CONST keyword_types IDENT OP_ASIG expression_atomic
-      ;
 
 keyword_types ::= 
       KW_INT 
@@ -390,4 +480,5 @@ keyword_types ::=
     | KW_SHORT 
     | KW_VOID
     | KW_FLOAT
+    | KW_DOUBLE
     ;
