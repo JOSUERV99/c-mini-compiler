@@ -190,21 +190,14 @@ control_structure::=
 ;
 
 
-/*
-Control-If       	->	Control-If-Else 		| 												
-						if ( ERROR-If )			|
-						if ERROR-If-Parentesis	|
-*/
 control_if ::=
-      control_if_else
-    // | KW_IF OP_WRAPPERPARENTHESISLEFT error_if_condicion OP_WRAPPERPARENTHESISRIGHT
-    // | KW_IF error_if_parentesis
-;
+    control_if_else
+    ;
 
 
 control_if_else::=  
-      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
-;
+    KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
+    ;
 
 
 /*
@@ -216,32 +209,18 @@ control_else::=
     | KW_ELSE instruction
     | instruction
     | gramatic_body
-;
+    ;
 
 
-/*
-Control-Switch   	-> 	switch ( Literal ){ CuerpoGramatica } |
-						switch ( Literal ){ Control-Switch-Case }
-*/
 control_switch::=
-      KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
-;
+    KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
+    ;
 
 
-/*
-Control-Switch-Case ->
-            case Literal : CuerpoGramatica 	   	|
-						case Literal : Control-Switch-Case 	|
-
-            case constante(float string no) : CuerpoGramatica 	   	|
-						case constante(float string no) : Control-Switch-Case 	|
-        
-						default : CuerpoGramatica			|
-						default : Control-Switch-Case
-*/
 control_switch_case::=
     OP_WRAPPERKEYPARENTHESISLEFT control_switch_case OP_WRAPPERKEYPARENTHESISRIGHT  control_switch_case
-  | KW_CASE expression_numeric  OP_TERNARYOPERATIONDOUBLEDOT                        control_switch_case
+  | KW_CASE     expression_numeric  OP_TERNARYOPERATIONDOUBLEDOT                    control_switch_case
+  | KW_DEFAULT  expression_numeric  OP_TERNARYOPERATIONDOUBLEDOT                    control_switch_case
   | KW_BREAK OP_INSTRUCTIONENDOPERATOR                                              control_switch_case
   | gramatic_body                                                              
   ;
@@ -258,30 +237,17 @@ gramatic_body ::=
     |
     ;
 
-/*
-Global           	-> 	Variable ;
-*/
+
 global ::= 
     variable:v OP_INSTRUCTIONENDOPERATOR
     ;
 
 
-/*
-Constante        	-> 	const Tipo Identifier = literal ;
-*/
 constant ::=
     KW_CONST keyword_types IDENT OP_ASIG expression_atomic_0 OP_INSTRUCTIONENDOPERATOR
     ;
 
 
-/*
-Variable         	-> 	Tipo NombreVariable 
-
-NombreVariable   	-> 	Identifier 								|
-						Identifier = Expresion 					|
-						Identifier, NombreVariable 				|
-						Identifier = Expresion, NombreVariable 
-*/
 variable ::= 
     keyword_types:kt variable_definition:vd 
     ;
@@ -293,9 +259,6 @@ variable_definition ::=
     | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd 
     ;
 
-/*
-Instruccion      	-> 	Expresion ; | Identifier = Expresion ; | ;
-*/
 
 parameters ::= 
       parameter OP_COMMA parameters 
@@ -323,15 +286,6 @@ instruction ::=
     ;
 
 
-/*
-Expresion        	->	Literal									|
- 						Identifier (Parametros) 				|
- 						Identifier 								|
- 						Expresion BinaryOperator Expresion      |
- 						Expresion CompareOperator Expresion 	|
- 						Expresion AritmeticOperator Expresion  	|
- 						Expresion BinaryOperator Expresion	
-*/
 expression ::=    
       OP_WRAPPERPARENTHESISLEFT expression_any_type OP_WRAPPERPARENTHESISRIGHT
     | expression_any_type
