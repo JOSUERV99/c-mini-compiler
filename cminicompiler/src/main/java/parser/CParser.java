@@ -1115,6 +1115,13 @@ public class CParser extends java_cup.runtime.lr_parser {
         this.s = lexer;
     }
 
+    public void syntax_error(Symbol cur_token) {
+	    System.err.println("Syntax error at line: " + (cur_token.right+1) + " at column: " + (cur_token.left+1) + " on: " + cur_token.value);
+    }
+
+    public void unrecovered_syntax_error(Symbol cur_token){
+    	System.err.println("Fatal error at line: " + (cur_token.right+1) + " at column: " + (cur_token.left+1) + " on: " + cur_token.value);
+    }
 
 
 /** Cup generated class to encapsulate user supplied action code.*/

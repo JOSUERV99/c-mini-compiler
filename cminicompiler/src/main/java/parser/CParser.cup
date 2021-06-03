@@ -11,6 +11,13 @@ parser code {:
         this.s = lexer;
     }
 
+    public void syntax_error(Symbol cur_token) {
+	    System.err.println("Syntax error at line: " + (cur_token.right+1) + " at column: " + (cur_token.left+1) + " on: " + cur_token.value);
+    }
+
+    public void unrecovered_syntax_error(Symbol cur_token){
+    	System.err.println("Fatal error at line: " + (cur_token.right+1) + " at column: " + (cur_token.left+1) + " on: " + cur_token.value);
+    }
 :}
 
 init with {:  :};
@@ -199,7 +206,7 @@ control_if ::=
 
 
 control_if_else::=  
-    KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
+      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
     ;
 
 
@@ -233,18 +240,6 @@ control_while_body::=
     KW_BREAK OP_INSTRUCTIONENDOPERATOR control_while_body
   | gramatic_body
   ;
-
-
-/*
-EstructuraControl	->  Control-For
-*/
-
-
-    /*
-        1. declaracion de variables, asignaciones
-        2. expresion
-        3. expresion, asignacion de variable
-    */
 
 control_for ::= 
     KW_FOR 

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
@@ -16,16 +17,20 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import errors.LexicalError;
+import errors.SyntaxError;
 import java_cup.runtime.ScannerBuffer;
 import java_cup.runtime.XMLElement;
 import utils.FileUtils;
 
-public class Compiler {
+public class Analyzer {
 
     private CParser parser;
     private CLexer lexer;
+    private ArrayList<LexicalError> lexicalErrors = new ArrayList<>();
+    private ArrayList<SyntaxError> syntaxError = new ArrayList<>();
 
-    public Compiler() {
+    public Analyzer() {
     }
 
     private void init(String fileInputName) {
