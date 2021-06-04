@@ -1,11 +1,11 @@
 package errors;
 
-import java_cup.runtime.Symbol;
+import model.Token;
 
 public class SyntaxError extends Error {
 
-    public SyntaxError(String errorMessage, Symbol symbol) {
-        super(errorMessage, symbol);
+    public SyntaxError(String errorMessage, Token token) {
+        super(errorMessage, token);
     }
 
     public SyntaxError(String errorMessage) {

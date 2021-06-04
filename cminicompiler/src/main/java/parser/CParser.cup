@@ -1,14 +1,36 @@
 /* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
 import lexer.CLexer;
+import handler.Analyzer;
+import model.Token;
+import errors.SyntaxError;
 
 /* define how to connect to the scanner! */
 parser code {:
     // Connect this parser to a scanner!
     CLexer s;
+    Analyzer a;
 
-    public void setLexer(CLexer lexer) {
+    public void bind(CLexer lexer, Analyzer analyzer) {
         this.s = lexer;
+        this.a = analyzer;
+    }
+
+    // public void generateSyntaxError(String message, String expected, String value) {
+    //     this.a.addSyntaxError(new SyntaxError(message, null));
+    // }
+
+    public void generateSyntaxError(String message, String expected, Object o) {
+
+        if (o != null)
+        {
+          Token findedToken = (Token) o;
+          this.a.addSyntaxError(new SyntaxError(message, findedToken));
+        }
+        else
+        {
+          this.a.addSyntaxError(new SyntaxError(message, null));
+        }
     }
 
     public void syntax_error(Symbol cur_token) {
@@ -90,6 +112,8 @@ non terminal control_for, control_for_instruction, control_for_instruction1, con
 //Program Start non termi
 non terminal start_program;
 
+//Error non terminal productions
+non terminal error_if, error_while;
 
 //precedence gramatic body
 precedence left     IDENT;
@@ -201,7 +225,8 @@ control_structure::=
 
 
 control_if ::=
-    control_if_else
+      control_if_else
+    | error_if
     ;
 
 
@@ -217,6 +242,20 @@ control_else::=
     | gramatic_body
     ;
 
+error_if ::=
+    KW_IF:i error:e {: 
+      parser.generateSyntaxError("Left parenthesis missing", "(", i);
+    :} OP_WRAPPERKEYPARENTHESISRIGHT
+  | 
+    KW_IF:i OP_WRAPPERPARENTHESISLEFT error:e {: 
+      parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
+    :} OP_WRAPPERKEYPARENTHESISRIGHT
+  |
+    KW_IF:i OP_WRAPPERPARENTHESISLEFT expression error:e {:    
+      parser.generateSyntaxError("Right parenthesis missing", ")", i);
+    :} OP_WRAPPERKEYPARENTHESISRIGHT
+ // | KW_IF OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT error {: System.out.println("Expression missing"); :} OP_WRAPPERKEYPARENTHESISRIGHT
+  ;
 
 control_switch::=
     KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
@@ -232,13 +271,28 @@ control_switch_case::=
   ;
 
 
-control_while::=
-    KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT control_while_body 
+control_while ::=
+      KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT control_while_body 
+    | error_while
   ;
 
 control_while_body::=
     KW_BREAK OP_INSTRUCTIONENDOPERATOR control_while_body
   | gramatic_body
+  ;
+
+error_while ::= 
+    KW_WHILE:w error:e {:
+      parser.generateSyntaxError("Left parenthesis missing", "(", w);
+    :} OP_WRAPPERKEYPARENTHESISRIGHT
+  | 
+    KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e {:
+      parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
+    :} OP_WRAPPERKEYPARENTHESISRIGHT
+  | 
+    KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e {:
+      parser.generateSyntaxError("Right parenthesis missing", ")", w);
+    :} OP_WRAPPERKEYPARENTHESISRIGHT
   ;
 
 control_for ::= 

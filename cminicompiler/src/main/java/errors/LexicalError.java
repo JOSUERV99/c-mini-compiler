@@ -1,11 +1,11 @@
 package errors;
 
-import java_cup.runtime.Symbol;
+import model.Token;
 
 public class LexicalError extends Error {
 
-    public LexicalError(String errorMessage, Symbol symbol) {
-        super(errorMessage, symbol);
+    public LexicalError(String errorMessage, Token token) {
+        super(errorMessage, token);
     }
 
     public LexicalError(String errorMessage) {

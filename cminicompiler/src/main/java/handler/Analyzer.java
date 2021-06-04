@@ -28,7 +28,7 @@ public class Analyzer {
     private CParser parser;
     private CLexer lexer;
     private ArrayList<LexicalError> lexicalErrors = new ArrayList<>();
-    private ArrayList<SyntaxError> syntaxError = new ArrayList<>();
+    private ArrayList<SyntaxError> syntaxErrors = new ArrayList<>();
 
     public Analyzer() {
     }
@@ -42,7 +42,7 @@ public class Analyzer {
 
             this.lexer = new CLexer(new BufferedReader(new FileReader(fileInputName)));
             this.parser = new CParser();
-            this.parser.setLexer(this.lexer);
+            this.parser.bind(this.lexer, this);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -72,7 +72,24 @@ public class Analyzer {
 
         this.init(fileInputName);
         this.parser.debug_parse();
-
+        this.displaySummary();
         // this.parse(fileInputName, fileOutputName);
+    }
+
+    public void addSyntaxError(SyntaxError syntaxError) {
+        this.syntaxErrors.add(syntaxError);
+    }
+
+    public void addLexicalError(LexicalError lexicalError) {
+        this.lexicalErrors.add(lexicalError);
+    }
+
+    public void displaySummary() {
+
+        int foundedErrors = this.lexicalErrors.size() + this.syntaxErrors.size();
+        System.out.println("Errors: " + foundedErrors + "");
+        System.out.println("Lexical => " + ((this.lexicalErrors.isEmpty()) ? "No one" : this.lexicalErrors.toString()));
+        System.out.println("Syntax  => " + ((this.syntaxErrors.isEmpty()) ? "No one" : this.syntaxErrors.toString()));
+
     }
 }

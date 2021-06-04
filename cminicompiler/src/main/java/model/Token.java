@@ -6,6 +6,7 @@ import java_cup.runtime.Symbol;
 public class Token {
 
 	private String value, type;
+	private Symbol symbol;
 	private int line, column;
 	private ArrayList<TokenPosition> positions = new ArrayList<>();
 
@@ -19,7 +20,8 @@ public class Token {
 	}
 
 	public Symbol createSymbol(int id) {
-		return new Symbol(id, line, column, value);
+		this.symbol = new Symbol(id, line, column, this);
+		return this.symbol;
 	}
 
 	public void addAppearance(Token token) {
@@ -28,6 +30,14 @@ public class Token {
 		int column = token.getPositions().get(0).getColumn();
 
 		this.positions.add(new TokenPosition(line, column));
+	}
+
+	public Symbol getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(Symbol symbol) {
+		this.symbol = symbol;
 	}
 
 	public void addAppearance(int line, int column) {
@@ -62,9 +72,29 @@ public class Token {
 		this.type = type;
 	}
 
+	public int getLine() {
+		return line;
+	}
+
+	public void setLine(int line) {
+		this.line = line;
+	}
+
+	public int getColumn() {
+		return column;
+	}
+
+	public void setColumn(int column) {
+		this.column = column;
+	}
+
+	public String reportLocation(String expected) {
+		return "at line: " + this.line + 1 + " & column" + this.column + 1 + "(" + expected + ")";
+	}
+
 	@Override
 	public String toString() {
 		return "Token [\nvalue=" + value + ",\ntype=" + type + ",\nappearances=" + this.getAppearances()
-				+ ",\npositions=" + positions + "\n]\n";
+				+ ",\npositions=" + positions + "\nsymbol=" + symbol + "]\n";
 	}
 }

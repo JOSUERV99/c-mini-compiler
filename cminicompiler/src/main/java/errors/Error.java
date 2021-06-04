@@ -1,19 +1,19 @@
 package errors;
 
-import java_cup.runtime.Symbol;
+import model.Token;
 
 public class Error {
 
     private String errorMessage;
-    private Symbol symbol;
+    private Token token;
 
     public Error(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
-    public Error(String errorMessage, Symbol symbol) {
+    public Error(String errorMessage, Token token) {
         this.errorMessage = errorMessage;
-        this.symbol = symbol;
+        this.token = token;
     }
 
     public String getErrorMessage() {
@@ -24,18 +24,18 @@ public class Error {
         this.errorMessage = errorMessage;
     }
 
-    public Symbol getSymbol() {
-        return symbol;
+    public Token getToken() {
+        return token;
     }
 
-    public void setSymbol(Symbol symbol) {
-        this.symbol = symbol;
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
-        return symbol == null ? errorMessage
-                : errorMessage + ", with " + symbol + " at line:" + (symbol.right + 1) + ", column:"
-                        + (symbol.left + 1);
+        return token == null ? errorMessage
+                : errorMessage + ", with " + token.getValue() + " at line:" + (token.getLine()) + ", column:"
+                        + (token.getColumn());
     }
 }
