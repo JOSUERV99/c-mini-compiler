@@ -11,7 +11,9 @@ import validation.IllegalTokenException;
 
 import java.util.ArrayList;
 import java_cup.runtime.*;
+import handler.Analyzer;
 import parser.sym;
+import errors.LexicalError;
 
 %%
 %public
@@ -27,6 +29,23 @@ import parser.sym;
 	// string generation with STRING state
 	private StringBuffer stringBuilder = new StringBuffer();
 
+	// analyzer ref
+	private Analyzer analyzer;
+
+	public void bind(Analyzer analyzer) {
+        this.analyzer = analyzer;
+    }
+
+    public void generateLexicalError(String message) {
+        this.analyzer.addLexicalError(
+			new LexicalError(
+				message, 
+				new Token(yyline, yycolumn, yytext())
+			)
+		);
+    }
+
+
 	// error lists
 	ArrayList<TokenError> errorList = new ArrayList<>();
 
@@ -35,6 +54,8 @@ import parser.sym;
 		this.errorList.clear();
 		return errorsList;
 	}
+
+
 %}
 
 
@@ -346,17 +367,29 @@ IDENT = {Identifier}
 	{OP_POINTEROPERATORASTERISC} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATORASTERISC);}
 
     {IDENT} { return new IdentifierToken(yyline, yycolumn, yytext()).createSymbol(sym.IDENT); }
+	 \\n    { return new Symbol(sym.NEWLINE); }
 	
-	
-
   {XLiteralHexadecimalWithNotAllowedDigits} 
-  	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal hexadecimal value must contain 0-9 or (a-f|A-F) "));  }
+  	{ 
+		this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal hexadecimal value must contain 0-9 or (a-f|A-F) "));  
+		this.generateLexicalError("Literal hexadecimal value must contain 0-9 or (a-f|A-F) ");
+	}
+  
   {XLiteralOctalWithNotAllowedDigits} 
-  	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal octal value must contain [0-7] digits"));  }
+  	{ 
+		this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal octal value must contain [0-7] digits"));  
+		this.generateLexicalError("Literal octal value must contain [0-7] digits");
+	}
   {XLiteralIntegerWithNotAllowedDigits} 
-  	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal integer value must contain [0-9] digits"));  }
+  	{ 
+		this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Literal integer value must contain [0-9] digits"));
+		this.generateLexicalError("Literal integer value must contain [0-9] digits");	
+	}
   {XIdentifierWithWrongStart} 
-  	{ this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Identifier cannot start with number(s)"));  }
+  	{ 
+		this.errorList.add(new TokenError(yyline, yycolumn, yytext(), "Identifier cannot start with number(s)"));  
+		this.generateLexicalError("Identifier cannot start with number(s)");
+	}
 
   {WhiteSpace} | {Comment}
   	{ /* do nothing */ }

@@ -1,5 +1,5 @@
 
-const int a = 12;
+int 1a = 1;
 
 int main()
 {

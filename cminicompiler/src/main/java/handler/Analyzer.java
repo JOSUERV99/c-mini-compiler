@@ -44,6 +44,7 @@ public class Analyzer {
             this.lexer = new CLexer(new BufferedReader(new FileReader(fileInputName)));
             this.parser = new CParser();
             this.parser.bind(this.lexer, this);
+            this.lexer.bind(this);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

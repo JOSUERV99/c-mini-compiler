@@ -12,6 +12,7 @@ public interface sym {
   public static final int KW_SIZEOF = 25;
   public static final int KW_VOLATILE = 33;
   public static final int OP_MULT = 38;
+  public static final int NEWLINE = 88;
   public static final int OP_MOD = 39;
   public static final int KW_STRUCT = 27;
   public static final int OP_MINUS = 37;
@@ -184,7 +185,8 @@ public interface sym {
   "LIT_CHARVALUE",
   "LIT_OCTALVALUE",
   "LIT_STRINGDEF",
-  "LIT_EXPONENTIALDEF"
+  "LIT_EXPONENTIALDEF",
+  "NEWLINE"
   };
 }
 
