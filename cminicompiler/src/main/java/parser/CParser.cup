@@ -5,9 +5,8 @@ import handler.Analyzer;
 import model.Token;
 import errors.SyntaxError;
 
-/* define how to connect to the scanner! */
 parser code {:
-    // Connect this parser to a scanner!
+
     CLexer s;
     Analyzer a;
 
@@ -15,10 +14,6 @@ parser code {:
         this.s = lexer;
         this.a = analyzer;
     }
-
-    // public void generateSyntaxError(String message, String expected, String value) {
-    //     this.a.addSyntaxError(new SyntaxError(message, null));
-    // }
 
     public void generateSyntaxError(String message, String expected, Object o) {
 
@@ -33,11 +28,13 @@ parser code {:
         }
     }
 
-    public void syntax_error(Symbol cur_token) {
+    public void syntax_error(Symbol cur_token) 
+    {
 	    System.err.println("Syntax error at line: " + (cur_token.right+1) + " at column: " + (cur_token.left+1) + " on: " + cur_token.value);
     }
 
-    public void unrecovered_syntax_error(Symbol cur_token){
+    public void unrecovered_syntax_error(Symbol cur_token) 
+    {
     	System.err.println("Fatal error at line: " + (cur_token.right+1) + " at column: " + (cur_token.left+1) + " on: " + cur_token.value);
     }
 :}
@@ -84,7 +81,6 @@ non terminal  instruction,
               expression,
               expression_any_type,
               expression_numeric,
-              expression_atomic_0,
               expression_atomic,
               expression_unary_operator,
               expression_binary_operators
@@ -113,7 +109,16 @@ non terminal control_for, control_for_instruction, control_for_instruction1, con
 non terminal start_program;
 
 //Error non terminal productions
-non terminal error_if, error_while;
+non terminal 
+  error_if, 
+  error_while, 
+  error_for, 
+  error_function_declaration, 
+  error_function, 
+  error_variable,
+  error_variable_definition,
+  error_switch,
+  error_constant;
 
 //precedence gramatic body
 precedence left     IDENT;
@@ -196,6 +201,7 @@ start_program ::=
 program_definition ::= 
       function_declaration:fd program_definition:pd 
     | global:g program_definition:pd      
+    | constant:c program_definition:pd
     |
     ;
 /*
@@ -223,17 +229,14 @@ control_structure::=
     | control_for
 ;
 
-
 control_if ::=
       control_if_else
     | error_if
     ;
 
-
 control_if_else::=  
       KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
     ;
-
 
 control_else::=
       KW_ELSE gramatic_body
@@ -243,22 +246,23 @@ control_else::=
     ;
 
 error_if ::=
-    KW_IF:i error:e {: 
+    KW_IF:i error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
       parser.generateSyntaxError("Left parenthesis missing", "(", i);
-    :} OP_WRAPPERKEYPARENTHESISRIGHT
+    :}
   | 
-    KW_IF:i OP_WRAPPERPARENTHESISLEFT error:e {: 
+    KW_IF:i OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
       parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
-    :} OP_WRAPPERKEYPARENTHESISRIGHT
+    :}
   |
-    KW_IF:i OP_WRAPPERPARENTHESISLEFT expression error:e {:    
+    KW_IF:i OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {:    
       parser.generateSyntaxError("Right parenthesis missing", ")", i);
-    :} OP_WRAPPERKEYPARENTHESISRIGHT
+    :}
  // | KW_IF OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT error {: System.out.println("Expression missing"); :} OP_WRAPPERKEYPARENTHESISRIGHT
   ;
 
 control_switch::=
-    KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
+      KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
+    | error_switch
     ;
 
 
@@ -270,6 +274,17 @@ control_switch_case::=
   | gramatic_body                                                              
   ;
 
+error_switch ::=
+    KW_SWITCH:s error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+      parser.generateSyntaxError("Left parenthesis missing", "(", s);
+    :}
+  | KW_SWITCH:s OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+      parser.generateSyntaxError("Numeric expresion expected", "expression", s);
+    :}
+  | KW_SWITCH:s OP_WRAPPERPARENTHESISLEFT expression_numeric error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+      parser.generateSyntaxError("Right parenthesis missing", ")", s);
+    :}
+  ;
 
 control_while ::=
       KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT control_while_body 
@@ -282,17 +297,17 @@ control_while_body::=
   ;
 
 error_while ::= 
-    KW_WHILE:w error:e {:
+    KW_WHILE:w error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
       parser.generateSyntaxError("Left parenthesis missing", "(", w);
-    :} OP_WRAPPERKEYPARENTHESISRIGHT
+    :}
   | 
-    KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e {:
+    KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
       parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
-    :} OP_WRAPPERKEYPARENTHESISRIGHT
+    :}
   | 
-    KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e {:
+    KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
       parser.generateSyntaxError("Right parenthesis missing", ")", w);
-    :} OP_WRAPPERKEYPARENTHESISRIGHT
+    :}
   ;
 
 control_for ::= 
@@ -303,6 +318,22 @@ control_for ::=
       control_for_instruction1
     OP_WRAPPERPARENTHESISRIGHT
      gramatic_body
+  | error_for
+  ;
+
+error_for ::=
+    KW_FOR:f error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+      parser.generateSyntaxError("Left parenthesis missing", "(", f); 
+    :}
+  // | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+  //     parser.generateSyntaxError("Instruction end operator was expected (;)", ";", f); 
+  //   :}
+  // | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction OP_INSTRUCTIONENDOPERATOR expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+  //     parser.generateSyntaxError("Instruction end operator was expected (;)", ";", f); 
+  //   :}
+  | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction OP_INSTRUCTIONENDOPERATOR expression OP_INSTRUCTIONENDOPERATOR control_for_instruction1 error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+      parser.generateSyntaxError("Right parenthesis missing", ")", f);
+    :}
   ;
 
 control_for_instruction ::=
@@ -317,7 +348,7 @@ control_for_instruction1 ::=
   | expression
   |
   ;
-
+  
 gramatic_body ::=
       OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body  OP_WRAPPERKEYPARENTHESISRIGHT 
     | constant                                       gramatic_body
@@ -332,26 +363,47 @@ gramatic_body ::=
 
 
 global ::= 
-    variable:v OP_INSTRUCTIONENDOPERATOR
+      variable:v OP_INSTRUCTIONENDOPERATOR
+    | variable:v error:e {:
+        parser.generateSyntaxError("Instruction end operator was expected (;)", ";", v);
+      :}
     ;
-
 
 constant ::=
-    KW_CONST keyword_types IDENT OP_ASIG expression_atomic_0 OP_INSTRUCTIONENDOPERATOR
+      KW_CONST keyword_types IDENT OP_ASIG expression_atomic_literal_int OP_INSTRUCTIONENDOPERATOR
+    | error_constant
     ;
 
+error_constant ::=
+      KW_CONST:c keyword_types IDENT error:e OP_INSTRUCTIONENDOPERATOR {:
+        parser.generateSyntaxError("Constant must be defined as literal", "=", c);
+      :}
+    | KW_CONST:c keyword_types IDENT OP_ASIG error:e OP_INSTRUCTIONENDOPERATOR {:
+        parser.generateSyntaxError("Constant must be asigned with literal", "literal", c);
+      :}
+    | KW_CONST:c keyword_types IDENT OP_ASIG expression_atomic_literal_int error:e OP_INSTRUCTIONENDOPERATOR {:
+        parser.generateSyntaxError("Instruction end operator was expected (;)", ";", c);
+      :}
+    ;
 
 variable ::= 
-    keyword_types:kt variable_definition:vd 
-    ;
+      keyword_types:kt variable_definition:vd
+  ;
 
 variable_definition ::= 
-      IDENT 								
+      IDENT 							
     | IDENT OP_ASIG expression:e					
     | IDENT OP_COMMA variable_definition:vd 
-    | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd 
+    | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd
+    | error_variable_definition
     ;
 
+// FIX FOR COMMAS
+error_variable_definition ::= 
+    IDENT IDENT:i2 error:e OP_INSTRUCTIONENDOPERATOR {:
+        parser.generateSyntaxError("Multiple variable definition require comma as separator", ")", i2);
+    :}
+    ;
 
 parameters ::= 
       parameter OP_COMMA parameters 
@@ -368,7 +420,7 @@ parameters_definition ::=
 parameter_definition ::= 
       keyword_types IDENT:id
     | KW_CONST keyword_types IDENT
-    | KW_CONST keyword_types IDENT OP_ASIG expression_atomic_0
+    | KW_CONST keyword_types IDENT OP_ASIG expression_atomic
       ;
 
 
@@ -419,7 +471,6 @@ expression_atomic_literal_nonint::=
     ;
 
 expression_atomic_literal_int ::=
-      			 
       LIT_HEXVALUE
     | LIT_DECIMALVALUE
     | LIT_CHARVALUE
@@ -429,7 +480,6 @@ expression_atomic_literal_int ::=
 
 
 expression_atomic_call_functions_anytype::=
-
       IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				
     | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 	
     ;

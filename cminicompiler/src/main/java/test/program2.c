@@ -1,12 +1,10 @@
 
+const int a = 12;
 
 int main()
 {
-    if (1)
-    {
-    }
 
-    while (2)
+    switch (1)
     {
     }
 }

@@ -35,7 +35,7 @@ public class Error {
     @Override
     public String toString() {
         return token == null ? errorMessage
-                : errorMessage + ", with " + token.getValue() + " at line:" + (token.getLine()) + ", column:"
+                : errorMessage + ", (" + token.getValue() + ") at line:" + (token.getLine()) + ", column:"
                         + (token.getColumn());
     }
 }

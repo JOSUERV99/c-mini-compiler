@@ -17,6 +17,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import errors.Error;
 import errors.LexicalError;
 import errors.SyntaxError;
 import java_cup.runtime.ScannerBuffer;
@@ -88,8 +89,19 @@ public class Analyzer {
 
         int foundedErrors = this.lexicalErrors.size() + this.syntaxErrors.size();
         System.out.println("Errors: " + foundedErrors + "");
-        System.out.println("Lexical => " + ((this.lexicalErrors.isEmpty()) ? "No one" : this.lexicalErrors.toString()));
-        System.out.println("Syntax  => " + ((this.syntaxErrors.isEmpty()) ? "No one" : this.syntaxErrors.toString()));
+        System.out.println(
+                "Lexical => " + ((this.lexicalErrors.isEmpty()) ? "No one" : this.prettyPrintList(this.lexicalErrors)));
+        System.out.println(
+                "Syntax  => " + ((this.syntaxErrors.isEmpty()) ? "No one" : this.prettyPrintList(this.syntaxErrors)));
 
+    }
+
+    private String prettyPrintList(ArrayList<? extends Error> errorList) {
+        String content = "[\n";
+        for (Error o : errorList) {
+            content += "\t" + o.toString() + "\n";
+        }
+        content += "]";
+        return content;
     }
 }

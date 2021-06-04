@@ -73,7 +73,7 @@ public class Token {
 	}
 
 	public int getLine() {
-		return line;
+		return line + 1;
 	}
 
 	public void setLine(int line) {
@@ -81,7 +81,7 @@ public class Token {
 	}
 
 	public int getColumn() {
-		return column;
+		return column + 1;
 	}
 
 	public void setColumn(int column) {
@@ -89,7 +89,7 @@ public class Token {
 	}
 
 	public String reportLocation(String expected) {
-		return "at line: " + this.line + 1 + " & column" + this.column + 1 + "(" + expected + ")";
+		return "at line: " + this.line + " & column" + this.column + "(" + expected + ")";
 	}
 
 	@Override
