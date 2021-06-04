@@ -120,7 +120,8 @@ non terminal
   error_variable,
   error_variable_definition,
   error_switch,
-  error_constant;
+  error_constant,
+  error_parameter;
 
 //precedence gramatic body
 precedence left     IDENT;
@@ -417,14 +418,24 @@ parameter ::=
 
 parameters_definition ::= 
       parameter_definition OP_COMMA parameters_definition 
-    | parameter_definition;
+    | parameter_definition 
+    ;
 
 parameter_definition ::= 
       keyword_types IDENT:id
+    | IDENT:id error:e OP_WRAPPERPARENTHESISRIGHT {:
+       parser.generateSyntaxError("Params must be typed", "type", e);
+      :}
     | KW_CONST keyword_types IDENT
     | KW_CONST keyword_types IDENT OP_ASIG expression_atomic
+    | KW_CONST error:e OP_WRAPPERPARENTHESISRIGHT {:
+       parser.generateSyntaxError("Const params must be typed", "type", e);
+      :} 
       ;
 
+error_parameter ::=
+    
+    ;
 
 instruction ::=
       IDENT OP_ASIG expression
