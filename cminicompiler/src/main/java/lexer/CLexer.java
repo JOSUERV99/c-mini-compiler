@@ -575,6 +575,9 @@ public class CLexer implements sym, java_cup.runtime.Scanner {
 		return errorsList;
 	}
 
+	public int getCurrentLine() {
+		return yyline;
+	}
 
 
 

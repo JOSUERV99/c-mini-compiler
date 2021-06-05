@@ -55,6 +55,9 @@ import errors.LexicalError;
 		return errorsList;
 	}
 
+	public int getCurrentLine() {
+		return yyline;
+	}
 
 %}
 
