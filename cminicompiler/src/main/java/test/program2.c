@@ -1,10 +1,6 @@
 
-int 1a = 1;
+// int 1a = 1;
 
-int main()
+int a )
 {
-
-    switch (1)
-    {
-    }
 }
