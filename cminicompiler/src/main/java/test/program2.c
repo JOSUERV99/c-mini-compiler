@@ -1,16 +1,19 @@
-int a;
 
-char b, c f; //falta coma
-long b, c, f;
+a = 10;
 
-a = 3; // Error fuera de  lugar
+int funcion1( int x
+{  // falta parentesis
+    while (x && y)
+    {
+        x++;
+    }
 
-// void funcion3(x, y)
+}
+
+// int main()
 // {
-//     // error porque no hay tipo de funciones
+//     while (x < 2)
 
-//     if (x < 7)
-//     {
-//         x = g + 6;
-//     }
+//         x = a + b;
+// } //falta corchetes
 // }

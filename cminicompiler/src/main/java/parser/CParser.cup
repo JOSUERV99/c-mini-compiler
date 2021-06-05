@@ -226,32 +226,20 @@ function_declaration ::=
 
 function_declaration_0 ::=
       parameters_definition OP_WRAPPERPARENTHESISRIGHT 
-    | OP_WRAPPERPARENTHESISRIGHT 
+    | OP_WRAPPERPARENTHESISRIGHT
     ;
 
 function_declaration_1 ::=
-    gramatic_body
+    OP_WRAPPERKEYPARENTHESISLEFT gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
     ;
 
 error_function_declaration ::= 
-      keyword_types:kt error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-        parser.generateSyntaxError("Function name is required", "function", kt);
-      :}
-    |
       keyword_types:kt IDENT:fn error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
         parser.generateSyntaxError("Left parenthesis missing", "(", fn);
       :}
     |
       keyword_types:kt IDENT:fn OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-        parser.generateSyntaxError("Malformed params definition", "params", fn);
-      :}
-    // |
-    //   keyword_types:kt IDENT:fn OP_WRAPPERPARENTHESISLEFT function_declaration_0 error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-    //     parser.generateSyntaxError("Right parenthesis missing", ")", fn);
-    //   :}
-    | 
-      error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-        parser.generateSyntaxError("Function type required", "function", e);
+        parser.generateSyntaxError("Right parenthesis missing", ")", fn);
       :}
     ;
 /*
@@ -342,6 +330,14 @@ error_while ::=
     KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
       parser.generateSyntaxError("Right parenthesis missing", ")", w);
     :}
+  // |
+  //   KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+  //     parser.generateSyntaxError("Left brace is missing", "{", w);
+  //   :}
+  // |
+  //   KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISLEFT OP_WRAPPERKEYPARENTHESISLEFT control_while_body error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+  //     parser.generateSyntaxError("Right brace is missing", "}", w);
+  //   :}
   ;
 
 control_for ::= 
@@ -396,10 +392,10 @@ gramatic_body ::=
     |
     ;
 
-// error_gramatic ::=
-//     variable:v error:e OP_INSTRUCTIONENDOPERATOR {: 
-//       parser.generateSyntaxError("Instruction end operator expected (;)", ";", v); 
-//     :}
+error_gramatic ::=
+    instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
+      parser.generateSyntaxError("Instruction end operator expected (;)", ";", null); 
+    :}
 //   | 
 //     expression:ex error:e OP_INSTRUCTIONENDOPERATOR {: 
 //       parser.generateSyntaxError("Instruction end operator expected (;)", ";", ex); 
@@ -411,7 +407,7 @@ gramatic_body ::=
 //   | KW_RETURN:kr expression error:e OP_INSTRUCTIONENDOPERATOR {:
 //       parser.generateSyntaxError("Instruction end operator expected (;)", ";", kr); 
 //     :}
-//   ;
+;
 
 global ::= 
       variable:v OP_INSTRUCTIONENDOPERATOR

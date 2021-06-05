@@ -370,7 +370,7 @@ IDENT = {Identifier}
 	{OP_POINTEROPERATORASTERISC} { return new OperatorToken(yyline, yycolumn, yytext()).createSymbol(sym.OP_POINTEROPERATORASTERISC);}
 
     {IDENT} { return new IdentifierToken(yyline, yycolumn, yytext()).createSymbol(sym.IDENT); }
-	 \\n    { return new Symbol(sym.NEWLINE); }
+	// \\n    { return new Symbol(sym.NEWLINE); }
 	
   {XLiteralHexadecimalWithNotAllowedDigits} 
   	{ 
