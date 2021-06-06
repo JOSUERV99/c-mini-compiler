@@ -101,6 +101,7 @@ public class AnalyzerFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					analyzer = new Analyzer();
 					analyzer.compile(fullFilename, "");
 					populateLists();
 					updateTags();
