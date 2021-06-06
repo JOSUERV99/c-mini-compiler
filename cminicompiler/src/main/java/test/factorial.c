@@ -1,12 +1,8 @@
 int a(){
-   if (1){
-
-   }
-   else{
-
-   }
-   else{
-
-   }
-   int a;
+  for (a = 0; i < count; a=)
+  {
+   
+  }
+  int a;
+  
 }

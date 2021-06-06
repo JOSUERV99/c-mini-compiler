@@ -227,7 +227,7 @@ error_program_definition ::=
         parser.generateSyntaxError("Multiple variable definition require comma as separator", ",", e);
       :}
   | error_constant
-  | error
+  | error:e
   ;
 /*
 Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier ( Parametros )*/
@@ -331,7 +331,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 //estructura de control while
   control_while ::=
         KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT control_while_body 
-      //| error_while
+      | error_while
     ;
 
   control_while_body::=
@@ -340,25 +340,21 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
     ;
 
   error_while ::= 
-      KW_WHILE:w error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+      KW_WHILE:w error:e expression OP_WRAPPERPARENTHESISRIGHT control_while_body  {:
         parser.generateSyntaxError("Left parenthesis missing", "(", w);
       :}
     | 
-      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERPARENTHESISRIGHT control_while_body  {:
         parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
       :}
     | 
-      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e control_while_body  {:
         parser.generateSyntaxError("Right parenthesis missing", ")", w);
       :}
-    // |
-    //   KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-    //     parser.generateSyntaxError("Left brace is missing", "{", w);
-    //   :}
-    // |
-    //   KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISLEFT OP_WRAPPERKEYPARENTHESISLEFT control_while_body error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-    //     parser.generateSyntaxError("Right brace is missing", "}", w);
-    //   :}
+    | 
+      KW_WHILE:w error:e control_while_body  {:
+        parser.generateSyntaxError("Some code between while and conditional expression", "While", e);
+      :}
     ;
 
 //Estructura de control for
@@ -370,21 +366,69 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         control_for_instruction1
       OP_WRAPPERPARENTHESISRIGHT
       gramatic_body
-    //| error_for
+    | error_for
     ;
 
   error_for ::=
-      KW_FOR:f error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-        parser.generateSyntaxError("Left parenthesis missing", "(", f); 
+      KW_FOR 
+      error:e 
+        control_for_instruction OP_INSTRUCTIONENDOPERATOR 
+        expression OP_INSTRUCTIONENDOPERATOR
+        control_for_instruction1
+      OP_WRAPPERPARENTHESISRIGHT
+      gramatic_body {: 
+        parser.generateSyntaxError("FOR: Left parenthesis missing", "(", e); 
       :}
-    // | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-    //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", f); 
-    //   :}
-    // | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction OP_INSTRUCTIONENDOPERATOR expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-    //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", f); 
-    //   :}
-    | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction OP_INSTRUCTIONENDOPERATOR expression OP_INSTRUCTIONENDOPERATOR control_for_instruction1 error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-        parser.generateSyntaxError("Right parenthesis missing", ")", f);
+
+    |
+      KW_FOR 
+      OP_WRAPPERPARENTHESISLEFT 
+        control_for_instruction error:e 
+        expression OP_INSTRUCTIONENDOPERATOR
+        control_for_instruction1
+      OP_WRAPPERPARENTHESISRIGHT
+      gramatic_body {: 
+        parser.generateSyntaxError("FOR: Expected SEMICOLON", ";", e); 
+      :}
+    |
+      KW_FOR 
+      OP_WRAPPERPARENTHESISLEFT 
+        control_for_instruction OP_INSTRUCTIONENDOPERATOR 
+        error:e OP_INSTRUCTIONENDOPERATOR
+        control_for_instruction1
+      OP_WRAPPERPARENTHESISRIGHT
+      gramatic_body {: 
+        parser.generateSyntaxError("FOR: Conditional expression missing", "a<b", e); 
+      :}
+    | KW_FOR 
+      OP_WRAPPERPARENTHESISLEFT 
+        control_for_instruction OP_INSTRUCTIONENDOPERATOR 
+        expression error:e
+        control_for_instruction1
+      OP_WRAPPERPARENTHESISRIGHT
+      gramatic_body
+      {: 
+        parser.generateSyntaxError("FOR: Expected SEMICOLON", ";", e); 
+      :}
+    | KW_FOR 
+      OP_WRAPPERPARENTHESISLEFT 
+        control_for_instruction OP_INSTRUCTIONENDOPERATOR 
+        expression OP_INSTRUCTIONENDOPERATOR
+        error:e
+      OP_WRAPPERPARENTHESISRIGHT
+      gramatic_body
+      {: 
+        parser.generateSyntaxError("FOR: Incremental o decremental instruction expected", "a++", e); 
+      :}
+    | KW_FOR 
+      OP_WRAPPERPARENTHESISLEFT 
+        control_for_instruction OP_INSTRUCTIONENDOPERATOR 
+        expression OP_INSTRUCTIONENDOPERATOR
+        expression
+      error:e
+      gramatic_body
+      {: 
+        parser.generateSyntaxError("FOR: Right parenthesis missing", ")", e); 
       :}
     ;
 
