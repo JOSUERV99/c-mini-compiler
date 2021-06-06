@@ -43,161 +43,162 @@ init with {:  :};
 scan with {: return this.s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
-terminal IDENT;
-terminal KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST;
-terminal KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
-terminal KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO;
-terminal KW_IF,KW_INT,KW_LONG,KW_REGISTER,KW_RETURN;
-terminal KW_SHORT,KW_SIGNED,KW_SIZEOF,KW_STATIC,KW_STRUCT;
-terminal KW_SWITCH,KW_TYPEDEF,KW_UNION,KW_UNSIGNED,KW_VOID;
-terminal KW_VOLATILE,KW_WHILE,OP_DIV,OP_PLUS,OP_MINUS;
-terminal OP_MULT,OP_MOD,OP_COMMA,OP_GTE,OP_LTE;
-terminal OP_LT,OP_GT,OP_NOTEQUALCOMP,OP_ORCOMP,OP_ANDCOMP;
-terminal OP_EQUALCOMP,OP_AND,OP_XOR,OP_OR,OP_NOT;
-terminal OP_NEGATION,OP_PLUSASSIGN,OP_MINUSASSIGN,OP_MULTASSIGN,OP_DIVASSIGN;
-terminal OP_MINUSMINUSASSIGN,OP_PLUSPLUSASSIGN,OP_MODASSIGN,OP_ANDASSIGN,OP_NOTASSIGN;
-terminal OP_ORASSIGN,OP_SHIFTLEFTASSIGN,OP_SHIFTRIGHTASSIGN,OP_TERNARYOPERATORQUESTIONMARK,OP_TERNARYOPERATIONDOUBLEDOT;
-terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR;
-terminal OP_WRAPPERPARENTHESISLEFT,OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
-terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
-terminal NEWLINE;
+  terminal IDENT;
+  terminal KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST;
+  terminal KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
+  terminal KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO;
+  terminal KW_IF,KW_INT,KW_LONG,KW_REGISTER,KW_RETURN;
+  terminal KW_SHORT,KW_SIGNED,KW_SIZEOF,KW_STATIC,KW_STRUCT;
+  terminal KW_SWITCH,KW_TYPEDEF,KW_UNION,KW_UNSIGNED,KW_VOID;
+  terminal KW_VOLATILE,KW_WHILE,OP_DIV,OP_PLUS,OP_MINUS;
+  terminal OP_MULT,OP_MOD,OP_COMMA,OP_GTE,OP_LTE;
+  terminal OP_LT,OP_GT,OP_NOTEQUALCOMP,OP_ORCOMP,OP_ANDCOMP;
+  terminal OP_EQUALCOMP,OP_AND,OP_XOR,OP_OR,OP_NOT;
+  terminal OP_NEGATION,OP_PLUSASSIGN,OP_MINUSASSIGN,OP_MULTASSIGN,OP_DIVASSIGN;
+  terminal OP_MINUSMINUSASSIGN,OP_PLUSPLUSASSIGN,OP_MODASSIGN,OP_ANDASSIGN,OP_NOTASSIGN;
+  terminal OP_ORASSIGN,OP_SHIFTLEFTASSIGN,OP_SHIFTRIGHTASSIGN,OP_TERNARYOPERATORQUESTIONMARK,OP_TERNARYOPERATIONDOUBLEDOT;
+  terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR;
+  terminal OP_WRAPPERPARENTHESISLEFT,OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
+  terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
+  terminal NEWLINE;
 
 /* Non Terminals (generated using the terminals tokens) */
+  //Non-terminals function
+  non terminal  function_declaration_0,
+                function_declaration_1,
+                function_declaration,
+                keyword_types,
+                parameters,
+                parameter,
+                parameters_definition,
+                parameter_definition,
+                program_definition
+                ;
 
+  non terminal  gramatic_body;
+  //Non-terminal expressions
+  non terminal  instruction,
+                expression,
+                expression_any_type,
+                expression_numeric,
+                expression_atomic,
+                expression_unary_operator,
+                expression_binary_operators
+                ;
 
-//Non-terminals function
-non terminal  function_declaration_0,
-              function_declaration_1,
-              function_declaration,
-              keyword_types,
-              parameters,
-              parameter,
-              parameters_definition,
-              parameter_definition,
-              program_definition
+  non terminal expression_atomic_literal_int,
+              expression_atomic_literal_nonint
               ;
 
-non terminal  gramatic_body;
-//Non-terminal expressions
-non terminal  instruction,
-              expression,
-              expression_any_type,
-              expression_numeric,
-              expression_atomic,
-              expression_unary_operator,
-              expression_binary_operators
-              ;
+  non terminal expression_atomic_call_functions_anytype;
+  //Non-terminal Variables
+  non terminal global, constant, variable, variable_definition;
+  //Non-terminal Estrucutura Control
+  non terminal control_structure, control_if, control_if_else, control_else; 
 
-non terminal expression_atomic_literal_int,
-             expression_atomic_literal_nonint
-             ;
+  //Non-terminal switch
+  non terminal control_switch, control_switch_case;
 
-non terminal expression_atomic_call_functions_anytype;
-//Non-terminal Variables
-non terminal global, constant, variable, variable_definition;
-//Non-terminal Estrucutura Control
-non terminal control_structure, control_if, control_if_else, control_else; 
+  //Non-terminal ciclo while
+  non terminal control_while, control_while_body;
 
-//Non-terminal switch
-non terminal control_switch, control_switch_case;
+  //Non terminal ciclo for
+  non terminal control_for, control_for_instruction, control_for_instruction1, control_for_body;
 
-//Non-terminal ciclo while
-non terminal control_while, control_while_body;
+  //Program Start non termi
+  non terminal start_program;
 
-//Non terminal ciclo for
-non terminal control_for, control_for_instruction, control_for_instruction1, control_for_body;
+  //Error non terminal productions
+  non terminal 
+    error_if, 
+    error_while, 
+    error_for, 
+    error_function_declaration, 
+    error_function,
+    error_variable_definition,
+    error_switch,
+    error_constant,
+    error_parameter,
+    error_gramatic,
+    error_program_definition;
 
-//Program Start non termi
-non terminal start_program;
-
-//Error non terminal productions
-non terminal 
-  error_if, 
-  error_while, 
-  error_for, 
-  error_function_declaration, 
-  error_function,
-  error_variable_definition,
-  error_switch,
-  error_constant,
-  error_parameter,
-  error_gramatic,
-  error_program_definition;
-
+//Definicion de precedencias
 //precedence gramatic body
-precedence left     IDENT;
-precedence left     OP_WRAPPERKEYPARENTHESISLEFT, OP_WRAPPERKEYPARENTHESISRIGHT;
-precedence left     OP_WRAPPERPARENTHESISLEFT, OP_WRAPPERPARENTHESISRIGHT;
-precedence nonassoc     LIT_DECIMALVALUE, LIT_FLOATVALUE, LIT_HEXVALUE, LIT_OCTALVALUE, LIT_EXPONENTIALDEF, LIT_CHARVALUE, LIT_STRINGDEF;     
-precedence right  OP_INSTRUCTIONENDOPERATOR;
-//predence If-ELSE
-precedence left KW_ELSE, KW_RETURN;
-precedence right KW_IF;
-precedence nonassoc KW_CONST;
+  precedence left     IDENT;
+  precedence left     OP_WRAPPERKEYPARENTHESISLEFT, OP_WRAPPERKEYPARENTHESISRIGHT;
+  precedence left     OP_WRAPPERPARENTHESISLEFT, OP_WRAPPERPARENTHESISRIGHT;
+  precedence nonassoc     LIT_DECIMALVALUE, LIT_FLOATVALUE, LIT_HEXVALUE, LIT_OCTALVALUE, LIT_EXPONENTIALDEF, LIT_CHARVALUE, LIT_STRINGDEF;     
+  precedence right  OP_INSTRUCTIONENDOPERATOR;
+  //predence If-ELSE
+  precedence left KW_ELSE, KW_RETURN;
+  precedence right KW_IF;
+  precedence nonassoc KW_CONST;
 
-//precedence Switch
-precedence left KW_CASE,KW_SWITCH;
-precedence right KW_BREAK;
+  //precedence Switch
+  precedence left KW_CASE,KW_SWITCH;
+  precedence right KW_BREAK;
 
-//precedence While
-precedence left KW_WHILE, KW_FOR;
+  //precedence While
+  precedence left KW_WHILE, KW_FOR;
 
-//precedende variables
-precedence nonassoc KW_INT 
-                  , KW_CHAR 
-                  , KW_LONG 
-                  , KW_SHORT 
-                  , KW_VOID
-                  , KW_FLOAT
-                  , KW_DOUBLE
-                  ;
-//precedence operators expression
-precedence left     OP_PLUS, OP_MINUS;
-precedence left     OP_MULT, OP_DIV, OP_MOD;
-precedence left     OP_TERNARYOPERATORQUESTIONMARK, OP_TERNARYOPERATIONDOUBLEDOT;
+  //precedende variables
+  precedence nonassoc KW_INT 
+                    , KW_CHAR 
+                    , KW_LONG 
+                    , KW_SHORT 
+                    , KW_VOID
+                    , KW_FLOAT
+                    , KW_DOUBLE
+                    ;
+  //precedence operators expression
+  precedence left     OP_PLUS, OP_MINUS;
+  precedence left     OP_MULT, OP_DIV, OP_MOD;
+  precedence left     OP_TERNARYOPERATORQUESTIONMARK, OP_TERNARYOPERATIONDOUBLEDOT;
 
-precedence nonassoc 
-    //RELATIONAL OPERATORS 
-      OP_LT
-    , OP_LTE
-    , OP_GT 
-    , OP_GTE 
-    , OP_EQUALCOMP
-    , OP_NOTEQUALCOMP
-    //LOGICAL OPERATORS
-    , OP_ANDCOMP
-    , OP_ORCOMP
-    , OP_NEGATION
-    //BITWISE OPERATORS  
-    , OP_AND 
-    , OP_OR 
-    , OP_SHIFTOPLEFT
-    , OP_SHIFTOPRIGHT
-    , OP_NOT
-    , OP_XOR
-    //ASSIGMENT OPERATORS
-    , OP_ASIG
-    , OP_PLUSASSIGN
-    , OP_MINUSASSIGN
-    , OP_MULTASSIGN
-    , OP_DIVASSIGN
-    , OP_MODASSIGN
-    , OP_SHIFTLEFTASSIGN
-    , OP_SHIFTRIGHTASSIGN
-    , OP_NOTASSIGN
-    , OP_ORASSIGN
-    , OP_ANDASSIGN
-      //UNARY OPERATORS
-      //--
-    , OP_MINUSMINUSASSIGN 
-      //++
-    , OP_PLUSPLUSASSIGN
-    ;
+  precedence nonassoc 
+      //RELATIONAL OPERATORS 
+        OP_LT
+      , OP_LTE
+      , OP_GT 
+      , OP_GTE 
+      , OP_EQUALCOMP
+      , OP_NOTEQUALCOMP
+      //LOGICAL OPERATORS
+      , OP_ANDCOMP
+      , OP_ORCOMP
+      , OP_NEGATION
+      //BITWISE OPERATORS  
+      , OP_AND 
+      , OP_OR 
+      , OP_SHIFTOPLEFT
+      , OP_SHIFTOPRIGHT
+      , OP_NOT
+      , OP_XOR
+      //ASSIGMENT OPERATORS
+      , OP_ASIG
+      , OP_PLUSASSIGN
+      , OP_MINUSASSIGN
+      , OP_MULTASSIGN
+      , OP_DIVASSIGN
+      , OP_MODASSIGN
+      , OP_SHIFTLEFTASSIGN
+      , OP_SHIFTRIGHTASSIGN
+      , OP_NOTASSIGN
+      , OP_ORASSIGN
+      , OP_ANDASSIGN
+        //UNARY OPERATORS
+        //--
+      , OP_MINUSMINUSASSIGN 
+        //++
+      , OP_PLUSPLUSASSIGN
+      ;
 
 start with start_program;
 
+//Referencias
 //https://stackoverflow.com/questions/44091680/java-cup-runtime-symbol-eof-has-not-been-declared
 //https://www.cs.auckland.ac.nz/courses/compsci330s1c/lectures/330ChaptersPDF/Chapt4.pdf
+
 start_program ::= 
     program_definition
     ;
@@ -206,34 +207,37 @@ program_definition ::=
       function_declaration:fd program_definition:pd 
     | global:g program_definition:pd      
     | constant:c program_definition:pd
-    | error_program_definition
+    | error_program_definition program_definition:pd
     |
     ;
 
 error_program_definition ::=
-  error:e {:
-    parser.generateSyntaxError("Instruction is not allowed in the global context", "instruction", e);
-  :} 
+  error:e OP_INSTRUCTIONENDOPERATOR
+    {:
+      parser.generateSyntaxError("Sintax error not identified", "Global or function", e);
+    :}
+  | keyword_types:kw_type OP_INSTRUCTIONENDOPERATOR
+    {:
+      parser.generateSyntaxError("Must give a name for a global variable", "Global variable", kw_type);
+    :}
   ;
 /*
-Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} |
-			 Tipo Identifier ( Parametros )
-*/
-function_declaration ::= 
+Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier ( Parametros )*/
+  function_declaration ::= 
       keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT  function_declaration_0 function_declaration_1
     | error_function_declaration
     ;
 
-function_declaration_0 ::=
+  function_declaration_0 ::=
       parameters_definition OP_WRAPPERPARENTHESISRIGHT 
     | OP_WRAPPERPARENTHESISRIGHT
     ;
 
-function_declaration_1 ::=
-    OP_WRAPPERKEYPARENTHESISLEFT gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
-    ;
+  function_declaration_1 ::=
+      OP_WRAPPERKEYPARENTHESISLEFT gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
+      ;
 
-error_function_declaration ::= 
+  error_function_declaration ::= 
       keyword_types:kt IDENT:fn error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
         parser.generateSyntaxError("Left parenthesis missing", "(", fn);
       :}
@@ -245,358 +249,366 @@ error_function_declaration ::=
 /*
 EstructuraControl	->  Control-If | Control-Switch | Control-While | Control-For
 */
-control_structure::=
-      control_if
-    | control_switch
-    | control_while
-    | control_for
-;
-
-control_if ::=
-      control_if_else
-    | error_if
+  control_structure::=
+        control_if
+      | control_switch
+      | control_while
+      | control_for
     ;
 
-control_if_else::=  
-      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
+//Estructura de control if
+  control_if ::=
+        control_if_else
+      | error_if
+      ;
+
+  control_if_else::=  
+        KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
+      ;
+
+  control_else::=
+        KW_ELSE gramatic_body
+      | KW_ELSE instruction
+      | instruction
+      | gramatic_body
+      ;
+
+  error_if ::=
+      KW_IF:i error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+        parser.generateSyntaxError("Left parenthesis missing", "(", i);
+      :}
+    | 
+      KW_IF:i OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+        parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
+      :}
+    |
+      KW_IF:i OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {:    
+        parser.generateSyntaxError("Right parenthesis missing", ")", i);
+      :}
     ;
 
-control_else::=
-      KW_ELSE gramatic_body
-    | KW_ELSE instruction
-    | instruction
+//estructura de control switch
+  control_switch::=
+        KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
+      | error_switch
+      ;
+
+
+  control_switch_case::=
+      OP_WRAPPERKEYPARENTHESISLEFT control_switch_case OP_WRAPPERKEYPARENTHESISRIGHT  control_switch_case
+    | KW_CASE     expression_numeric  OP_TERNARYOPERATIONDOUBLEDOT                    control_switch_case
+    | KW_DEFAULT  expression_numeric  OP_TERNARYOPERATIONDOUBLEDOT                    control_switch_case
+    | KW_BREAK OP_INSTRUCTIONENDOPERATOR                                              control_switch_case
+    | gramatic_body                                                              
+    ;
+
+  error_switch ::=
+      KW_SWITCH:s error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+        parser.generateSyntaxError("Left parenthesis missing", "(", s);
+      :}
+    | KW_SWITCH:s OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+        parser.generateSyntaxError("Numeric expresion expected", "expression", s);
+      :}
+    | KW_SWITCH:s OP_WRAPPERPARENTHESISLEFT expression_numeric error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+        parser.generateSyntaxError("Right parenthesis missing", ")", s);
+      :}
+    ;
+
+//estructura de control while
+  control_while ::=
+        KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT control_while_body 
+      | error_while
+    ;
+
+  control_while_body::=
+      KW_BREAK OP_INSTRUCTIONENDOPERATOR control_while_body
     | gramatic_body
     ;
 
-error_if ::=
-    KW_IF:i error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-      parser.generateSyntaxError("Left parenthesis missing", "(", i);
-    :}
-  | 
-    KW_IF:i OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-      parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
-    :}
-  |
-    KW_IF:i OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {:    
-      parser.generateSyntaxError("Right parenthesis missing", ")", i);
-    :}
-  ;
-
-control_switch::=
-      KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
-    | error_switch
-    ;
-
-
-control_switch_case::=
-    OP_WRAPPERKEYPARENTHESISLEFT control_switch_case OP_WRAPPERKEYPARENTHESISRIGHT  control_switch_case
-  | KW_CASE     expression_numeric  OP_TERNARYOPERATIONDOUBLEDOT                    control_switch_case
-  | KW_DEFAULT  expression_numeric  OP_TERNARYOPERATIONDOUBLEDOT                    control_switch_case
-  | KW_BREAK OP_INSTRUCTIONENDOPERATOR                                              control_switch_case
-  | gramatic_body                                                              
-  ;
-
-error_switch ::=
-    KW_SWITCH:s error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-      parser.generateSyntaxError("Left parenthesis missing", "(", s);
-    :}
-  | KW_SWITCH:s OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-      parser.generateSyntaxError("Numeric expresion expected", "expression", s);
-    :}
-  | KW_SWITCH:s OP_WRAPPERPARENTHESISLEFT expression_numeric error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-      parser.generateSyntaxError("Right parenthesis missing", ")", s);
-    :}
-  ;
-
-control_while ::=
-      KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT control_while_body 
-    | error_while
-  ;
-
-control_while_body::=
-    KW_BREAK OP_INSTRUCTIONENDOPERATOR control_while_body
-  | gramatic_body
-  ;
-
-error_while ::= 
-    KW_WHILE:w error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-      parser.generateSyntaxError("Left parenthesis missing", "(", w);
-    :}
-  | 
-    KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-      parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
-    :}
-  | 
-    KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-      parser.generateSyntaxError("Right parenthesis missing", ")", w);
-    :}
-  // |
-  //   KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-  //     parser.generateSyntaxError("Left brace is missing", "{", w);
-  //   :}
-  // |
-  //   KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISLEFT OP_WRAPPERKEYPARENTHESISLEFT control_while_body error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-  //     parser.generateSyntaxError("Right brace is missing", "}", w);
-  //   :}
-  ;
-
-control_for ::= 
-    KW_FOR 
-    OP_WRAPPERPARENTHESISLEFT 
-      control_for_instruction OP_INSTRUCTIONENDOPERATOR 
-      expression OP_INSTRUCTIONENDOPERATOR
-      control_for_instruction1
-    OP_WRAPPERPARENTHESISRIGHT
-     gramatic_body
-  | error_for
-  ;
-
-error_for ::=
-    KW_FOR:f error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-      parser.generateSyntaxError("Left parenthesis missing", "(", f); 
-    :}
-  // | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-  //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", f); 
-  //   :}
-  // | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction OP_INSTRUCTIONENDOPERATOR expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-  //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", f); 
-  //   :}
-  | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction OP_INSTRUCTIONENDOPERATOR expression OP_INSTRUCTIONENDOPERATOR control_for_instruction1 error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
-      parser.generateSyntaxError("Right parenthesis missing", ")", f);
-    :}
-  ;
-
-control_for_instruction ::=
-    variable
-  | IDENT OP_ASIG expression
-  | expression
-  |
-  ;
-
-control_for_instruction1 ::=
-    IDENT OP_ASIG expression
-  | expression
-  |
-  ;
-  
-gramatic_body ::=
-      OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body  OP_WRAPPERKEYPARENTHESISRIGHT 
-    | constant                                       gramatic_body
-    |             OP_INSTRUCTIONENDOPERATOR          gramatic_body
-    | variable    OP_INSTRUCTIONENDOPERATOR          gramatic_body 
-    | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body
-    | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body
-    | control_structure                              gramatic_body
-    | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body
-    | error_gramatic
-    |
-    ;
-
-error_gramatic ::=
-    instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
-      parser.generateSyntaxError("Instruction end operator expected (;)", ";", null); 
-    :}
-//   | 
-//     expression:ex error:e OP_INSTRUCTIONENDOPERATOR {: 
-//       parser.generateSyntaxError("Instruction end operator expected (;)", ";", ex); 
-//     :}
-//   // | 
-//   //   instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
-//   //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", i); 
-//   //   :}
-//   | KW_RETURN:kr expression error:e OP_INSTRUCTIONENDOPERATOR {:
-//       parser.generateSyntaxError("Instruction end operator expected (;)", ";", kr); 
-//     :}
-;
-
-global ::= 
-      variable:v OP_INSTRUCTIONENDOPERATOR
-    // | variable:v error:e {:
-    //     parser.generateSyntaxError("Instruction end operator was expected (;)", ";", v);
+  error_while ::= 
+      KW_WHILE:w error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+        parser.generateSyntaxError("Left parenthesis missing", "(", w);
+      :}
+    | 
+      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+        parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
+      :}
+    | 
+      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+        parser.generateSyntaxError("Right parenthesis missing", ")", w);
+      :}
+    // |
+    //   KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+    //     parser.generateSyntaxError("Left brace is missing", "{", w);
+    //   :}
+    // |
+    //   KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISLEFT OP_WRAPPERKEYPARENTHESISLEFT control_while_body error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
+    //     parser.generateSyntaxError("Right brace is missing", "}", w);
     //   :}
     ;
 
-constant ::=
-      KW_CONST keyword_types IDENT OP_ASIG expression_atomic_literal_int OP_INSTRUCTIONENDOPERATOR
-    | error_constant
+//Estructura de control for
+  control_for ::= 
+      KW_FOR 
+      OP_WRAPPERPARENTHESISLEFT 
+        control_for_instruction OP_INSTRUCTIONENDOPERATOR 
+        expression OP_INSTRUCTIONENDOPERATOR
+        control_for_instruction1
+      OP_WRAPPERPARENTHESISRIGHT
+      gramatic_body
+    | error_for
     ;
 
-error_constant ::=
-      KW_CONST:c keyword_types IDENT error:e OP_INSTRUCTIONENDOPERATOR {:
-        parser.generateSyntaxError("Constant must be defined as literal", "=", c);
+  error_for ::=
+      KW_FOR:f error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+        parser.generateSyntaxError("Left parenthesis missing", "(", f); 
       :}
-    | KW_CONST:c keyword_types IDENT OP_ASIG error:e OP_INSTRUCTIONENDOPERATOR {:
-        parser.generateSyntaxError("Constant must be asigned with literal", "literal", c);
+    // | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+    //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", f); 
+    //   :}
+    // | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction OP_INSTRUCTIONENDOPERATOR expression error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+    //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", f); 
+    //   :}
+    | KW_FOR:f OP_WRAPPERPARENTHESISLEFT control_for_instruction OP_INSTRUCTIONENDOPERATOR expression OP_INSTRUCTIONENDOPERATOR control_for_instruction1 error:e OP_WRAPPERKEYPARENTHESISRIGHT {: 
+        parser.generateSyntaxError("Right parenthesis missing", ")", f);
       :}
-    | KW_CONST:c keyword_types IDENT OP_ASIG expression_atomic_literal_int error:e OP_INSTRUCTIONENDOPERATOR {:
-        parser.generateSyntaxError("Instruction end operator was expected (;)", ";", c);
-      :}
     ;
 
-variable ::= 
-      keyword_types:kt variable_definition:vd 
+  control_for_instruction ::=
+      variable
+    | IDENT OP_ASIG expression
+    | expression
+    |
     ;
 
-variable_definition ::= 
-      IDENT 							
-    | IDENT OP_ASIG expression:e					
-    | IDENT OP_COMMA variable_definition:vd 
-    | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd
-    | error_variable_definition
+  control_for_instruction1 ::=
+      IDENT OP_ASIG expression
+    | expression
+    |
     ;
 
-error_variable_definition ::= 
-    error:e OP_INSTRUCTIONENDOPERATOR {:
-      parser.generateSyntaxError("Multiple variable definition require comma as separator", ",", e);
-    :}
-    // |
-    // IDENT:i OP_ASIG error:e OP_INSTRUCTIONENDOPERATOR {:
-    //   parser.generateSyntaxError("Expression expected", "expression", i);
-    // :}
-    ;
-
-parameters ::= 
-      parameter OP_COMMA parameters 
-    | parameter;
-
-parameter ::= 
-      expression
-    ;
-
-parameters_definition ::= 
-      parameter_definition OP_COMMA parameters_definition 
-    | parameter_definition 
-    ;
-
-parameter_definition ::= 
-      keyword_types IDENT:id
-    | KW_CONST keyword_types IDENT
-    | KW_CONST keyword_types IDENT OP_ASIG expression_atomic
-    | error_parameter
+//Cuerpo gramatica 
+  gramatic_body ::=
+        OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body  OP_WRAPPERKEYPARENTHESISRIGHT 
+      | constant                                       gramatic_body
+      |             OP_INSTRUCTIONENDOPERATOR          gramatic_body
+      | variable    OP_INSTRUCTIONENDOPERATOR          gramatic_body 
+      | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body
+      | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body
+      | control_structure                              gramatic_body
+      | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body
+      | error_gramatic
+      |
       ;
 
-error_parameter ::=
-    | KW_CONST error:e OP_WRAPPERPARENTHESISRIGHT {:
-      parser.generateSyntaxError("Const params must be typed", "type", e);
-    :} 
-    | IDENT:id error:e OP_WRAPPERPARENTHESISRIGHT {:
-      parser.generateSyntaxError("Params must be typed", "type", e);
-    :}
-    ;
-
-instruction ::=
-      IDENT OP_ASIG expression
-    | variable
-    | expression
-    ;
-
-expression ::=    
-      OP_WRAPPERPARENTHESISLEFT expression_any_type OP_WRAPPERPARENTHESISRIGHT
-    | expression_any_type
-    ;
-
-expression_any_type ::=
-      expression_atomic
-    | expression_unary_operator IDENT
-    | IDENT expression_unary_operator
-    | expression expression_binary_operators expression 
-    | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
-    ;
-
-expression_numeric ::=
-    IDENT
-  | expression_atomic_literal_int
-  | expression_atomic_call_functions_anytype
-  | expression_unary_operator expression_numeric  
-  | expression_numeric expression_binary_operators expression_numeric 
-  | expression_numeric OP_TERNARYOPERATORQUESTIONMARK expression_numeric OP_TERNARYOPERATIONDOUBLEDOT expression_numeric
+  error_gramatic ::=
+      instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
+        parser.generateSyntaxError("Instruction end operator expected (;)", ";", null); 
+      :}
+  //   | 
+  //     expression:ex error:e OP_INSTRUCTIONENDOPERATOR {: 
+  //       parser.generateSyntaxError("Instruction end operator expected (;)", ";", ex); 
+  //     :}
+  //   // | 
+  //   //   instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
+  //   //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", i); 
+  //   //   :}
+  //   | KW_RETURN:kr expression error:e OP_INSTRUCTIONENDOPERATOR {:
+  //       parser.generateSyntaxError("Instruction end operator expected (;)", ";", kr); 
+  //     :}
   ;
 
-expression_atomic::=
+//Variables, Globales y constantes
+  global ::= 
+          variable:v OP_INSTRUCTIONENDOPERATOR
+        | variable //definida para atrapar errores
+      // | variable:v error:e {:
+      //     parser.generateSyntaxError("Instruction end operator was expected (;)", ";", v);
+      //   :}
+      ;
+
+  constant ::=
+        KW_CONST keyword_types IDENT OP_ASIG expression_atomic_literal_int OP_INSTRUCTIONENDOPERATOR
+      | error_constant
+      ;
+
+  error_constant ::=
+        KW_CONST:c keyword_types IDENT error:e OP_INSTRUCTIONENDOPERATOR {:
+          parser.generateSyntaxError("Constant must be defined as literal", "=", c);
+        :}
+      | KW_CONST:c keyword_types IDENT OP_ASIG error:e OP_INSTRUCTIONENDOPERATOR {:
+          parser.generateSyntaxError("Constant must be asigned with literal", "literal", c);
+        :}
+      | KW_CONST:c keyword_types IDENT OP_ASIG expression_atomic_literal_int error:e OP_INSTRUCTIONENDOPERATOR {:
+          parser.generateSyntaxError("Instruction end operator was expected (;)", ";", c);
+        :}
+      ;
+
+  variable ::= 
+      keyword_types variable_definition 
+    ;
+
+  variable_definition ::= 
+        IDENT 							
+      | IDENT OP_ASIG expression:e					
+      | IDENT OP_COMMA variable_definition:vd 
+      | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd
+      | error_variable_definition
+      ;
+
+  error_variable_definition ::= 
+    
+    error:e OP_INSTRUCTIONENDOPERATOR
+      {:
+        parser.generateSyntaxError("Multiple variable definition require comma as separator", ",", e);
+      :}
+    ;
+
+//Parametros
+  parameters ::= 
+        parameter OP_COMMA parameters 
+      | parameter;
+
+  parameter ::= 
+        expression
+      ;
+
+  parameters_definition ::= 
+        parameter_definition OP_COMMA parameters_definition 
+      | parameter_definition 
+      ;
+
+  parameter_definition ::= 
+        keyword_types IDENT:id
+      | KW_CONST keyword_types IDENT
+      | KW_CONST keyword_types IDENT OP_ASIG expression_atomic
+      | error_parameter
+        ;
+
+  error_parameter ::=
+      | KW_CONST error:e OP_WRAPPERPARENTHESISRIGHT {:
+        parser.generateSyntaxError("Const params must be typed", "type", e);
+      :} 
+      | IDENT:id error:e OP_WRAPPERPARENTHESISRIGHT {:
+        parser.generateSyntaxError("Params must be typed", "type", e);
+      :}
+      ;
+
+//Expresiones e instruccion
+  instruction ::=
+        IDENT OP_ASIG expression
+      | variable
+      | expression
+      ;
+
+  expression ::=    
+        OP_WRAPPERPARENTHESISLEFT expression_any_type OP_WRAPPERPARENTHESISRIGHT
+      | expression_any_type
+      ;
+
+  expression_any_type ::=
+        expression_atomic
+      | expression_unary_operator IDENT
+      | IDENT expression_unary_operator
+      | expression expression_binary_operators expression 
+      | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
+      ;
+
+  expression_numeric ::=
       IDENT
-    | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 				
-    | IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				 
-    | LIT_HEXVALUE
-    | LIT_DECIMALVALUE
-    | LIT_FLOATVALUE
-    | LIT_CHARVALUE
-    | LIT_OCTALVALUE
-    | LIT_STRINGDEF
-    | LIT_EXPONENTIALDEF  
-    ;
-  
-expression_atomic_literal_nonint::=
-      LIT_STRINGDEF
-    | LIT_FLOATVALUE
+    | expression_atomic_literal_int
+    | expression_atomic_call_functions_anytype
+    | expression_unary_operator expression_numeric  
+    | expression_numeric expression_binary_operators expression_numeric 
+    | expression_numeric OP_TERNARYOPERATORQUESTIONMARK expression_numeric OP_TERNARYOPERATIONDOUBLEDOT expression_numeric
     ;
 
-expression_atomic_literal_int ::=
-      LIT_HEXVALUE
-    | LIT_DECIMALVALUE
-    | LIT_CHARVALUE
-    | LIT_OCTALVALUE
-    | LIT_EXPONENTIALDEF  
-    ;
+  expression_atomic::=
+        IDENT
+      | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 				
+      | IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				 
+      | LIT_HEXVALUE
+      | LIT_DECIMALVALUE
+      | LIT_FLOATVALUE
+      | LIT_CHARVALUE
+      | LIT_OCTALVALUE
+      | LIT_STRINGDEF
+      | LIT_EXPONENTIALDEF  
+      ;
+    
+  expression_atomic_literal_nonint::=
+        LIT_STRINGDEF
+      | LIT_FLOATVALUE
+      ;
+
+  expression_atomic_literal_int ::=
+        LIT_HEXVALUE
+      | LIT_DECIMALVALUE
+      | LIT_CHARVALUE
+      | LIT_OCTALVALUE
+      | LIT_EXPONENTIALDEF  
+      ;
 
 
-expression_atomic_call_functions_anytype::=
-      IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				
-    | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 	
-    ;
-  
+  expression_atomic_call_functions_anytype::=
+        IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				
+      | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 	
+      ;
+    
 
-expression_unary_operator ::=
-    //UNARY OPERATORS
-      OP_MINUSMINUSASSIGN //--
-    | OP_PLUSPLUSASSIGN   //++
-    ;
+  expression_unary_operator ::=
+      //UNARY OPERATORS
+        OP_MINUSMINUSASSIGN //--
+      | OP_PLUSPLUSASSIGN   //++
+      ;
 
-expression_binary_operators ::= 
+  expression_binary_operators ::= 
 
-    //ARITMHMETIC OPERATORS
-      OP_MINUS 
-    | OP_DIV 
-    | OP_PLUS
-    | OP_MULT
-    | OP_MOD
-    //RELATIONAL OPERATORS 
-    | OP_LT
-    | OP_LTE
-    | OP_GT 
-    | OP_GTE 
-    | OP_EQUALCOMP
-    | OP_NOTEQUALCOMP
-    //LOGICAL OPERATORS
-    | OP_ANDCOMP
-    | OP_ORCOMP
-    | OP_NEGATION
-    //BITWISE OPERATORS  
-    | OP_AND 
-    | OP_OR 
-    | OP_SHIFTOPLEFT
-    | OP_SHIFTOPRIGHT
-    | OP_NOT
-    | OP_XOR
-    //ASSIGMENT OPERATORS
-    | OP_ASIG
-    | OP_PLUSASSIGN
-    | OP_MINUSASSIGN
-    | OP_MULTASSIGN
-    | OP_DIVASSIGN
-    | OP_MODASSIGN
-    | OP_SHIFTLEFTASSIGN
-    | OP_SHIFTRIGHTASSIGN
-    | OP_NOTASSIGN
-    | OP_ORASSIGN
-    | OP_ANDASSIGN
-    ;
+      //ARITMHMETIC OPERATORS
+        OP_MINUS 
+      | OP_DIV 
+      | OP_PLUS
+      | OP_MULT
+      | OP_MOD
+      //RELATIONAL OPERATORS 
+      | OP_LT
+      | OP_LTE
+      | OP_GT 
+      | OP_GTE 
+      | OP_EQUALCOMP
+      | OP_NOTEQUALCOMP
+      //LOGICAL OPERATORS
+      | OP_ANDCOMP
+      | OP_ORCOMP
+      | OP_NEGATION
+      //BITWISE OPERATORS  
+      | OP_AND 
+      | OP_OR 
+      | OP_SHIFTOPLEFT
+      | OP_SHIFTOPRIGHT
+      | OP_NOT
+      | OP_XOR
+      //ASSIGMENT OPERATORS
+      | OP_ASIG
+      | OP_PLUSASSIGN
+      | OP_MINUSASSIGN
+      | OP_MULTASSIGN
+      | OP_DIVASSIGN
+      | OP_MODASSIGN
+      | OP_SHIFTLEFTASSIGN
+      | OP_SHIFTRIGHTASSIGN
+      | OP_NOTASSIGN
+      | OP_ORASSIGN
+      | OP_ANDASSIGN
+      ;
 
-keyword_types ::= 
-      KW_INT 
-    | KW_CHAR 
-    | KW_LONG 
-    | KW_SHORT 
-    | KW_VOID
-    | KW_FLOAT
-    | KW_DOUBLE
-    ;
+//Keyword types
+  keyword_types ::= 
+        KW_INT 
+      | KW_CHAR 
+      | KW_LONG 
+      | KW_SHORT 
+      | KW_VOID
+      | KW_FLOAT
+      | KW_DOUBLE
+      ;
