@@ -1,2 +1,12 @@
-a = 2;
-int a b;
+int a(){
+   if (1){
+
+   }
+   else{
+
+   }
+   else{
+
+   }
+   int a;
+}

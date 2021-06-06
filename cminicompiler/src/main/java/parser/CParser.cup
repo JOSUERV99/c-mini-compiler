@@ -75,7 +75,8 @@ scan with {: return this.s.next_token(); :};
                 program_definition
                 ;
 
-  non terminal  gramatic_body;
+  non terminal  gramatic_body,
+                gramatic_body_0;
   //Non-terminal expressions
   non terminal  instruction,
                 expression,
@@ -226,6 +227,7 @@ error_program_definition ::=
         parser.generateSyntaxError("Multiple variable definition require comma as separator", ",", e);
       :}
   | error_constant
+  | error
   ;
 /*
 Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier ( Parametros )*/
@@ -288,6 +290,14 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
     |
       KW_IF:i OP_WRAPPERPARENTHESISLEFT expression error:e gramatic_body control_else {:    
         parser.generateSyntaxError("Right parenthesis missing", ")", e);
+      :}
+    |
+      KW_IF:i error:e  gramatic_body control_else {:    
+        parser.generateSyntaxError("Some code between if and conditional expression", "If", e);
+      :}
+    | 
+      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT error:e gramatic_body control_else {:    
+        parser.generateSyntaxError("Syntax error, illegal code inside of the if", "If", e);
       :}
     ;
 
@@ -401,14 +411,22 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body
       | control_structure                              gramatic_body
       | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body
-      //| error_gramatic
+      | KW_ELSE error:e gramatic_body
+        {:
+          parser.generateSyntaxError("Syntax error, illegal code after the else or if declaration", "If", e);
+        :}
       |
       ;
+  
 
   error_gramatic ::=
-      instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
-        parser.generateSyntaxError("Instruction end operator expected (;)", ";", null); 
-      :}
+  | KW_ELSE  error:e  
+    {:    
+      parser.generateSyntaxError("Syntax error, illegal code after the else or if declaration", "If", e);
+    :}
+      // instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
+      //   parser.generateSyntaxError("Instruction end operator expected (;)", ";", null); 
+      // :}
   //   | 
   //     expression:ex error:e OP_INSTRUCTIONENDOPERATOR {: 
   //       parser.generateSyntaxError("Instruction end operator expected (;)", ";", ex); 
