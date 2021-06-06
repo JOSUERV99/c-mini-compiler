@@ -1,8 +1,5 @@
-int a(){
-  for (a = 0; i < count; a=)
-  {
-   
-  }
-  int a;
-  
+int A){
+
 }
+int a b;
+int a b;
