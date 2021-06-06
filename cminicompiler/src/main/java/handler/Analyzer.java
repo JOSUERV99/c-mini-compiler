@@ -31,10 +31,12 @@ public class Analyzer {
     private ArrayList<LexicalError> lexicalErrors = new ArrayList<>();
     private ArrayList<SyntaxError> syntaxErrors = new ArrayList<>();
 
+    private String fileInputName;
+
     public Analyzer() {
     }
 
-    private void init(String fileInputName) {
+    private void init() {
 
         if (!FileUtils.fileExists(fileInputName))
             return;
@@ -70,12 +72,12 @@ public class Analyzer {
         System.out.println("Parsing finished!");
     }
 
-    public void compile(String fileInputName, String fileOutputName) throws Exception {
+    public void compile(String fileInputName, String s) throws Exception {
 
-        this.init(fileInputName);
+        this.fileInputName = fileInputName;
+        this.init();
         this.parser.debug_parse();
         this.displaySummary();
-        // this.parse(fileInputName, fileOutputName);
     }
 
     public void addSyntaxError(SyntaxError syntaxError) {
@@ -104,5 +106,29 @@ public class Analyzer {
         }
         content += "]";
         return content;
+    }
+
+    public ArrayList<LexicalError> getLexicalErrors() {
+        return lexicalErrors;
+    }
+
+    public void setLexicalErrors(ArrayList<LexicalError> lexicalErrors) {
+        this.lexicalErrors = lexicalErrors;
+    }
+
+    public ArrayList<SyntaxError> getSyntaxErrors() {
+        return syntaxErrors;
+    }
+
+    public void setSyntaxErrors(ArrayList<SyntaxError> syntaxErrors) {
+        this.syntaxErrors = syntaxErrors;
+    }
+
+    public String getFileInputName() {
+        return fileInputName;
+    }
+
+    public void setFileInputName(String fileInputName) {
+        this.fileInputName = fileInputName;
     }
 }
