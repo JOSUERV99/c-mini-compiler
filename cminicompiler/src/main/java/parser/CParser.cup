@@ -67,6 +67,7 @@ scan with {: return this.s.next_token(); :};
   non terminal  function_declaration_0,
                 function_declaration_1,
                 function_declaration,
+                unknown_function_declaration_error,
                 keyword_types,
                 parameters,
                 parameter,
@@ -141,6 +142,7 @@ scan with {: return this.s.next_token(); :};
 
   //precedence While
   precedence left KW_WHILE, KW_FOR;
+  precedence nonassoc KW_CONTINUE, KW_BREAK;
 
   //precedende variables
   precedence nonassoc KW_INT 
@@ -208,7 +210,9 @@ program_definition ::=
       function_declaration:fd program_definition:pd 
     | global:g program_definition:pd      
     | constant:c program_definition:pd
-    | error_program_definition program_definition:pd
+    | error_program_definition:e_p_d program_definition:pd
+      {: System.out.println("$Error program definition, line 213. ");
+      :}
     |
     ;
 
@@ -244,6 +248,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   function_declaration ::= 
     keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT  function_declaration_0 function_declaration_1
     //| error_function_declaration
+   
     ;
 
   function_declaration_0 ::=
@@ -254,6 +259,21 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   function_declaration_1 ::=
       OP_WRAPPERKEYPARENTHESISLEFT gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
       ;
+
+  unknown_function_declaration_error ::=
+      error:e OP_INSTRUCTIONENDOPERATOR
+    {:
+      parser.generateSyntaxError("Syntax error function declaration UNKNOWN TYPE 1", "UNKNOWN", e);
+    :}
+    | error:e OP_WRAPPERKEYPARENTHESISRIGHT
+    {:
+      parser.generateSyntaxError("Syntax error function declaration UNKNOWN TYPE 2", "UNKNOWN", e);
+    :} 
+    | error:e OP_WRAPPERKEYPARENTHESISLEFT
+    {:
+      parser.generateSyntaxError("Syntax error function declaration UNKNOWN TYPE 3", "UNKNOWN", e);
+    :} 
+    ;
 
   error_function_declaration ::= 
       error:e IDENT:fn OP_WRAPPERPARENTHESISLEFT function_declaration_0 function_declaration_1 {:
@@ -348,29 +368,30 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
 //estructura de control while
   control_while ::=
-        KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT control_while_body 
-      | error_while
+        KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT
+      | error_while 
     ;
 
   control_while_body::=
-      KW_BREAK OP_INSTRUCTIONENDOPERATOR control_while_body
+      gramatic_body KW_BREAK    OP_INSTRUCTIONENDOPERATOR control_while_body
+    | gramatic_body KW_CONTINUE OP_INSTRUCTIONENDOPERATOR control_while_body
     | gramatic_body
     ;
 
   error_while ::= 
-      KW_WHILE:w error:e expression OP_WRAPPERPARENTHESISRIGHT control_while_body  {:
+      KW_WHILE:w error:e expression OP_WRAPPERPARENTHESISRIGHT OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT {:
         parser.generateSyntaxError("Left parenthesis missing", "(", w);
       :}
     | 
-      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERPARENTHESISRIGHT control_while_body  {:
-        parser.generateSyntaxError("Expression missing in conditional structure", "expression", null);
+      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERPARENTHESISRIGHT OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT  {:
+        parser.generateSyntaxError("Expression missing in conditional structure", "expression", e);
       :}
     | 
-      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e control_while_body  {:
+      KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT {:
         parser.generateSyntaxError("Right parenthesis missing", ")", w);
       :}
     | 
-      KW_WHILE:w error:e control_while_body  {:
+      KW_WHILE:w error:e OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT  {:
         parser.generateSyntaxError("Some code between while and conditional expression", "While", e);
       :}
     ;
@@ -477,30 +498,12 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         {:
           parser.generateSyntaxError("Syntax error, illegal code after the else or if declaration", "If", e);
         :}
+      | expression error:e OP_INSTRUCTIONENDOPERATOR gramatic_body  
+        {:  System.out.println("\n$Error gramatic body, line 501. \n");
+            parser.generateSyntaxError("Error in gramatic body, unknown error", "Gramatic Body", e);
+        :}
       |
       ;
-  
-
-  error_gramatic ::=
-  | KW_ELSE  error:e  
-    {:    
-      parser.generateSyntaxError("Syntax error, illegal code after the else or if declaration", "If", e);
-    :}
-      // instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
-      //   parser.generateSyntaxError("Instruction end operator expected (;)", ";", null); 
-      // :}
-  //   | 
-  //     expression:ex error:e OP_INSTRUCTIONENDOPERATOR {: 
-  //       parser.generateSyntaxError("Instruction end operator expected (;)", ";", ex); 
-  //     :}
-  //   // | 
-  //   //   instruction:i error:e OP_INSTRUCTIONENDOPERATOR {: 
-  //   //     parser.generateSyntaxError("Instruction end operator expected (;)", ";", i); 
-  //   //   :}
-  //   | KW_RETURN:kr expression error:e OP_INSTRUCTIONENDOPERATOR {:
-  //       parser.generateSyntaxError("Instruction end operator expected (;)", ";", kr); 
-  //     :}
-  ;
 
 //Variables, Globales y constantes
   global ::= 
@@ -609,6 +612,8 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | IDENT expression_unary_operator
       | expression expression_binary_operators expression 
       | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
+      | OP_NEGATION expression
+      | OP_NOT expression
       ;
 
   expression_numeric ::=
@@ -683,7 +688,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | OP_OR 
       | OP_SHIFTOPLEFT
       | OP_SHIFTOPRIGHT
-      | OP_NOT
+      //| OP_NOT
       | OP_XOR
       //ASSIGMENT OPERATORS
       | OP_ASIG

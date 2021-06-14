@@ -5,15 +5,11 @@
 int x;                         
 
 int funcion1(){ //deberia dar error, pues debe haber una expresion
-    
- 
 
-while ((!f)||(x<2)) { 
-
-	x= a+b; 
-	x--; 
-	continue; 
-	break;} 
+	while ((!f)||(x<2)) { 
+		x++;
+		break;
+	}
 
 }
  // el del fin de la funcion
