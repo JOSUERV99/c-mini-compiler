@@ -19,6 +19,8 @@ public interface MasmInstructions {
     public final String PUSHD = "PUSHAD";
     public final String POPA = "POPA";
     public final String POPAD = "POPAD";
+    public final String PUSHF = "PUSHF";
+    public final String POPF = "POPF";
 
 //shift instructions
     public final String RCL = "RCL";
