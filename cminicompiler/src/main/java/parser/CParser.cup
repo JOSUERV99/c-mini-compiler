@@ -65,7 +65,9 @@ scan with {: return this.s.next_token(); :};
 /* Non Terminals (generated using the terminals tokens) */
   //Non-terminals function
   non terminal  function_declaration_0,
+                error_function_declaration_0,
                 function_declaration_1,
+                error_function_declaration_1,
                 function_declaration,
                 unknown_function_declaration_error,
                 keyword_types,
@@ -246,34 +248,44 @@ error_program_definition ::=
 /*
 Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier ( Parametros )*/
   function_declaration ::= 
-    keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT  function_declaration_0 function_declaration_1
-    //| error_function_declaration
-   
+      keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT  function_declaration_0 function_declaration_1
+    | keyword_types:kt error:e                          function_declaration_0 function_declaration_1
+    {:
+      parser.generateSyntaxError("Syntax error function declaration must give a name or missing parenthesis", "Function", e);
+    :} 
     ;
+
 
   function_declaration_0 ::=
       parameters_definition OP_WRAPPERPARENTHESISRIGHT 
     | OP_WRAPPERPARENTHESISRIGHT
+    | error_function_declaration_0
     ;
-
-  function_declaration_1 ::=
-      OP_WRAPPERKEYPARENTHESISLEFT gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
-      ;
-
-  unknown_function_declaration_error ::=
-      error:e OP_INSTRUCTIONENDOPERATOR
+  error_function_declaration_0 ::=
+     error:e OP_WRAPPERPARENTHESISRIGHT
     {:
       parser.generateSyntaxError("Syntax error function declaration UNKNOWN TYPE 1", "UNKNOWN", e);
     :}
-    | error:e OP_WRAPPERKEYPARENTHESISRIGHT
+    | parameters_definition error:e OP_WRAPPERPARENTHESISRIGHT 
     {:
-      parser.generateSyntaxError("Syntax error function declaration UNKNOWN TYPE 2", "UNKNOWN", e);
-    :} 
-    | error:e OP_WRAPPERKEYPARENTHESISLEFT
-    {:
-      parser.generateSyntaxError("Syntax error function declaration UNKNOWN TYPE 3", "UNKNOWN", e);
-    :} 
+      parser.generateSyntaxError("Syntax error function declaration some code in parameters", "UNKNOWN", e);
+    :}
     ;
+
+
+  function_declaration_1 ::=
+      OP_WRAPPERKEYPARENTHESISLEFT gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
+
+    | OP_WRAPPERKEYPARENTHESISLEFT error:e
+    {:
+      parser.generateSyntaxError("Right parenthesis missing", "Fuction declaration", e);
+    :}
+    | gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
+    {:
+      parser.generateSyntaxError("Left parenthesis missing", "Fuction declaration", null);
+    :}
+    ;
+
 
   error_function_declaration ::= 
       error:e IDENT:fn OP_WRAPPERPARENTHESISLEFT function_declaration_0 function_declaration_1 {:
@@ -494,13 +506,14 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body
       | control_structure                              gramatic_body
       | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body
+      | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body
       | KW_ELSE error:e gramatic_body
         {:
           parser.generateSyntaxError("Syntax error, illegal code after the else or if declaration", "If", e);
         :}
-      | expression error:e OP_INSTRUCTIONENDOPERATOR gramatic_body  
-        {:  System.out.println("\n$Error gramatic body, line 501. \n");
-            parser.generateSyntaxError("Error in gramatic body, unknown error", "Gramatic Body", e);
+      | expression error:e OP_INSTRUCTIONENDOPERATOR   gramatic_body  
+        {:  System.out.println("\n$Error gramatic body, line 506. \n");
+            parser.generateSyntaxError("Error in gramatic body at expression, unknown error", "Gramatic Body", e);
         :}
       |
       ;
