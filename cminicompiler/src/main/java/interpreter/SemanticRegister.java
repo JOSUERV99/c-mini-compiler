@@ -1,11 +1,10 @@
 package interpreter;
 
-public interface GramaticStructure {
+public interface SemanticRegister {
 
     public String getCode();
 
     public boolean isFinished();
 
     public String getLabel();
-
 }

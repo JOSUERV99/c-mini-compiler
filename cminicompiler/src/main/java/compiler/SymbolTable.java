@@ -25,7 +25,7 @@ public class SymbolTable extends HashMap<String, Symbol> {
         this.put(identifier, symbol);
     }
 
-    public boolean isRegistered(String identifier) {
+    public boolean isDeclared(String identifier) {
         return this.containsKey(identifier);
     }
 
@@ -46,21 +46,21 @@ public class SymbolTable extends HashMap<String, Symbol> {
         return this.size();
     }
 
-    @Override
-    public String toString() {
+    // @Override
+    // public String toString() {
 
-        StringBuilder strTable = new StringBuilder("#########################\n");
-        strTable.append("Symbol Table\n");
-        strTable.append("#########################\n");
+    // StringBuilder strTable = new StringBuilder("#########################\n");
+    // strTable.append("Symbol Table\n");
+    // strTable.append("#########################\n");
 
-        if (this.getSymbolsAmount() == 0) {
-            strTable.append("There's no symbols to show");
-            return strTable.toString();
-        }
+    // if (this.getSymbolsAmount() == 0) {
+    // strTable.append("There's no symbols to show");
+    // return strTable.toString();
+    // }
 
-        for (String key : this.keySet())
-            strTable.append(" | " + key + " | " + this.get(key) + " | ");
+    // for (String key : this.keySet())
+    // strTable.append(" | " + key + " | " + this.get(key) + " | ");
 
-        return strTable.toString();
-    }
+    // return strTable.toString();
+    // }
 }
