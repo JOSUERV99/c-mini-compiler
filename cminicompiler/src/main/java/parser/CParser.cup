@@ -1,9 +1,14 @@
 /* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
+import java.util.LinkedList;
+
 import lexer.CLexer;
 import handler.Analyzer;
 import model.Token;
 import errors.SyntaxError;
+import interpreter.*;
+import itypes.*;
+import iexpressions.*;
 
 parser code {:
 
@@ -43,7 +48,7 @@ init with {:  :};
 scan with {: return this.s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
-  terminal IDENT;
+  terminal String IDENT;
   terminal KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST;
   terminal KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
   terminal KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO;
@@ -70,13 +75,14 @@ scan with {: return this.s.next_token(); :};
                 error_function_declaration_1,
                 function_declaration,
                 unknown_function_declaration_error,
-                keyword_types,
                 parameters,
                 parameter,
                 parameters_definition,
-                parameter_definition,
-                program_definition
+                parameter_definition
                 ;
+
+  non terminal ITypeToken keyword_types;
+  non terminal  ProgramDefinition program_definition;
 
   non terminal  gramatic_body,
                 gramatic_body_0;
@@ -95,8 +101,13 @@ scan with {: return this.s.next_token(); :};
               ;
 
   non terminal expression_atomic_call_functions_anytype;
+  
   //Non-terminal Variables
-  non terminal global, constant, variable, variable_definition;
+  non terminal GlobalVarDefinition global;
+  non terminal GlobalVarDefinition variable;
+  non terminal LinkedList<AssignDefinition> variable_definition;
+  non terminal constant;
+  
   //Non-terminal Estrucutura Control
   non terminal control_structure, control_if, control_if_else, control_else; 
 
@@ -110,7 +121,7 @@ scan with {: return this.s.next_token(); :};
   non terminal control_for, control_for_instruction, control_for_instruction1, control_for_body;
 
   //Program Start non termi
-  non terminal start_program;
+  non terminal ProgramDefinition start_program;
 
   //Error non terminal productions
   non terminal 
@@ -200,22 +211,30 @@ scan with {: return this.s.next_token(); :};
 
 start with start_program;
 
-//Referencias
-//https://stackoverflow.com/questions/44091680/java-cup-runtime-symbol-eof-has-not-been-declared
-//https://www.cs.auckland.ac.nz/courses/compsci330s1c/lectures/330ChaptersPDF/Chapt4.pdf
-
 start_program ::= 
-    program_definition
+    program_definition:pd {:
+      RESULT = pd;
+    :}
     ;
 
 program_definition ::= 
-      function_declaration:fd program_definition:pd 
-    | global:g program_definition:pd      
-    | constant:c program_definition:pd
-    | error_program_definition:e_p_d program_definition:pd
-      {: System.out.println("$Error program definition, line 213. ");
-      :}
-    |
+    function_declaration:fd program_definition:pd {:
+      RESULT = pd;  
+    :}
+    | global:g program_definition:pd {:
+      pd.addGlobalVar(g);
+      RESULT = pd;  
+    :}     
+    | constant:c program_definition:pd {:
+      RESULT = pd;  
+    :}
+    | error_program_definition:e_p_d program_definition:pd {:
+      System.out.println("$Error program definition, line 213. ");
+      RESULT = pd;
+    :}
+    | {:
+      RESULT = new ProgramDefinition();
+    :}
     ;
 
 error_program_definition ::=
@@ -520,7 +539,9 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
 //Variables, Globales y constantes
   global ::= 
-          variable:v OP_INSTRUCTIONENDOPERATOR
+      variable:v OP_INSTRUCTIONENDOPERATOR {:
+        RESULT = v;
+      :}
       //  | error_variable_definition //definida para atrapar errores
       // | variable:v error:e {:
       //     parser.generateSyntaxError("Instruction end operator was expected (;)", ";", v);
@@ -558,14 +579,33 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       ;
 
   variable ::= 
-      keyword_types variable_definition 
+      keyword_types:kt variable_definition:vd {:
+        GlobalVarDefinition gv = new GlobalVarDefinition(kt, vd);
+        RESULT = gv;
+      :}
     ;
 
   variable_definition ::= 
-        IDENT 							
-      | IDENT OP_ASIG expression:e					
-      | IDENT OP_COMMA variable_definition:vd 
-      | IDENT OP_ASIG expression:e OP_COMMA variable_definition:vd
+      IDENT:i {: 
+        AssignDefinition ad = new AssignDefinition(i, null);
+        LinkedList<AssignDefinition> adl = new LinkedList<>();
+        adl.addLast(ad);
+        RESULT = adl;
+      :}					
+      | IDENT:i OP_ASIG expression:e {: 
+          AssignDefinition ad = new AssignDefinition(i, e);
+          LinkedList<AssignDefinition> adl = new LinkedList<>();
+          adl.addLast(ad);
+          RESULT = adl;
+      :}		
+      | IDENT:i OP_COMMA variable_definition:vd {: 
+          vd.addLast(new AssignDefinition(i, null));  
+          RESULT = vd; 
+      :}
+      | IDENT:i OP_ASIG expression:e OP_COMMA variable_definition:vd {:
+          vd.addLast(new AssignDefinition(i, e)); 
+          RESULT = vd; 
+      :}
       //| error_variable_definition
       ;
 
@@ -639,7 +679,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
     ;
 
   expression_atomic::=
-        IDENT
+        IDENT 
       | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 				
       | IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				 
       | LIT_HEXVALUE
@@ -719,7 +759,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
 //Keyword types
   keyword_types ::= 
-        KW_INT 
+        KW_INT:i  {: RESULT = new IntTypeToken(i); :}
       | KW_CHAR 
       | KW_LONG 
       | KW_SHORT 

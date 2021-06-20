@@ -21,6 +21,7 @@ import errors.Error;
 import errors.LexicalError;
 import errors.SyntaxError;
 import java_cup.runtime.ScannerBuffer;
+import java_cup.runtime.Symbol;
 import java_cup.runtime.XMLElement;
 import utils.FileUtils;
 
@@ -72,12 +73,13 @@ public class Analyzer {
         System.out.println("Parsing finished!");
     }
 
-    public void compile(String fileInputName, String s) throws Exception {
+    public Symbol compile(String fileInputName, String s) throws Exception {
 
         this.fileInputName = fileInputName;
         this.init();
-        this.parser.debug_parse();
+        Symbol tree = this.parser.parse();
         this.displaySummary();
+        return tree;
     }
 
     public void addSyntaxError(SyntaxError syntaxError) {

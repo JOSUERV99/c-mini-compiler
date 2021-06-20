@@ -1,6 +1,6 @@
 package interpreter;
 
-public interface SemanticRegister {
+public interface ISemanticRegister {
 
     public String getCode();
 
