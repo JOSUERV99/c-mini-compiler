@@ -39,4 +39,10 @@ public class ProgramDefinition implements ISemanticRegister {
     public void setGlobalVars(LinkedList<GlobalVarDefinition> globalVars) {
         this.globalVars = globalVars;
     }
+
+    @Override
+    public String toString() {
+        return "ProgramDefinition [globalVars=" + globalVars + "]";
+    }
+
 }

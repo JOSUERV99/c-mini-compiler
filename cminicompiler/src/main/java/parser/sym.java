@@ -23,7 +23,7 @@ public interface sym {
   public static final int OP_GT = 44;
   public static final int OP_DIV = 35;
   public static final int KW_SHORT = 23;
-  public static final int LIT_FLOATVALUE = 83;
+  public static final int LIT_FLOATVALUE = 82;
   public static final int KW_FOR = 16;
   public static final int OP_LTE = 42;
   public static final int KW_REGISTER = 21;
@@ -33,9 +33,9 @@ public interface sym {
   public static final int OP_WRAPPERKEYPARENTHESISRIGHT = 77;
   public static final int KW_INT = 19;
   public static final int OP_POINTEROPERATOR = 79;
-  public static final int LIT_DECIMALVALUE = 82;
+  public static final int LIT_DECIMALVALUE = 87;
   public static final int OP_ASIG = 68;
-  public static final int LIT_CHARVALUE = 84;
+  public static final int LIT_CHARVALUE = 83;
   public static final int KW_ENUM = 13;
   public static final int OP_SHIFTRIGHTASSIGN = 65;
   public static final int KW_SWITCH = 28;
@@ -51,7 +51,7 @@ public interface sym {
   public static final int KW_FLOAT = 15;
   public static final int KW_GOTO = 17;
   public static final int OP_NOTASSIGN = 62;
-  public static final int LIT_STRINGDEF = 86;
+  public static final int LIT_STRINGDEF = 85;
   public static final int OP_COMMA = 40;
   public static final int OP_NEGATION = 53;
   public static final int OP_WRAPPERSQUAREPARENTHESISLEFT = 74;
@@ -65,7 +65,7 @@ public interface sym {
   public static final int OP_MINUSASSIGN = 55;
   public static final int OP_INSTRUCTIONENDOPERATOR = 78;
   public static final int OP_ORASSIGN = 63;
-  public static final int LIT_EXPONENTIALDEF = 87;
+  public static final int LIT_EXPONENTIALDEF = 86;
   public static final int KW_LONG = 20;
   public static final int OP_ANDCOMP = 47;
   public static final int IDENT = 2;
@@ -84,7 +84,7 @@ public interface sym {
   public static final int KW_BREAK = 4;
   public static final int OP_NOTEQUALCOMP = 45;
   public static final int OP_SHIFTOPRIGHT = 69;
-  public static final int LIT_OCTALVALUE = 85;
+  public static final int LIT_OCTALVALUE = 84;
   public static final int KW_SIGNED = 24;
   public static final int OP_EQUALCOMP = 48;
   public static final int OP_ANDASSIGN = 61;
@@ -180,12 +180,12 @@ public interface sym {
   "OP_POINTEROPERATOR",
   "OP_POINTEROPERATORASTERISC",
   "LIT_HEXVALUE",
-  "LIT_DECIMALVALUE",
   "LIT_FLOATVALUE",
   "LIT_CHARVALUE",
   "LIT_OCTALVALUE",
   "LIT_STRINGDEF",
   "LIT_EXPONENTIALDEF",
+  "LIT_DECIMALVALUE",
   "NEWLINE"
   };
 }

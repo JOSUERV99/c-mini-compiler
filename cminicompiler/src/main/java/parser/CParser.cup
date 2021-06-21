@@ -9,6 +9,7 @@ import errors.SyntaxError;
 import interpreter.*;
 import itypes.*;
 import iexpressions.*;
+import model.*;
 
 parser code {:
 
@@ -48,11 +49,13 @@ init with {:  :};
 scan with {: return this.s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
-  terminal String IDENT;
+  terminal IdentifierToken IDENT;
   terminal KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST;
   terminal KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
   terminal KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO;
-  terminal KW_IF,KW_INT,KW_LONG,KW_REGISTER,KW_RETURN;
+  terminal KW_IF;
+  terminal KeywordToken KW_INT;
+  terminal KW_LONG,KW_REGISTER,KW_RETURN;
   terminal KW_SHORT,KW_SIGNED,KW_SIZEOF,KW_STATIC,KW_STRUCT;
   terminal KW_SWITCH,KW_TYPEDEF,KW_UNION,KW_UNSIGNED,KW_VOID;
   terminal KW_VOLATILE,KW_WHILE,OP_DIV,OP_PLUS,OP_MINUS;
@@ -64,12 +67,13 @@ scan with {: return this.s.next_token(); :};
   terminal OP_ORASSIGN,OP_SHIFTLEFTASSIGN,OP_SHIFTRIGHTASSIGN,OP_TERNARYOPERATORQUESTIONMARK,OP_TERNARYOPERATIONDOUBLEDOT;
   terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR;
   terminal OP_WRAPPERPARENTHESISLEFT,OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
-  terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_DECIMALVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
+  terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
+  terminal LiteralToken LIT_DECIMALVALUE;
   terminal NEWLINE;
 
 /* Non Terminals (generated using the terminals tokens) */
   //Non-terminals function
-  non terminal  function_declaration_0,
+  non terminal function_declaration_0,
                 error_function_declaration_0,
                 function_declaration_1,
                 error_function_declaration_1,
@@ -82,17 +86,17 @@ scan with {: return this.s.next_token(); :};
                 ;
 
   non terminal ITypeToken keyword_types;
-  non terminal  ProgramDefinition program_definition;
+  non terminal ProgramDefinition program_definition;
 
   non terminal  gramatic_body,
                 gramatic_body_0;
   //Non-terminal expressions
-  non terminal  instruction,
-                expression,
-                expression_any_type,
-                expression_numeric,
-                expression_atomic,
-                expression_unary_operator,
+  non terminal instruction;
+  non terminal IExpression expression_any_type;
+  non terminal expression_numeric;
+  non terminal IExpression expression;
+  non terminal IExpression expression_atomic;
+  non terminal expression_unary_operator,
                 expression_binary_operators
                 ;
 
@@ -655,12 +659,12 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       ;
 
   expression ::=    
-        OP_WRAPPERPARENTHESISLEFT expression_any_type OP_WRAPPERPARENTHESISRIGHT
-      | expression_any_type
+        OP_WRAPPERPARENTHESISLEFT expression_any_type:e OP_WRAPPERPARENTHESISRIGHT {: RESULT = e; :}
+      | expression_any_type:e {: RESULT = e; :}
       ;
 
   expression_any_type ::=
-        expression_atomic
+        expression_atomic:e {: RESULT = e; :}
       | expression_unary_operator IDENT
       | IDENT expression_unary_operator
       | expression expression_binary_operators expression 
@@ -683,7 +687,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 				
       | IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				 
       | LIT_HEXVALUE
-      | LIT_DECIMALVALUE
+      | LIT_DECIMALVALUE:l {: RESULT = new LiteralDecimalExpression(l); :}
       | LIT_FLOATVALUE
       | LIT_CHARVALUE
       | LIT_OCTALVALUE

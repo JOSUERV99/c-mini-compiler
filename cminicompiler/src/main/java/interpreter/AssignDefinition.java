@@ -1,15 +1,18 @@
 package interpreter;
 
+import iexpressions.IExpression;
 import itypes.ITypeToken;
+import model.IdentifierToken;
 
 public class AssignDefinition implements ISemanticRegister {
 
     private ITypeToken type;
-    private String identifier, value;
+    private IdentifierToken identifier;
+    private IExpression expression;
 
-    public AssignDefinition(String identifier, String value) {
+    public AssignDefinition(IdentifierToken identifier, IExpression expression) {
         this.identifier = identifier;
-        this.value = value;
+        this.expression = expression;
     }
 
     public ITypeToken getType() {
@@ -20,20 +23,20 @@ public class AssignDefinition implements ISemanticRegister {
         this.type = type;
     }
 
-    public String getIdentifier() {
+    public IExpression getExpression() {
+        return expression;
+    }
+
+    public void setExpression(IExpression expression) {
+        this.expression = expression;
+    }
+
+    public IdentifierToken getIdentifier() {
         return identifier;
     }
 
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(IdentifierToken identifier) {
         this.identifier = identifier;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override
@@ -52,6 +55,11 @@ public class AssignDefinition implements ISemanticRegister {
     public String getLabel() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "AssignDefinition [expression=" + expression + ", identifier=" + identifier + ", type=" + type + "]";
     }
 
 }

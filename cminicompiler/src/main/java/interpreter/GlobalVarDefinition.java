@@ -3,7 +3,7 @@ package interpreter;
 import itypes.ITypeToken;
 import java.util.LinkedList;
 
-public class GlobalVarDefinition {
+public class GlobalVarDefinition implements Initializable {
 
     private ITypeToken type;
     private LinkedList<AssignDefinition> assignments;
@@ -11,6 +11,14 @@ public class GlobalVarDefinition {
     public GlobalVarDefinition(ITypeToken type, LinkedList<AssignDefinition> assignments) {
         this.type = type;
         this.assignments = assignments;
+    }
+
+    public void setTypeForEachAssign() {
+        if (this.type == null)
+            return;
+
+        for (AssignDefinition ad : assignments)
+            ad.setType(this.type);
     }
 
     public ITypeToken getType() {
@@ -28,4 +36,16 @@ public class GlobalVarDefinition {
     public void setAssignments(LinkedList<AssignDefinition> assignments) {
         this.assignments = assignments;
     }
+
+    @Override
+    public String toString() {
+        return "GlobalVarDefinition [assignments=" + assignments + ", type=" + type + "]";
+    }
+
+    @Override
+    public void initialize() {
+        // TODO Auto-generated method stub
+
+    }
+
 }

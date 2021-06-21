@@ -1,13 +1,15 @@
 package iexpressions;
 
+import model.Token;
 import utils.TypeUtils;
 
-public class LiteralDecimalExpression implements IExpression {
+public class LiteralDecimalExpression extends IExpression {
 
     private Integer value;
 
-    public LiteralDecimalExpression(String value) {
-        this.value = TypeUtils.isInteger(value) ? (Integer) this.parse(value) : null;
+    public LiteralDecimalExpression(Token token) {
+        super(token);
+        this.value = TypeUtils.isInteger(token.getValue()) ? (Integer) this.parse(token.getValue()) : null;
     }
 
     @Override
@@ -16,10 +18,16 @@ public class LiteralDecimalExpression implements IExpression {
     }
 
     public Integer getValue() {
-        return value;
+        return this.value;
     }
 
     public void setValue(Integer value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "LiteralDecimalExpression [value=" + value + "]";
+    }
+
 }

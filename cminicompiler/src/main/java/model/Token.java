@@ -94,7 +94,11 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [\nvalue=" + value + ",\ntype=" + type + ",\nappearances=" + this.getAppearances()
-				+ ",\npositions=" + positions + "\nsymbol=" + symbol + "]\n";
+
+		return "Token [value=" + value + ",type=" + type + ",symbol=" + symbol + "]\n";
+
+		// return "Token [\nvalue=" + value + ",\ntype=" + type + ",\nappearances=" +
+		// this.getAppearances()
+		// + ",\npositions=" + positions + "\nsymbol=" + symbol + "]\n";
 	}
 }
