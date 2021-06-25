@@ -50,11 +50,11 @@ scan with {: return this.s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
   terminal IdentifierToken IDENT;
-  terminal KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR,KW_CONST;
+  terminal KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR;
   terminal KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
   terminal KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO;
   terminal KW_IF;
-  terminal KeywordToken KW_INT;
+  terminal KeywordToken KW_INT, KW_CONST;
   terminal KW_LONG,KW_REGISTER,KW_RETURN;
   terminal KW_SHORT,KW_SIGNED,KW_SIZEOF,KW_STATIC,KW_STRUCT;
   terminal KW_SWITCH,KW_TYPEDEF,KW_UNION,KW_UNSIGNED,KW_VOID;
@@ -73,23 +73,23 @@ scan with {: return this.s.next_token(); :};
 
 /* Non Terminals (generated using the terminals tokens) */
   //Non-terminals function
-  non terminal function_declaration_0,
-                error_function_declaration_0,
-                function_declaration_1,
+  non terminal LinkedList<ParamDefinition> function_declaration_0;
+  non terminal LinkedList<IGramaticInstruction> function_declaration_1;
+  non terminal FunctionDefinition function_declaration;
+  non terminal LinkedList<ParamDefinition> parameters_definition;
+  non terminal ParamDefinition parameter_definition;
+  non terminal error_function_declaration_0,
                 error_function_declaration_1,
-                function_declaration,
                 unknown_function_declaration_error,
                 parameters,
-                parameter,
-                parameters_definition,
-                parameter_definition
+                parameter
                 ;
 
   non terminal ITypeToken keyword_types;
   non terminal ProgramDefinition program_definition;
 
-  non terminal  gramatic_body,
-                gramatic_body_0;
+  non terminal LinkedList<IGramaticInstruction> gramatic_body;
+
   //Non-terminal expressions
   non terminal instruction;
   non terminal IExpression expression_any_type;
@@ -108,7 +108,7 @@ scan with {: return this.s.next_token(); :};
   
   //Non-terminal Variables
   non terminal GlobalVarDefinition global;
-  non terminal GlobalVarDefinition variable;
+  non terminal VarDefinition variable;
   non terminal LinkedList<AssignDefinition> variable_definition;
   non terminal constant;
   
@@ -223,6 +223,7 @@ start_program ::=
 
 program_definition ::= 
     function_declaration:fd program_definition:pd {:
+      pd.addFunction(fd);
       RESULT = pd;  
     :}
     | global:g program_definition:pd {:
@@ -268,22 +269,33 @@ error_program_definition ::=
     parser.generateSyntaxError("Syntax error UNKNOWN TYPE", "UNKNOWN", e);
   :} 
   ;
+
 /*
 Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier ( Parametros )*/
   function_declaration ::= 
-      keyword_types:kt IDENT OP_WRAPPERPARENTHESISLEFT  function_declaration_0 function_declaration_1
-    | keyword_types:kt error:e                          function_declaration_0 function_declaration_1
+      keyword_types:kt IDENT:i OP_WRAPPERPARENTHESISLEFT function_declaration_0:params function_declaration_1:body 
+      {:
+        FunctionDefinition function = new FunctionDefinition(kt, i, params, body);
+
+        RESULT = function;
+      :}
+    | keyword_types:kt error:e                          function_declaration_0:params function_declaration_1:body
     {:
       parser.generateSyntaxError("Syntax error function declaration must give a name or missing parenthesis", "Function", e);
     :} 
     ;
 
-
   function_declaration_0 ::=
-      parameters_definition OP_WRAPPERPARENTHESISRIGHT 
-    | OP_WRAPPERPARENTHESISRIGHT
+      parameters_definition:pd OP_WRAPPERPARENTHESISRIGHT {: 
+        RESULT = pd; 
+      :} 
+    | OP_WRAPPERPARENTHESISRIGHT {: 
+      LinkedList<ParamDefinition> emptyParams = new LinkedList<>();
+      RESULT = emptyParams;
+    :}
     | error_function_declaration_0
     ;
+
   error_function_declaration_0 ::=
      error:e OP_WRAPPERPARENTHESISRIGHT
     {:
@@ -297,7 +309,10 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
 
   function_declaration_1 ::=
-      OP_WRAPPERKEYPARENTHESISLEFT gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
+      OP_WRAPPERKEYPARENTHESISLEFT gramatic_body:gb OP_WRAPPERKEYPARENTHESISRIGHT
+      {:
+        RESULT = gb;
+      :}
 
     | OP_WRAPPERKEYPARENTHESISLEFT error:e
     {:
@@ -521,16 +536,26 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
 //Cuerpo gramatica 
   gramatic_body ::=
-        OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body  OP_WRAPPERKEYPARENTHESISRIGHT 
-      | constant                                       gramatic_body
-      |             OP_INSTRUCTIONENDOPERATOR          gramatic_body
-      | variable    OP_INSTRUCTIONENDOPERATOR          gramatic_body 
-      | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body
-      | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body
-      | control_structure                              gramatic_body
-      | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body
-      | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body
-      | KW_ELSE error:e gramatic_body
+        OP_WRAPPERKEYPARENTHESISLEFT                   gramatic_body:gb  OP_WRAPPERKEYPARENTHESISRIGHT 
+        {:
+          RESULT = gb;
+        :}
+      | constant                                       gramatic_body:gb 
+      |             OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb  
+        {:
+          RESULT = gb;
+        :}
+      | variable:var    OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb
+        {:
+          gb.addLast(var);
+          RESULT = gb;
+        :}  
+      | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
+      | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
+      | control_structure                              gramatic_body:gb 
+      | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
+      | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
+      | KW_ELSE error:e gramatic_body:gb 
         {:
           parser.generateSyntaxError("Syntax error, illegal code after the else or if declaration", "If", e);
         :}
@@ -538,13 +563,17 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         {:  System.out.println("\n$Error gramatic body, line 506. \n");
             parser.generateSyntaxError("Error in gramatic body at expression, unknown error", "Gramatic Body", e);
         :}
-      |
+      | {:
+        LinkedList<IGramaticInstruction> gramaticBody = new LinkedList<>();
+        RESULT = gramaticBody;
+      :}
       ;
 
 //Variables, Globales y constantes
   global ::= 
       variable:v OP_INSTRUCTIONENDOPERATOR {:
-        RESULT = v;
+        GlobalVarDefinition gvd = new GlobalVarDefinition(v);
+        RESULT = gvd;
       :}
       //  | error_variable_definition //definida para atrapar errores
       // | variable:v error:e {:
@@ -584,7 +613,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
   variable ::= 
       keyword_types:kt variable_definition:vd {:
-        GlobalVarDefinition gv = new GlobalVarDefinition(kt, vd);
+        VarDefinition gv = new VarDefinition(kt, vd);
         RESULT = gv;
       :}
     ;
@@ -631,14 +660,37 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       ;
 
   parameters_definition ::= 
-        parameter_definition OP_COMMA parameters_definition 
-      | parameter_definition 
+        parameter_definition:pd OP_COMMA parameters_definition:params {:
+          params.addLast(pd);
+          RESULT = params;
+        :}
+      | parameter_definition:pd {: 
+          LinkedList<ParamDefinition> params = new LinkedList<>();
+          params.addLast(pd);
+          RESULT = params;
+        :}
       ;
 
   parameter_definition ::= 
-        keyword_types IDENT:id
-      | KW_CONST keyword_types IDENT
-      | KW_CONST keyword_types IDENT OP_ASIG expression_atomic
+        keyword_types:kt IDENT:id {: 
+          ParamDefinition pd = new ParamDefinition(kt, id);
+
+          RESULT = pd;
+        :}
+      /*Funciona en Mingw++ pero no tiene sentido, se saca
+        | KW_CONST:c keyword_types:kt IDENT:i {:
+          ConstTypeToken ctt = new ConstTypeToken(c, kt, null);
+          ParamDefinition pd = new ParamDefinition(ctt, id);
+
+          RESULT = pd;
+      :}*/
+      | KW_CONST:c keyword_types:kt IDENT:id OP_ASIG expression_atomic:ea
+        {:
+          ConstTypeToken ctt = new ConstTypeToken(c, kt, ea);
+          ParamDefinition pd = new ParamDefinition(ctt, id);
+
+          RESULT = pd;
+        :}
       //| error_parameter
         ;
 

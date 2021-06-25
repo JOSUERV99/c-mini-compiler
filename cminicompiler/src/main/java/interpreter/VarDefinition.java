@@ -3,7 +3,9 @@ package interpreter;
 import itypes.ITypeToken;
 import java.util.LinkedList;
 
-public class VarDefinition implements ISemanticRegister, Initializable {
+import iexpressions.IGramaticInstruction;
+
+public class VarDefinition implements ISemanticRegister, Initializable, IGramaticInstruction {
 
     private ITypeToken type;
     private LinkedList<AssignDefinition> assignments;
@@ -68,6 +70,11 @@ public class VarDefinition implements ISemanticRegister, Initializable {
 
     public void setAssignments(LinkedList<AssignDefinition> assignments) {
         this.assignments = assignments;
+    }
+
+    @Override
+    public String toString() {
+        return "VarDefinition: assignments= " + assignments + ", type= " + type;
     }
 
 }

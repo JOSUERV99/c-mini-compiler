@@ -20,6 +20,6 @@ public class IntTypeToken implements ITypeToken {
 
     @Override
     public String toString() {
-        return IntTypeToken.class.getName() + " : " + this.token.getValue();
+        return this.token.getValue();
     }
 }

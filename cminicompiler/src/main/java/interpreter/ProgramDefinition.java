@@ -5,9 +5,11 @@ import java.util.LinkedList;
 public class ProgramDefinition implements ISemanticRegister {
 
     private LinkedList<GlobalVarDefinition> globalVars;
+    private LinkedList<FunctionDefinition> functionDefinitions;
 
     public ProgramDefinition() {
         this.globalVars = new LinkedList<>();
+        this.functionDefinitions = new LinkedList<>();
     }
 
     @Override
@@ -28,6 +30,18 @@ public class ProgramDefinition implements ISemanticRegister {
         return null;
     }
 
+    public LinkedList<FunctionDefinition> getFunctionDefinitions() {
+        return functionDefinitions;
+    }
+
+    public void setFunctionDefinitions(LinkedList<FunctionDefinition> functionDefinitions) {
+        this.functionDefinitions = functionDefinitions;
+    }
+
+    public void addFunction(FunctionDefinition function) {
+        this.functionDefinitions.addLast(function);
+    }
+
     public void addGlobalVar(GlobalVarDefinition globalVar) {
         this.globalVars.addLast(globalVar);
     }
@@ -42,7 +56,7 @@ public class ProgramDefinition implements ISemanticRegister {
 
     @Override
     public String toString() {
-        return "ProgramDefinition [globalVars=" + globalVars + "]";
+        return "ProgramDefinition: functionDefinitions= " + functionDefinitions + ", globalVars= " + globalVars;
     }
 
 }
