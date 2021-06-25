@@ -8,6 +8,11 @@ public class GlobalVarDefinition implements Initializable {
     private ITypeToken type;
     private LinkedList<AssignDefinition> assignments;
 
+    public GlobalVarDefinition(VarDefinition var) {
+        this.type = var.getType();
+        this.assignments = var.getAssignments();
+    }
+
     public GlobalVarDefinition(ITypeToken type, LinkedList<AssignDefinition> assignments) {
         this.type = type;
         this.assignments = assignments;

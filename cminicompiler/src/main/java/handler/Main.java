@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        String fileInputName = "C:/Users/Josue/Documents/git/CMiniCompiler/cminicompiler/src/main/java/test/wkg.c";
+        String fileInputName = "src/main/java/test/wkg.c";
         String fileOutputName = "src/main/java/out/Ofactorial.xml";
 
         Analyzer analyzer = new Analyzer();
