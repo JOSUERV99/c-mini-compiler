@@ -1,15 +1,16 @@
 package iexpressions;
 
-import model.Token;
+import model.LiteralToken;
 import utils.TypeUtils;
 
-public class LiteralExponentialExpression extends IExpression {
+public class LiteralExponentialExpression implements IExpression {
 
     private Integer value;
+    private LiteralToken token;
 
-    public LiteralExponentialExpression(Token token) {
-        super(token);
-        this.value = TypeUtils.isInteger(token.getValue()) ? (Integer) this.parse(token.getValue()) : null;
+    public LiteralExponentialExpression(LiteralToken token) {
+        this.token = token;
+        this.value = TypeUtils.isInteger(token.getValue()) ? (Integer) Integer.parseInt(token.getValue()) : null;
     }
 
     public Integer getValue() {
@@ -20,15 +21,17 @@ public class LiteralExponentialExpression extends IExpression {
         this.value = value;
     }
 
-    @Override
-    public Object parse(String value) {
-        // TODO Auto-generated method stub
-        return null;
+    public LiteralToken getToken() {
+        return token;
+    }
+
+    public void setToken(LiteralToken token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
-        return "LiteralExponentialExpression [value=" + value + "]";
+        return "LiteralExponentialExpression [token= " + token + ", value= " + value + "]";
     }
 
 }

@@ -1,23 +1,18 @@
 package iexpressions;
 
-import model.Token;
+import model.LiteralToken;
 
-public class LiteralStringExpression extends IExpression {
+public class LiteralStringExpression implements IExpression {
 
-    public LiteralStringExpression(Token token) {
-        super(token);
-        // TODO Auto-generated constructor stub
-    }
+    private LiteralToken token;
 
-    @Override
-    public Object parse(String value) {
-        // TODO Auto-generated method stub
-        return null;
+    public LiteralStringExpression(LiteralToken token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
-        return "LiteralStringExpression []";
+        return "LiteralStringExpression [token=" + token + "]";
     }
 
 }

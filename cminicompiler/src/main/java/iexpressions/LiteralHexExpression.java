@@ -1,22 +1,18 @@
 package iexpressions;
 
-import model.Token;
+import model.LiteralToken;
 
-public class LiteralHexExpression extends IExpression {
+public class LiteralHexExpression implements IExpression {
 
-    public LiteralHexExpression(Token token) {
-        super(token);
-    }
+    private LiteralToken token;
 
-    @Override
-    public Object parse(String value) {
-        // TODO Auto-generated method stub
-        return null;
+    public LiteralHexExpression(LiteralToken token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
-        return "LiteralHexExpression []";
+        return "LiteralHexExpression [token=" + token + "]";
     }
 
 }

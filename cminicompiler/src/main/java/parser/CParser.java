@@ -15,6 +15,7 @@ import interpreter.*;
 import itypes.*;
 import iexpressions.*;
 import model.*;
+import ioperators.*;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20150930 (SVN rev 66) generated parser.
@@ -3417,7 +3418,9 @@ class CUP$CParser$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).right;
 		IExpression e = (IExpression)((java_cup.runtime.Symbol) CUP$CParser$stack.peek()).value;
-		 RESULT = e; 
+		 
+          RESULT = e; 
+        
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("expression_any_type",14, ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);
             }
           return CUP$CParser$result;
@@ -3426,7 +3429,18 @@ class CUP$CParser$actions {
           case 120: // expression_any_type ::= expression_unary_operator IDENT 
             {
               IExpression RESULT =null;
+		int eupleft = ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)).left;
+		int eupright = ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)).right;
+		UnaryOperator eup = (UnaryOperator)((java_cup.runtime.Symbol) CUP$CParser$stack.elementAt(CUP$CParser$top-1)).value;
+		int ileft = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).right;
+		IdentifierToken i = (IdentifierToken)((java_cup.runtime.Symbol) CUP$CParser$stack.peek()).value;
+		
 
+          IdentifierExpression id = new IdentifierExpression(i);
+          UnaryExpression expUnary =  new UnaryExpression(eup, id, true);
+          RESULT = expUnary;
+        
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("expression_any_type",14, ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);
             }
           return CUP$CParser$result;
@@ -3435,7 +3449,18 @@ class CUP$CParser$actions {
           case 121: // expression_any_type ::= IDENT expression_unary_operator 
             {
               IExpression RESULT =null;
-
+		int ileft = ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)).right;
+		IdentifierToken i = (IdentifierToken)((java_cup.runtime.Symbol) CUP$CParser$stack.elementAt(CUP$CParser$top-1)).value;
+		int eupleft = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).left;
+		int eupright = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).right;
+		UnaryOperator eup = (UnaryOperator)((java_cup.runtime.Symbol) CUP$CParser$stack.peek()).value;
+		
+          
+          IdentifierExpression id = new IdentifierExpression(i);
+          UnaryExpression expUnary =  new UnaryExpression(eup, id, false);
+          RESULT = expUnary;
+        
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("expression_any_type",14, ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);
             }
           return CUP$CParser$result;
@@ -3707,8 +3732,14 @@ class CUP$CParser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 151: // expression_unary_operator ::= OP_MINUSMINUSASSIGN 
             {
-              Object RESULT =null;
-
+              UnaryOperator RESULT =null;
+		int opmmaleft = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).left;
+		int opmmaright = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).right;
+		KeywordToken opmma = (KeywordToken)((java_cup.runtime.Symbol) CUP$CParser$stack.peek()).value;
+		
+          UnaryOperator uOperator = new UnaryOperator(opmma);
+          RESULT = uOperator;
+        
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("expression_unary_operator",18, ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);
             }
           return CUP$CParser$result;
@@ -3716,8 +3747,14 @@ class CUP$CParser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 152: // expression_unary_operator ::= OP_PLUSPLUSASSIGN 
             {
-              Object RESULT =null;
-
+              UnaryOperator RESULT =null;
+		int opppaleft = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).left;
+		int oppparight = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).right;
+		KeywordToken opppa = (KeywordToken)((java_cup.runtime.Symbol) CUP$CParser$stack.peek()).value;
+		
+          UnaryOperator uOperator = new UnaryOperator(opppa);
+          RESULT = uOperator;
+        
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("expression_unary_operator",18, ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);
             }
           return CUP$CParser$result;

@@ -1,33 +1,26 @@
 package iexpressions;
 
-import model.Token;
+import model.LiteralToken;
 
-public class AtomicExpression extends IExpression {
+public class AtomicExpression implements IExpression {
 
-    private String value;
+    private LiteralToken token;
 
-    public AtomicExpression(Token token) {
-        super(token);
-        this.value = token.getValue();
+    public AtomicExpression(LiteralToken token) {
+        this.token = token;
     }
 
-    public String getValue() {
-        return value;
+    public LiteralToken getToken() {
+        return token;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public Object parse(String value) {
-        // TODO Auto-generated method stub
-        return null;
+    public void setToken(LiteralToken token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
-        return "AtomicExpression [value=" + value + "]";
+        return "AtomicExpression [token=" + token + "]";
     }
 
 }

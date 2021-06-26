@@ -10,6 +10,7 @@ import interpreter.*;
 import itypes.*;
 import iexpressions.*;
 import model.*;
+import ioperators.*;
 
 parser code {:
 
@@ -63,7 +64,8 @@ scan with {: return this.s.next_token(); :};
   terminal OP_LT,OP_GT,OP_NOTEQUALCOMP,OP_ORCOMP,OP_ANDCOMP;
   terminal OP_EQUALCOMP,OP_AND,OP_XOR,OP_OR,OP_NOT;
   terminal OP_NEGATION,OP_PLUSASSIGN,OP_MINUSASSIGN,OP_MULTASSIGN,OP_DIVASSIGN;
-  terminal OP_MINUSMINUSASSIGN,OP_PLUSPLUSASSIGN,OP_MODASSIGN,OP_ANDASSIGN,OP_NOTASSIGN;
+  terminal KeywordToken OP_MINUSMINUSASSIGN,OP_PLUSPLUSASSIGN;
+  terminal OP_MODASSIGN,OP_ANDASSIGN,OP_NOTASSIGN;
   terminal OP_ORASSIGN,OP_SHIFTLEFTASSIGN,OP_SHIFTRIGHTASSIGN,OP_TERNARYOPERATORQUESTIONMARK,OP_TERNARYOPERATIONDOUBLEDOT;
   terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR;
   terminal OP_WRAPPERPARENTHESISLEFT,OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
@@ -94,10 +96,9 @@ scan with {: return this.s.next_token(); :};
   non terminal instruction;
   non terminal IExpression expression_any_type;
   non terminal expression_numeric;
-  non terminal IExpression expression;
-  non terminal IExpression expression_atomic;
-  non terminal expression_unary_operator,
-                expression_binary_operators
+  non terminal IExpression expression, expression_atomic;
+  non terminal UnaryOperator expression_unary_operator;
+  non terminal expression_binary_operators
                 ;
 
   non terminal expression_atomic_literal_int,
@@ -545,7 +546,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         {:
           RESULT = gb;
         :}
-      | variable:var    OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb
+      | variable:var OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb
         {:
           gb.addLast(var);
           RESULT = gb;
@@ -716,10 +717,26 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       ;
 
   expression_any_type ::=
-        expression_atomic:e {: RESULT = e; :}
-      | expression_unary_operator IDENT
-      | IDENT expression_unary_operator
-      | expression expression_binary_operators expression 
+      expression_atomic:e 
+        {: 
+          RESULT = e; 
+        :}
+      | expression_unary_operator:eup IDENT:i
+        {:
+
+          IdentifierExpression id = new IdentifierExpression(i);
+          UnaryExpression expUnary =  new UnaryExpression(eup, id, true);
+          RESULT = expUnary;
+        :} 
+      | IDENT:i expression_unary_operator:eup
+        {:
+          
+          IdentifierExpression id = new IdentifierExpression(i);
+          UnaryExpression expUnary =  new UnaryExpression(eup, id, false);
+          RESULT = expUnary;
+        :}
+      | expression expression_binary_operators expression
+        
       | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
       | OP_NEGATION expression
       | OP_NOT expression
@@ -769,8 +786,16 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
   expression_unary_operator ::=
       //UNARY OPERATORS
-        OP_MINUSMINUSASSIGN //--
-      | OP_PLUSPLUSASSIGN   //++
+        OP_MINUSMINUSASSIGN:opmma //--
+        {:
+          UnaryOperator uOperator = new UnaryOperator(opmma);
+          RESULT = uOperator;
+        :}
+      | OP_PLUSPLUSASSIGN:opppa   //++
+        {:
+          UnaryOperator uOperator = new UnaryOperator(opppa);
+          RESULT = uOperator;
+        :}
       ;
 
   expression_binary_operators ::= 

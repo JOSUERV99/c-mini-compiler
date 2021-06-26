@@ -1,22 +1,18 @@
 package iexpressions;
 
-import model.Token;
+import model.LiteralToken;
+import utils.TypeUtils;
 
-public class LiteralFloatExpression extends IExpression {
+public class LiteralFloatExpression implements IExpression {
 
     private Float value;
+    private LiteralToken token;
 
-    public LiteralFloatExpression(Token token) {
-        super(token);
-        // this.value = TypeUtils.isInteger(token.getValue()) ? (Integer)
-        // this.parse(token.getValue()) : null;
+    public LiteralFloatExpression(LiteralToken token) {
+        this.token = token;
+        this.value = TypeUtils.isFloat(token.getValue()) ? Float.parseFloat(s) : null;
     }
-
-    @Override
-    public Object parse(String value) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    
 
     public Float getValue() {
         return value;
@@ -24,6 +20,14 @@ public class LiteralFloatExpression extends IExpression {
 
     public void setValue(Float value) {
         this.value = value;
+    }
+
+    public LiteralToken getToken() {
+        return token;
+    }
+
+    public void setToken(LiteralToken token) {
+        this.token = token;
     }
 
     @Override

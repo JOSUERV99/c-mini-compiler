@@ -1,22 +1,18 @@
 package iexpressions;
 
-import model.Token;
+import model.IdentifierToken;
 
-public class IdentifierExpression extends IExpression {
+public class IdentifierExpression implements IExpression {
 
-    public IdentifierExpression(Token token) {
-        super(token);
-    }
+    private IdentifierToken token;
 
-    @Override
-    public Object parse(String value) {
-        // TODO Auto-generated method stub
-        return null;
+    public IdentifierExpression(IdentifierToken token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
-        return "IdentifierExpression []";
+        return "IdentifierExpression [" + this.token.getValue() + "]";
     }
 
 }

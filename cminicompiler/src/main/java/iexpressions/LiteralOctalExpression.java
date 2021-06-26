@@ -1,23 +1,17 @@
 package iexpressions;
 
-import model.Token;
+import model.LiteralToken;
 
-public class LiteralOctalExpression extends IExpression {
+public class LiteralOctalExpression implements IExpression {
 
-    public LiteralOctalExpression(Token token) {
-        super(token);
-        // TODO Auto-generated constructor stub
-    }
+    private LiteralToken token;
 
-    @Override
-    public Object parse(String value) {
-        // TODO Auto-generated method stub
-        return null;
+    public LiteralOctalExpression(LiteralToken token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
-        return "LiteralOctalExpression []";
+        return "LiteralOctalExpression [token=" + token + "]";
     }
-
 }
