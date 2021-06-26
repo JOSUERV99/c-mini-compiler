@@ -4,7 +4,7 @@ import iexpressions.IExpression;
 import itypes.ITypeToken;
 import model.IdentifierToken;
 
-public class AssignDefinition implements ISemanticRegister {
+public class AssignDefinition implements ISemanticRegister, Identificable {
 
     private ITypeToken type;
     private IdentifierToken identifier;
@@ -60,6 +60,16 @@ public class AssignDefinition implements ISemanticRegister {
     @Override
     public String toString() {
         return type + " " + identifier + "=" + expression;
+    }
+
+    @Override
+    public String getSymbolIdentifier() {
+        return this.getIdentifier().getValue();
+    }
+
+    @Override
+    public String reportRepeated() {
+        return "The variable " + this.getSymbolIdentifier() + " has been declared";
     }
 
 }

@@ -12,15 +12,18 @@ import iexpressions.*;
 import model.*;
 import ioperators.*;
 import icontrolstructures.*;
+import compiler.Compiler;
 
 parser code {:
 
-    CLexer s;
-    Analyzer a;
+    public CLexer s;
+    public Analyzer a;
+    public Compiler compRef;
 
-    public void bind(CLexer lexer, Analyzer analyzer) {
+    public void bind(CLexer lexer, Analyzer analyzer, Compiler compRef) {
         this.s = lexer;
         this.a = analyzer;
+        this.compRef = compRef;
     }
 
     public void generateSyntaxError(String message, String expected, Object o) {

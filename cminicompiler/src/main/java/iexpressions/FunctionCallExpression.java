@@ -2,9 +2,10 @@ package iexpressions;
 
 import java.util.LinkedList;
 
+import interpreter.Identificable;
 import model.IdentifierToken;
 
-public class FunctionCallExpression implements IExpression {
+public class FunctionCallExpression implements IExpression, Identificable {
 
     private IdentifierToken identifier;
     private LinkedList<IExpression> params;
@@ -33,6 +34,16 @@ public class FunctionCallExpression implements IExpression {
     @Override
     public String toString() {
         return identifier + "(" + params + ")";
+    }
+
+    @Override
+    public String getSymbolIdentifier() {
+        return this.getIdentifier().getValue();
+    }
+
+    @Override
+    public String reportRepeated() {
+        return "The function " + this.getSymbolIdentifier() + " has been declared";
     }
 
 }

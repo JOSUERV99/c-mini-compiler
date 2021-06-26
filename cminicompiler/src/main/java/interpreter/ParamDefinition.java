@@ -3,7 +3,7 @@ package interpreter;
 import itypes.ITypeToken;
 import model.IdentifierToken;
 
-public class ParamDefinition implements ISemanticRegister {
+public class ParamDefinition implements ISemanticRegister, Identificable {
 
     private IdentifierToken identifier;
     private ITypeToken type;
@@ -50,6 +50,16 @@ public class ParamDefinition implements ISemanticRegister {
     public String getLabel() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public String getSymbolIdentifier() {
+        return this.getIdentifier().getValue();
+    }
+
+    @Override
+    public String reportRepeated() {
+        return "The param " + this.getSymbolIdentifier() + " is already in used";
     }
 
 }

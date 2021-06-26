@@ -10,7 +10,7 @@ public class LiteralDecimalExpression implements IExpression {
 
     public LiteralDecimalExpression(LiteralToken token) {
         this.token = token;
-        this.value = TypeUtils.isInteger(token.getValue()) ? (Integer) Integer.parseInt(token.getValue()) : null;
+        this.value = TypeUtils.isInteger(token.getValue()) ? (Integer) Integer.parseInt(token.getValue()) : 0;
     }
 
     public Integer getValue() {

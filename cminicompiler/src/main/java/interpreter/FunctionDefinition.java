@@ -6,7 +6,7 @@ import iexpressions.IGramaticInstruction;
 import itypes.ITypeToken;
 import model.IdentifierToken;
 
-public class FunctionDefinition {
+public class FunctionDefinition implements ISemanticRegister, Identificable {
 
     private ITypeToken type;
     private IdentifierToken identifier;
@@ -57,6 +57,34 @@ public class FunctionDefinition {
     public String toString() {
         return "FunctionDefinition: body: " + body + ", identifier: " + identifier + ", params: " + params + ", type: "
                 + type;
+    }
+
+    @Override
+    public String getSymbolIdentifier() {
+        return this.getIdentifier().getValue();
+    }
+
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isFinished() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public String getLabel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String reportRepeated() {
+        return "The function " + this.getSymbolIdentifier() + " has been declared";
     }
 
 }

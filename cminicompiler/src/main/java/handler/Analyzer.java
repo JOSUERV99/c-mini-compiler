@@ -22,7 +22,8 @@ public class Analyzer {
 
     private String fileInputName;
 
-    public Analyzer() {
+    public Analyzer(String inputFilename) {
+        this.fileInputName = inputFilename;
     }
 
     private void init() {
@@ -42,9 +43,8 @@ public class Analyzer {
         }
     }
 
-    public Symbol compile(String fileInputName, String s) throws Exception {
+    public Symbol compile() throws Exception {
 
-        this.fileInputName = fileInputName;
         this.init();
         Symbol tree = this.parser.parse();
         this.displaySummary();

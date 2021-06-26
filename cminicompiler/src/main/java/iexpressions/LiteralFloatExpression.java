@@ -10,7 +10,7 @@ public class LiteralFloatExpression implements IExpression {
 
     public LiteralFloatExpression(LiteralToken token) {
         this.token = token;
-        this.value = TypeUtils.isFloat(token.getValue()) ? Float.parseFloat(s) : null;
+        this.value = TypeUtils.isFloat(token.getValue()) ? Float.parseFloat(token.getValue()) : null;
     }
 
     public Float getValue() {

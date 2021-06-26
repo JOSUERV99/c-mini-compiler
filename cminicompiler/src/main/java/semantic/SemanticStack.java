@@ -3,7 +3,7 @@ package semantic;
 import java.util.ArrayList;
 import java.util.Stack;
 
-class SemanticStack<T> extends Stack<T> {
+public class SemanticStack<T> extends Stack<T> {
 
     private Integer basePointer, stackPointer;
 
