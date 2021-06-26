@@ -1,21 +1,26 @@
 package ioperators;
 
-import model.KeywordToken;
+import model.OperatorToken;
 
 public class BinaryOperator implements IOperator {
 
-    private KeywordToken type;
+    private OperatorToken type;
 
-    public BinaryOperator(KeywordToken type) {
+    public BinaryOperator(OperatorToken type) {
         this.type = type;
     }
 
-    public KeywordToken getType() {
-        return type;
+    public OperatorToken getType() {
+        return this.type;
     }
 
-    public void setType(KeywordToken type) {
+    public void setType(OperatorToken type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "BinaryOperator [type=" + type + "]";
     }
 
 }

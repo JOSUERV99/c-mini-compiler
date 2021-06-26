@@ -59,7 +59,7 @@ public class AssignDefinition implements ISemanticRegister {
 
     @Override
     public String toString() {
-        return "AssignDefinition [expression=" + expression + ", identifier=" + identifier + ", type=" + type + "]";
+        return type + " " + identifier + "=" + expression;
     }
 
 }

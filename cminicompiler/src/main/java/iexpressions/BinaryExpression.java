@@ -2,7 +2,7 @@ package iexpressions;
 
 import ioperators.BinaryOperator;
 
-class BinaryExpression implements IExpression {
+public class BinaryExpression implements IExpression {
 
     private IExpression exp1, exp2;
     private BinaryOperator operator;

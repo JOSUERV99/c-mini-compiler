@@ -1,21 +1,25 @@
 package ioperators;
 
 import iexpressions.IExpression;
-import model.KeywordToken;
+import model.OperatorToken;
 
 public class UnaryOperator implements IExpression {
-    private KeywordToken operator;
+    private OperatorToken operator;
 
-    public UnaryOperator(KeywordToken operator) {
+    public UnaryOperator(OperatorToken operator) {
         this.operator = operator;
     }
 
-    public KeywordToken getOperator() {
+    public OperatorToken getOperator() {
         return operator;
     }
 
-    public void setOperator(KeywordToken operator) {
+    public void setOperator(OperatorToken operator) {
         this.operator = operator;
     }
 
+    @Override
+    public String toString() {
+        return "UnaryOperator [operator=" + operator + "]";
+    }
 }

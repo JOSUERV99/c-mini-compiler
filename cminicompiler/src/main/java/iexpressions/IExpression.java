@@ -1,6 +1,6 @@
 package iexpressions;
 
-public interface IExpression {
+public interface IExpression extends IGramaticInstruction {
 
     @Override
     public abstract String toString();

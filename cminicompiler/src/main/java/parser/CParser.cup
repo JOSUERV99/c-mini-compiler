@@ -59,18 +59,30 @@ scan with {: return this.s.next_token(); :};
   terminal KW_LONG,KW_REGISTER,KW_RETURN;
   terminal KW_SHORT,KW_SIGNED,KW_SIZEOF,KW_STATIC,KW_STRUCT;
   terminal KW_SWITCH,KW_TYPEDEF,KW_UNION,KW_UNSIGNED,KW_VOID;
-  terminal KW_VOLATILE,KW_WHILE,OP_DIV,OP_PLUS,OP_MINUS;
-  terminal OP_MULT,OP_MOD,OP_COMMA,OP_GTE,OP_LTE;
-  terminal OP_LT,OP_GT,OP_NOTEQUALCOMP,OP_ORCOMP,OP_ANDCOMP;
-  terminal OP_EQUALCOMP,OP_AND,OP_XOR,OP_OR,OP_NOT;
-  terminal OP_NEGATION,OP_PLUSASSIGN,OP_MINUSASSIGN,OP_MULTASSIGN,OP_DIVASSIGN;
-  terminal KeywordToken OP_MINUSMINUSASSIGN,OP_PLUSPLUSASSIGN;
-  terminal OP_MODASSIGN,OP_ANDASSIGN,OP_NOTASSIGN;
-  terminal OP_ORASSIGN,OP_SHIFTLEFTASSIGN,OP_SHIFTRIGHTASSIGN,OP_TERNARYOPERATORQUESTIONMARK,OP_TERNARYOPERATIONDOUBLEDOT;
-  terminal OP_ASIG,OP_SHIFTOPRIGHT,OP_SHIFTOPLEFT,OP_PROPOPERATOR;
-  terminal OP_WRAPPERPARENTHESISLEFT,OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
-  terminal OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC,LIT_HEXVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF;
-  terminal LiteralToken LIT_DECIMALVALUE;
+  terminal KW_VOLATILE,KW_WHILE;
+  terminal OperatorToken OP_DIV,OP_PLUS,OP_MINUS;
+  terminal OperatorToken OP_MULT,OP_MOD,OP_COMMA,OP_GTE,OP_LTE;
+  terminal OperatorToken OP_LT,OP_GT,OP_NOTEQUALCOMP,OP_ORCOMP,OP_ANDCOMP;
+
+  terminal OperatorToken OP_NEGATION,OP_PLUSASSIGN,OP_MINUSASSIGN,OP_MULTASSIGN,OP_DIVASSIGN;
+  terminal OperatorToken OP_MINUSMINUSASSIGN,
+                        OP_PLUSPLUSASSIGN,
+                        OP_SHIFTOPRIGHT,
+                        OP_SHIFTOPLEFT,
+                        OP_EQUALCOMP,
+                        OP_AND,
+                        OP_XOR,
+                        OP_OR,
+                        OP_NOT;
+                        
+  terminal OperatorToken OP_MODASSIGN,OP_ANDASSIGN,OP_NOTASSIGN;
+  terminal OperatorToken OP_ORASSIGN,OP_SHIFTLEFTASSIGN,OP_SHIFTRIGHTASSIGN,OP_TERNARYOPERATORQUESTIONMARK,OP_TERNARYOPERATIONDOUBLEDOT;
+  
+  terminal OperatorToken OP_ASIG,OP_PROPOPERATOR; 
+  
+  terminal OperatorToken OP_WRAPPERPARENTHESISLEFT,OP_WRAPPERPARENTHESISRIGHT,OP_WRAPPERSQUAREPARENTHESISLEFT,OP_WRAPPERSQUAREPARENTHESISRIGHT,OP_WRAPPERKEYPARENTHESISLEFT,OP_WRAPPERKEYPARENTHESISRIGHT;
+  terminal OperatorToken OP_INSTRUCTIONENDOPERATOR,OP_POINTEROPERATOR,OP_POINTEROPERATORASTERISC;
+  terminal LiteralToken LIT_HEXVALUE,LIT_FLOATVALUE,LIT_CHARVALUE,LIT_OCTALVALUE,LIT_STRINGDEF,LIT_EXPONENTIALDEF,LIT_DECIMALVALUE;
   terminal NEWLINE;
 
 /* Non Terminals (generated using the terminals tokens) */
@@ -95,11 +107,10 @@ scan with {: return this.s.next_token(); :};
   //Non-terminal expressions
   non terminal instruction;
   non terminal IExpression expression_any_type;
-  non terminal expression_numeric;
+  non terminal IExpression expression_numeric;
   non terminal IExpression expression, expression_atomic;
   non terminal UnaryOperator expression_unary_operator;
-  non terminal expression_binary_operators
-                ;
+  non terminal BinaryOperator expression_binary_operators;
 
   non terminal expression_atomic_literal_int,
               expression_atomic_literal_nonint
@@ -551,8 +562,15 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
           gb.addLast(var);
           RESULT = gb;
         :}  
-      | expression  OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
-      | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
+      | expression:exp  OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
+        {:
+          System.out.println("XD");
+          System.out.println(exp);
+
+           gb.addLast(exp);
+           RESULT = gb;
+        :}
+      // | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
       | control_structure                              gramatic_body:gb 
       | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
       | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
@@ -723,20 +741,22 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         :}
       | expression_unary_operator:eup IDENT:i
         {:
-
           IdentifierExpression id = new IdentifierExpression(i);
           UnaryExpression expUnary =  new UnaryExpression(eup, id, true);
           RESULT = expUnary;
         :} 
       | IDENT:i expression_unary_operator:eup
         {:
-          
           IdentifierExpression id = new IdentifierExpression(i);
           UnaryExpression expUnary =  new UnaryExpression(eup, id, false);
           RESULT = expUnary;
         :}
-      | expression expression_binary_operators expression
-        
+      | expression:e1 expression_binary_operators:op expression:e2
+        {:
+          BinaryExpression bexp = new BinaryExpression(e1, op, e2);
+
+          RESULT = bexp;
+        :}  
       | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
       | OP_NEGATION expression
       | OP_NOT expression
@@ -752,7 +772,11 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
     ;
 
   expression_atomic::=
-        IDENT 
+      IDENT:i 
+      {:
+        IdentifierExpression id = new IdentifierExpression(i);
+        RESULT = id;
+      :}
       | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 				
       | IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				 
       | LIT_HEXVALUE
@@ -799,43 +823,172 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       ;
 
   expression_binary_operators ::= 
-
       //ARITMHMETIC OPERATORS
-        OP_MINUS 
-      | OP_DIV 
-      | OP_PLUS
-      | OP_MULT
-      | OP_MOD
+        OP_MINUS:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_DIV:o 
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_PLUS:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_MULT:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_MOD:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
       //RELATIONAL OPERATORS 
-      | OP_LT
-      | OP_LTE
-      | OP_GT 
-      | OP_GTE 
-      | OP_EQUALCOMP
-      | OP_NOTEQUALCOMP
+      | OP_LT:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_LTE:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_GT:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :} 
+      | OP_GTE:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :} 
+      | OP_EQUALCOMP:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_NOTEQUALCOMP:o
+      {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
       //LOGICAL OPERATORS
-      | OP_ANDCOMP
-      | OP_ORCOMP
-      | OP_NEGATION
+      | OP_ANDCOMP:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_ORCOMP:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_NEGATION:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
       //BITWISE OPERATORS  
-      | OP_AND 
-      | OP_OR 
-      | OP_SHIFTOPLEFT
-      | OP_SHIFTOPRIGHT
+      | OP_AND:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_OR:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_SHIFTOPLEFT:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_SHIFTOPRIGHT:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
       //| OP_NOT
-      | OP_XOR
+      | OP_XOR:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
       //ASSIGMENT OPERATORS
-      | OP_ASIG
-      | OP_PLUSASSIGN
-      | OP_MINUSASSIGN
-      | OP_MULTASSIGN
-      | OP_DIVASSIGN
-      | OP_MODASSIGN
-      | OP_SHIFTLEFTASSIGN
-      | OP_SHIFTRIGHTASSIGN
-      | OP_NOTASSIGN
-      | OP_ORASSIGN
-      | OP_ANDASSIGN
+      | OP_ASIG:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_PLUSASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_MINUSASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_MULTASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_DIVASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_MODASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_SHIFTLEFTASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_SHIFTRIGHTASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_NOTASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+      | OP_ORASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
+       | OP_ANDASSIGN:o {:
+          BinaryOperator op = new BinaryOperator(o);
+
+          RESULT = op;
+        :}
       ;
 
 //Keyword types
