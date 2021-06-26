@@ -12,7 +12,6 @@ public class LiteralFloatExpression implements IExpression {
         this.token = token;
         this.value = TypeUtils.isFloat(token.getValue()) ? Float.parseFloat(s) : null;
     }
-    
 
     public Float getValue() {
         return value;

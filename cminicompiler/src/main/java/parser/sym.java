@@ -8,7 +8,7 @@ package parser;
 /** CUP generated interface containing symbol constants. */
 public interface sym {
   /* terminals */
-  public static final int KW_DOUBLE = 10;
+  public static final int KW_DOUBLE = 8;
   public static final int KW_SIZEOF = 25;
   public static final int KW_VOLATILE = 33;
   public static final int OP_MULT = 38;
@@ -16,7 +16,7 @@ public interface sym {
   public static final int OP_MOD = 39;
   public static final int KW_STRUCT = 27;
   public static final int OP_MINUS = 37;
-  public static final int KW_CASE = 5;
+  public static final int KW_CASE = 4;
   public static final int OP_SHIFTLEFTASSIGN = 66;
   public static final int KW_AUTO = 3;
   public static final int OP_WRAPPERPARENTHESISLEFT = 72;
@@ -40,7 +40,7 @@ public interface sym {
   public static final int OP_SHIFTRIGHTASSIGN = 67;
   public static final int KW_SWITCH = 28;
   public static final int OP_WRAPPERPARENTHESISRIGHT = 73;
-  public static final int KW_DEFAULT = 8;
+  public static final int KW_DEFAULT = 6;
   public static final int OP_LT = 43;
   public static final int KW_RETURN = 22;
   public static final int OP_GTE = 41;
@@ -61,7 +61,7 @@ public interface sym {
   public static final int OP_XOR = 59;
   public static final int OP_TERNARYOPERATIONDOUBLEDOT = 69;
   public static final int OP_POINTEROPERATORASTERISC = 80;
-  public static final int KW_DO = 9;
+  public static final int KW_DO = 7;
   public static final int OP_MINUSASSIGN = 50;
   public static final int OP_INSTRUCTIONENDOPERATOR = 78;
   public static final int OP_ORASSIGN = 65;
@@ -73,15 +73,15 @@ public interface sym {
   public static final int KW_WHILE = 34;
   public static final int KW_UNION = 30;
   public static final int KW_TYPEDEF = 29;
-  public static final int KW_CHAR = 6;
+  public static final int KW_CHAR = 5;
   public static final int OP_DIVASSIGN = 52;
   public static final int OP_MULTASSIGN = 51;
   public static final int KW_VOID = 32;
   public static final int OP_SHIFTOPLEFT = 56;
   public static final int KW_STATIC = 26;
-  public static final int KW_ELSE = 11;
+  public static final int KW_ELSE = 9;
   public static final int OP_WRAPPERKEYPARENTHESISLEFT = 76;
-  public static final int KW_BREAK = 4;
+  public static final int KW_BREAK = 11;
   public static final int OP_NOTEQUALCOMP = 45;
   public static final int OP_SHIFTOPRIGHT = 55;
   public static final int LIT_OCTALVALUE = 84;
@@ -89,7 +89,7 @@ public interface sym {
   public static final int OP_EQUALCOMP = 57;
   public static final int OP_ANDASSIGN = 63;
   public static final int KW_IF = 17;
-  public static final int KW_CONTINUE = 7;
+  public static final int KW_CONTINUE = 10;
   public static final int OP_OR = 60;
   public static final int KW_UNSIGNED = 31;
   public static final int LIT_HEXVALUE = 81;
@@ -102,14 +102,14 @@ public interface sym {
   "error",
   "IDENT",
   "KW_AUTO",
-  "KW_BREAK",
   "KW_CASE",
   "KW_CHAR",
-  "KW_CONTINUE",
   "KW_DEFAULT",
   "KW_DO",
   "KW_DOUBLE",
   "KW_ELSE",
+  "KW_CONTINUE",
+  "KW_BREAK",
   "KW_ENUM",
   "KW_EXTERN",
   "KW_FLOAT",

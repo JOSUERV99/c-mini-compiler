@@ -11,6 +11,7 @@ import itypes.*;
 import iexpressions.*;
 import model.*;
 import ioperators.*;
+import icontrolstructures.*;
 
 parser code {:
 
@@ -51,8 +52,10 @@ scan with {: return this.s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
   terminal IdentifierToken IDENT;
-  terminal KW_AUTO,KW_BREAK,KW_CASE,KW_CHAR;
-  terminal KW_CONTINUE,KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
+  terminal KW_AUTO,KW_CASE,KW_CHAR;
+  terminal KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
+  terminal KeywordToken KW_CONTINUE,
+                        KW_BREAK;
   terminal KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO;
   terminal KW_IF;
   terminal KeywordToken KW_INT, KW_CONST;
@@ -94,10 +97,10 @@ scan with {: return this.s.next_token(); :};
   non terminal ParamDefinition parameter_definition;
   non terminal error_function_declaration_0,
                 error_function_declaration_1,
-                unknown_function_declaration_error,
-                parameters,
-                parameter
-                ;
+                unknown_function_declaration_error;
+
+  non terminal LinkedList<IExpression> parameters;
+  non terminal IExpression parameter;
 
   non terminal ITypeToken keyword_types;
   non terminal ProgramDefinition program_definition;
@@ -125,13 +128,14 @@ scan with {: return this.s.next_token(); :};
   non terminal constant;
   
   //Non-terminal Estrucutura Control
-  non terminal control_structure, control_if, control_if_else, control_else; 
+  non terminal IControlStructure control_structure, control_if, control_if_else, control_else; 
 
   //Non-terminal switch
   non terminal control_switch, control_switch_case;
 
   //Non-terminal ciclo while
-  non terminal control_while, control_while_body;
+  non terminal ControlStructureWhile control_while; 
+  non terminal LinkedList<IGramaticInstruction> control_while_body;
 
   //Non terminal ciclo for
   non terminal control_for, control_for_instruction, control_for_instruction1, control_for_body;
@@ -358,7 +362,10 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   control_structure::=
         control_if
       | control_switch
-      | control_while
+      | control_while:cw
+      {:
+        RESULT = cw;
+      :}
       | control_for
     ;
 
@@ -401,12 +408,11 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       :}
     ;
 
-//estructura de control switch
+  //estructura de control switch
   control_switch::=
         KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
       //| error_switch
       ;
-
 
   control_switch_case::=
       OP_WRAPPERKEYPARENTHESISLEFT control_switch_case OP_WRAPPERKEYPARENTHESISRIGHT  control_switch_case
@@ -428,16 +434,35 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       :}
     ;
 
-//estructura de control while
+  //estructura de control while
   control_while ::=
-        KW_WHILE OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT
+        KW_WHILE OP_WRAPPERPARENTHESISLEFT expression:e OP_WRAPPERPARENTHESISRIGHT OP_WRAPPERKEYPARENTHESISLEFT control_while_body:cwb OP_WRAPPERKEYPARENTHESISRIGHT
+        {:
+          ControlStructureWhile cw = new ControlStructureWhile(e, cwb);
+          RESULT = cw;
+        :}
       | error_while 
     ;
 
   control_while_body::=
-      gramatic_body KW_BREAK    OP_INSTRUCTIONENDOPERATOR control_while_body
-    | gramatic_body KW_CONTINUE OP_INSTRUCTIONENDOPERATOR control_while_body
-    | gramatic_body
+      gramatic_body:gb KW_BREAK:br    OP_INSTRUCTIONENDOPERATOR control_while_body:cwb
+      {:
+        BreakInstruction breakIns = new BreakInstruction(br);
+        cwb.addLast(breakIns);
+        gb.addAll(cwb);
+        RESULT = gb;
+      :}
+    | gramatic_body:gb KW_CONTINUE:c OP_INSTRUCTIONENDOPERATOR control_while_body:cwb
+      {:
+        ContinueInstruction conIns = new ContinueInstruction(c);
+        cwb.addLast(conIns);
+        gb.addAll(cwb);
+        RESULT = gb;
+      :}
+    | gramatic_body:gb
+      {:
+        RESULT = gb;
+      :}
     ;
 
   error_while ::= 
@@ -552,8 +577,11 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         {:
           RESULT = gb;
         :}
-      | constant                                       gramatic_body:gb 
-      |             OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb  
+      | constant                                       gramatic_body:gb
+        {:
+          RESULT = gb;
+        :}
+      | OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb  
         {:
           RESULT = gb;
         :}
@@ -564,23 +592,32 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         :}  
       | expression:exp  OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
         {:
-          System.out.println("XD");
-          System.out.println(exp);
-
            gb.addLast(exp);
            RESULT = gb;
         :}
-      // | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
-      | control_structure                              gramatic_body:gb 
-      | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
-      | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
+     // | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
+      | control_structure:cs                              gramatic_body:gb 
+        {:
+          gb.addLast(cs);
+          RESULT = gb;
+        :}
+      | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body:gb {:
+      
+        RESULT = gb;
+      :}
+      | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body:gb {:
+      
+        RESULT = gb;
+      :}
       | KW_ELSE error:e gramatic_body:gb 
         {:
           parser.generateSyntaxError("Syntax error, illegal code after the else or if declaration", "If", e);
+          RESULT = gb;
         :}
-      | expression error:e OP_INSTRUCTIONENDOPERATOR   gramatic_body  
+      | expression error:e OP_INSTRUCTIONENDOPERATOR   gramatic_body:gb  
         {:  System.out.println("\n$Error gramatic body, line 506. \n");
             parser.generateSyntaxError("Error in gramatic body at expression, unknown error", "Gramatic Body", e);
+            RESULT = gb;
         :}
       | {:
         LinkedList<IGramaticInstruction> gramaticBody = new LinkedList<>();
@@ -588,7 +625,6 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       :}
       ;
 
-//Variables, Globales y constantes
   global ::= 
       variable:v OP_INSTRUCTIONENDOPERATOR {:
         GlobalVarDefinition gvd = new GlobalVarDefinition(v);
@@ -662,7 +698,6 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       ;
 
   error_variable_definition ::= 
-    
     error:e OP_INSTRUCTIONENDOPERATOR
       {:
         parser.generateSyntaxError("Multiple variable definition require comma as separator", ",", e);
@@ -671,11 +706,21 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
 //Parametros
   parameters ::= 
-        parameter OP_COMMA parameters 
-      | parameter;
+      parameter:p OP_COMMA parameters:params 
+      {:
+        params.addLast(p);
+        RESULT = params;
+      :}
+      | parameter:p 
+      {:
+        LinkedList<IExpression> params = new LinkedList<>();
+        RESULT = params;
+      :};
 
   parameter ::= 
-        expression
+      expression:e {: 
+        RESULT = e; 
+      :}
       ;
 
   parameters_definition ::= 
@@ -777,8 +822,17 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         IdentifierExpression id = new IdentifierExpression(i);
         RESULT = id;
       :}
-      | IDENT OP_WRAPPERPARENTHESISLEFT parameters OP_WRAPPERPARENTHESISRIGHT 				
-      | IDENT OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 				 
+      | IDENT:fn OP_WRAPPERPARENTHESISLEFT parameters:params OP_WRAPPERPARENTHESISRIGHT
+      {:
+        FunctionCallExpression fce = new FunctionCallExpression(fn, params);
+        RESULT = fce;
+      :} 				
+      | IDENT:fn OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 
+      {:
+          LinkedList<IExpression> emptyParams = new LinkedList<>();
+          FunctionCallExpression fce = new FunctionCallExpression(fn, emptyParams);
+          RESULT = fce;
+      :}				 
       | LIT_HEXVALUE
       | LIT_DECIMALVALUE:l {: RESULT = new LiteralDecimalExpression(l); :}
       | LIT_FLOATVALUE
