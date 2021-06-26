@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import iexpressions.IGramaticInstruction;
 
-public class VarDefinition implements ISemanticRegister, Initializable, IGramaticInstruction {
+public class VarDefinition implements ISemanticRegister, Initializable, IGramaticInstruction, IInstruction {
 
     private ITypeToken type;
     private LinkedList<AssignDefinition> assignments;

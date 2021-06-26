@@ -108,7 +108,7 @@ scan with {: return this.s.next_token(); :};
   non terminal LinkedList<IGramaticInstruction> gramatic_body;
 
   //Non-terminal expressions
-  non terminal instruction;
+  non terminal IInstruction instruction;
   non terminal IExpression expression_any_type;
   non terminal IExpression expression_numeric;
   non terminal IExpression expression, expression_atomic;
@@ -128,7 +128,8 @@ scan with {: return this.s.next_token(); :};
   non terminal constant;
   
   //Non-terminal Estrucutura Control
-  non terminal IControlStructure control_structure, control_if, control_if_else, control_else; 
+  non terminal IControlStructure control_structure, control_if, control_if_else;
+  non terminal LinkedList<IGramaticInstruction> control_else; 
 
   //Non-terminal switch
   non terminal control_switch, control_switch_case;
@@ -360,7 +361,9 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
     ;
 /*EstructuraControl	->  Control-If | Control-Switch | Control-While | Control-For*/
   control_structure::=
-        control_if
+      control_if:ci {:
+        RESULT = ci;  
+      :}
       | control_switch
       | control_while:cw
       {:
@@ -371,19 +374,46 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
 //Estructura de control if
   control_if ::=
-        control_if_else
+        control_if_else:ife {: RESULT = ife; :}
       | error_if
       ;
 
   control_if_else::=  
-      KW_IF OP_WRAPPERPARENTHESISLEFT expression OP_WRAPPERPARENTHESISRIGHT gramatic_body control_else
+      KW_IF OP_WRAPPERPARENTHESISLEFT expression:e OP_WRAPPERPARENTHESISRIGHT gramatic_body:ifbody control_else:elsebody
+      {:
+        
+        ControlStructureIf ifcs = new ControlStructureIf(e, ifbody, elsebody);
+        RESULT = ifcs;
+      
+      :}
+     | KW_IF OP_WRAPPERPARENTHESISLEFT expression:e OP_WRAPPERPARENTHESISRIGHT instruction:ins
+     {:   
+
+        LinkedList<IGramaticInstruction> uniqueInstruction = new LinkedList<>();
+        LinkedList<IGramaticInstruction> emptyElseBody = new LinkedList<>();
+        uniqueInstruction.addLast(ins);
+        ControlStructureIf ifcs = new ControlStructureIf(e, uniqueInstruction, emptyElseBody);
+        RESULT = ifcs;
+     
+     :}
+     |
+     KW_IF OP_WRAPPERPARENTHESISLEFT expression:e OP_WRAPPERPARENTHESISRIGHT gramatic_body:ifbody
+     {:   
+        LinkedList<IGramaticInstruction> emptyElseBody = new LinkedList<>();
+        ControlStructureIf ifcs = new ControlStructureIf(e, ifbody, emptyElseBody);
+        RESULT = ifcs;
+     :}
     ;
 
   control_else::=
-        KW_ELSE gramatic_body
-      | KW_ELSE instruction
-      | instruction
-      | gramatic_body
+        KW_ELSE gramatic_body:gb {: 
+          RESULT = gb; 
+        :}
+      | KW_ELSE instruction:ins {:
+        LinkedList<IGramaticInstruction> uniqueInstruction = new LinkedList<>();
+        uniqueInstruction.addLast(ins);
+        RESULT = uniqueInstruction;
+      :}
       ;
 
   error_if ::=
@@ -449,15 +479,15 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       {:
         BreakInstruction breakIns = new BreakInstruction(br);
         cwb.addLast(breakIns);
-        gb.addAll(cwb);
-        RESULT = gb;
+        cwb.addAll(gb);
+        RESULT = cwb;
       :}
     | gramatic_body:gb KW_CONTINUE:c OP_INSTRUCTIONENDOPERATOR control_while_body:cwb
       {:
         ContinueInstruction conIns = new ContinueInstruction(c);
         cwb.addLast(conIns);
-        gb.addAll(cwb);
-        RESULT = gb;
+        cwb.addAll(gb);
+        RESULT = cwb;
       :}
     | gramatic_body:gb
       {:
@@ -595,17 +625,23 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
            gb.addLast(exp);
            RESULT = gb;
         :}
-     // | instruction OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
+     | instruction:ins OP_INSTRUCTIONENDOPERATOR          gramatic_body:gb 
+        {:
+           gb.addLast(ins);
+          RESULT = gb;
+        :}
       | control_structure:cs                              gramatic_body:gb 
         {:
           gb.addLast(cs);
           RESULT = gb;
         :}
-      | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body:gb {:
+      | KW_RETURN expression OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
+      {:
       
         RESULT = gb;
       :}
-      | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body:gb {:
+      | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
+      {:
       
         RESULT = gb;
       :}
@@ -769,9 +805,16 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
 //Expresiones e instruccion
   instruction ::=
-        IDENT OP_ASIG expression
-      | variable
-      | expression
+      IDENT:i OP_ASIG expression:e {:
+          DeclaredAssignDefinition dad = new DeclaredAssignDefinition(i, e);
+          RESULT = dad;
+      :}
+      | variable:var {:
+          RESULT = var;
+      :}
+      | expression:exp {:
+          RESULT = exp;
+      :}
       ;
 
   expression ::=    
