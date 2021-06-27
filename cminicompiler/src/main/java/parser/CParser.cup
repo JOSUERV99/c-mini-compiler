@@ -296,7 +296,6 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       keyword_types:kt IDENT:i OP_WRAPPERPARENTHESISLEFT function_declaration_0:params function_declaration_1:body 
       {:
         FunctionDefinition function = new FunctionDefinition(kt, i, params, body);
-
         RESULT = function;
       :}
     | keyword_types:kt error:e                          function_declaration_0:params function_declaration_1:body
@@ -307,6 +306,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
   function_declaration_0 ::=
       parameters_definition:pd OP_WRAPPERPARENTHESISRIGHT {: 
+        cmp.putParameters(pd);
         RESULT = pd; 
       :} 
     | OP_WRAPPERPARENTHESISRIGHT {: 
@@ -784,6 +784,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
           globalMode = false;
           cmp.checkArg(pd, params);
           params.addLast(pd);
+          
           RESULT = params;
         :}
       | parameter_definition:pd {: 
@@ -799,13 +800,6 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
           ParamDefinition pd = new ParamDefinition(kt, id);
           RESULT = pd;
         :}
-      /*Funciona en Mingw++ pero no tiene sentido, se saca
-        | KW_CONST:c keyword_types:kt IDENT:i {:
-          ConstTypeToken ctt = new ConstTypeToken(c, kt, null);
-          ParamDefinition pd = new ParamDefinition(ctt, id);
-
-          RESULT = pd;
-      :}*/
       | KW_CONST:c keyword_types:kt IDENT:id OP_ASIG expression_atomic:ea
         {:
           ConstTypeToken ctt = new ConstTypeToken(c, kt, ea);

@@ -1546,7 +1546,6 @@ class CUP$CParser$actions {
 		LinkedList<IGramaticInstruction> body = (LinkedList<IGramaticInstruction>)((java_cup.runtime.Symbol) CUP$CParser$stack.peek()).value;
 		
         FunctionDefinition function = new FunctionDefinition(kt, i, params, body);
-
         RESULT = function;
       
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("function_declaration",2, ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-4)), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);
@@ -1584,6 +1583,7 @@ class CUP$CParser$actions {
 		int pdright = ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)).right;
 		LinkedList<ParamDefinition> pd = (LinkedList<ParamDefinition>)((java_cup.runtime.Symbol) CUP$CParser$stack.elementAt(CUP$CParser$top-1)).value;
 		 
+        cmp.putParameters(pd);
         RESULT = pd; 
       
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("function_declaration_0",0, ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);
@@ -2926,6 +2926,7 @@ class CUP$CParser$actions {
           globalMode = false;
           cmp.checkArg(pd, params);
           params.addLast(pd);
+          
           RESULT = params;
         
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("parameters_definition",3, ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-2)), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);

@@ -16,6 +16,7 @@ import interpreter.GlobalVarDefinition;
 import interpreter.ISemanticRegister;
 import interpreter.ParamDefinition;
 import interpreter.ProgramDefinition;
+import interpreter.VarDefinition;
 import java_cup.runtime.Symbol;
 import semantic.SemanticStack;
 import semantic.SymbolTable;
@@ -130,7 +131,7 @@ public class Compiler {
         IExpression exp2 = bexp.getExp2();
 
         if (exp1.getType().equals(exp2.getType())) {
-            this.reportError(new SemanticError("SemanticError: binary expression types mismatch with "));
+            this.reportError(new SemanticError("SemanticError: binary expression types mismatch"));
         }
 
     }
@@ -142,8 +143,23 @@ public class Compiler {
                 this.reportError(new SemanticError(
                         "SemanticError: param " + arg.getIdentifier().getValue() + " is already used"));
                 return;
+            }
+        }
+    }
+
+    public void putParameters(LinkedList<ParamDefinition> args) {
+
+        for (ParamDefinition pd : args) {
+            if (this.symbolTable.isDefined(pd)) {
+                this.reportError(new SemanticError(
+                        "SemanticError: param " + pd.getIdentifier().getValue() + " is already defined"));
+                return;
             } else {
-                this.symbolTable.add(arg);
+                AssignDefinition ad = new AssignDefinition(pd.getIdentifier(), null);
+                ad.setType(pd.get_Type());
+                this.symbolTable.add(ad);
+
+                System.out.println("CHECK ARG");
             }
         }
     }
@@ -151,7 +167,7 @@ public class Compiler {
     public void checkIdentificableExpression(IdentifierExpression iexp) {
         if (!this.symbolTable.isDefined(iexp) && !this.symbolTable.isGlobalDefined(iexp)) {
             System.out.println("CheckIdentificableExpression: Reportando error de= " + iexp);
-            this.reportError(new SemanticError(iexp.reportNoDefinition()));
+            this.reportError(new SemanticError("SemanticError: " + iexp.reportNoDefinition()));
         }
     }
 
@@ -162,7 +178,7 @@ public class Compiler {
     public void checkFunctionCall(FunctionCallExpression fce) {
 
         if (!this.symbolTable.isDefined(fce)) {
-            this.reportError(new SemanticError(fce.reportRepeated()));
+            this.reportError(new SemanticError("SemanticError: " + fce.reportRepeated()));
             return;
         }
 

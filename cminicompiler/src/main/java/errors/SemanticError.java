@@ -14,6 +14,6 @@ public class SemanticError extends Error {
 
     @Override
     public String toString() {
-        return "SemanticError: " + super.toString();
+        return super.toString();
     }
 }
