@@ -1417,7 +1417,6 @@ class CUP$CParser$actions {
 		int pdright = ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()).right;
 		ProgramDefinition pd = (ProgramDefinition)((java_cup.runtime.Symbol) CUP$CParser$stack.peek()).value;
 		
-      System.out.println("$Error program definition, line 213. ");
       RESULT = pd;
     
               CUP$CParser$result = parser.getSymbolFactory().newSymbol("program_definition",11, ((java_cup.runtime.Symbol)CUP$CParser$stack.elementAt(CUP$CParser$top-1)), ((java_cup.runtime.Symbol)CUP$CParser$stack.peek()), RESULT);

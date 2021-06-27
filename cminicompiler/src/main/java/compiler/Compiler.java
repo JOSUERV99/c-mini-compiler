@@ -173,8 +173,6 @@ public class Compiler {
         }
 
         FunctionDefinition fd = (FunctionDefinition) this.symbolTable.get(fce.getSymbolIdentifier());
-        System.out.println(fd.getParams());
-        System.out.println(fce.getParams());
         if (fd.getParams().size() != fce.getParams().size()) {
             this.reportError(new SemanticError("SemanticError: parameters amount are not equal"));
             return;
@@ -221,8 +219,6 @@ public class Compiler {
 
             // TODO show lexical, syntactic, semantic errors report
             this.errorFlag = !this.semanticErrors.isEmpty();
-
-            System.out.println("Exploto.");
             System.out.println(this.semanticErrors);
 
             this.generateCode();

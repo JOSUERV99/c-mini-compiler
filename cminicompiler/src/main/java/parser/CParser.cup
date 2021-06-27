@@ -254,7 +254,6 @@ program_definition ::=
       RESULT = pd;  
     :}
     | error_program_definition:e_p_d program_definition:pd {:
-      System.out.println("$Error program definition, line 213. ");
       RESULT = pd;
     :}
     | {:
