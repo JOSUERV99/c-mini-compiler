@@ -1,17 +1,20 @@
 package compiler;
 
 import java.util.LinkedList;
-import java.util.function.Function;
+
+import org.graalvm.compiler.graph.spi.Canonicalizable.Binary;
 
 import errors.Error;
 import errors.SemanticError;
 import handler.Analyzer;
+import iexpressions.BinaryExpression;
 import iexpressions.FunctionCallExpression;
 import iexpressions.IExpression;
 import iexpressions.IdentifierExpression;
 import interpreter.AssignDefinition;
 import interpreter.DeclaredAssignDefinition;
 import interpreter.FunctionDefinition;
+import interpreter.GlobalVarDefinition;
 import interpreter.ISemanticRegister;
 import interpreter.ParamDefinition;
 import interpreter.ProgramDefinition;
@@ -50,11 +53,37 @@ public class Compiler {
         return this.semanticErrors.isEmpty();
     }
 
-    public void putVariable(AssignDefinition assign) {
-        if (this.symbolTable.isDefined(assign)) {
-            this.semanticErrors.add(new SemanticError(assign.reportRepeated()));
+    public void putVariable(AssignDefinition assign, boolean globalMode) {
+
+        if (!globalMode) {
+
+            if (this.symbolTable.isGlobalDefined(assign)) {
+
+                System.out.println("aasd");
+                System.out.println(assign);
+
+                this.symbolTable.add(assign);
+                return;
+            } else {
+                System.out.println("02020202020");
+                System.out.println(assign);
+                System.out.println(this.symbolTable.getGlobalVars());
+            }
+
+            if (this.symbolTable.isDefined(assign)) {
+                this.semanticErrors.add(new SemanticError(assign.reportRepeated()));
+            } else {
+                this.symbolTable.add(assign);
+            }
+
+            return;
+        }
+
+        if (this.symbolTable.isGlobalDefined(assign)) {
+            this.semanticErrors.add(new SemanticError(
+                    "SemanticError: global variable " + assign.getSymbolIdentifier() + " is already declared"));
         } else {
-            this.symbolTable.add(assign);
+            this.symbolTable.addGlobal(assign);
         }
     }
 
@@ -77,8 +106,31 @@ public class Compiler {
 
     public void checkSimpleAssignment(DeclaredAssignDefinition dad) {
         if (!this.symbolTable.isDefined(dad)) {
+
             this.reportError(new SemanticError(dad.reportRepeated()));
+        } else {
+
+            Object varObj = this.symbolTable.get(dad.getIdentifier().getValue());
+
+            if (varObj instanceof AssignDefinition) {
+                AssignDefinition ad = (AssignDefinition) varObj;
+                dad.setType(ad.getType());
+            } else {
+                this.reportError(new SemanticError(
+                        "SemanticError: is not possible to assign not variable, parameter o global type"));
+            }
         }
+    }
+
+    public void checkBinaryExpression(BinaryExpression bexp) {
+
+        IExpression exp1 = bexp.getExp1();
+        IExpression exp2 = bexp.getExp2();
+        System.out.println("Aaja aja Binary expresion opresora");
+        System.out.println(exp1.getType());
+        System.out.println(exp2.getType());
+        System.out.println("Terminada Binary expresion opresora");
+
     }
 
     public void checkArg(ParamDefinition arg, LinkedList<ParamDefinition> definedArgs) {
@@ -104,8 +156,6 @@ public class Compiler {
 
     public void checkFunctionCall(FunctionCallExpression fce) {
 
-        System.out.println("asdasd");
-
         if (!this.symbolTable.isDefined(fce)) {
             this.reportError(new SemanticError(fce.reportRepeated()));
             return;
@@ -125,12 +175,8 @@ public class Compiler {
 
             IExpression exp = fce.getParams().get(typeIndex);
 
-            System.out.println("CLASS");
-            System.out.println(exp.getType());
-            System.out.println(pd.getType());
-
             if (!exp.getType().equals(pd.getType())) {
-                this.reportError(new SemanticError("SemanticError: parameters types missmatch"));
+                this.reportError(new SemanticError("SemanticError: parameters types mismatch"));
             }
 
             typeIndex++;
@@ -143,6 +189,8 @@ public class Compiler {
         if (errorFlag) {
             System.out.println("The code cannot be generated");
             return;
+        } else {
+            System.out.println("PUSH AX");
         }
 
     }

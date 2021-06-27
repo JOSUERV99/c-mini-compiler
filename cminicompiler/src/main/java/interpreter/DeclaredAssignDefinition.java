@@ -1,16 +1,26 @@
 package interpreter;
 
 import iexpressions.IExpression;
+import itypes.ITypeToken;
 import model.IdentifierToken;
 
 public class DeclaredAssignDefinition implements IInstruction, Identificable {
 
     private IdentifierToken identifier;
     private IExpression expression;
+    private ITypeToken type;
 
     public DeclaredAssignDefinition(IdentifierToken identifier, IExpression expression) {
         this.identifier = identifier;
         this.expression = expression;
+    }
+
+    public ITypeToken getType() {
+        return type;
+    }
+
+    public void setType(ITypeToken type) {
+        this.type = type;
     }
 
     public IExpression getExpression() {

@@ -1,6 +1,6 @@
 int a, b = 2, c;
 
-int xd(int r, int x, float z, int z)
+int xd(int r, int x, int z, int z)
 {
     //int var1 = 2 | 1, var2;
 
@@ -16,9 +16,10 @@ int xd(int r, int x, float z, int z)
         int d1 = 2;
         continue;
         int d2 = 3;
-        int d3 = 3;
+        float d3 = 3;
         int d4 = 3;
-        int d5 = 3;
+
+        int d5 = d3 + d2;
         break;
         int d6 = 3;
         int d7 = 2;
@@ -30,4 +31,7 @@ int xd(int r, int x, float z, int z)
     //     a = 2;
     //     x = 2;
     // }
+}
+int xd0()
+{
 }

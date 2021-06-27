@@ -72,4 +72,41 @@ public class AssignDefinition implements ISemanticRegister, Identificable {
         return "The variable " + this.getSymbolIdentifier() + " has been declared";
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((expression == null) ? 0 : expression.hashCode());
+        result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AssignDefinition other = (AssignDefinition) obj;
+        if (expression == null) {
+            if (other.expression != null)
+                return false;
+        } else if (!expression.equals(other.expression))
+            return false;
+        if (identifier == null) {
+            if (other.identifier != null)
+                return false;
+        } else if (!identifier.getValue().equals(other.identifier.getValue()))
+            return false;
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        } else if (!type.getType().equals(other.type.getType()))
+            return false;
+        return true;
+    }
+
 }

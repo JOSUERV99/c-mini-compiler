@@ -20,6 +20,8 @@ parser code {:
     public Analyzer a;
     public Compiler cmp;
 
+    public boolean globalMode = true;
+
     public void bind(CLexer lexer, Analyzer analyzer) {
         this.s = lexer;
         this.a = analyzer;
@@ -310,6 +312,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         RESULT = pd; 
       :} 
     | OP_WRAPPERPARENTHESISRIGHT {: 
+      globalMode = false;
       LinkedList<ParamDefinition> emptyParams = new LinkedList<>();
       RESULT = emptyParams;
     :}
@@ -334,10 +337,6 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         RESULT = gb;
       :}
 
-    | OP_WRAPPERKEYPARENTHESISLEFT error:e
-    {:
-      parser.generateSyntaxError("Right parenthesis missing", "Fuction declaration", e);
-    :}
     | gramatic_body OP_WRAPPERKEYPARENTHESISRIGHT
     {:
       parser.generateSyntaxError("Left parenthesis missing", "Fuction declaration", null);
@@ -367,12 +366,12 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       control_if:ci {:
         RESULT = ci;  
       :}
-      | control_switch
+      //| control_switch
       | control_while:cw
       {:
         RESULT = cw;
       :}
-      | control_for
+      //| control_for
     ;
 
 //Estructura de control if
@@ -441,7 +440,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       :}
     ;
 
-  //estructura de control switch
+//estructura de control switch
   control_switch::=
         KW_SWITCH OP_WRAPPERPARENTHESISLEFT expression_numeric OP_WRAPPERPARENTHESISRIGHT control_switch_case
       //| error_switch
@@ -457,17 +456,17 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
   error_switch ::=
       KW_SWITCH:s error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-        parser.generateSyntaxError("Left parenthesis missing", "(", s);
+        parser.generateSyntaxError("Switch: Left parenthesis missing", "(", s);
       :}
     | KW_SWITCH:s OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-        parser.generateSyntaxError("Numeric expresion expected", "expression", s);
+        parser.generateSyntaxError("Switch: Numeric expresion expected", "expression", s);
       :}
     | KW_SWITCH:s OP_WRAPPERPARENTHESISLEFT expression_numeric error:e OP_WRAPPERKEYPARENTHESISRIGHT {:
-        parser.generateSyntaxError("Right parenthesis missing", ")", s);
+        parser.generateSyntaxError("Switch: Right parenthesis missing", ")", s);
       :}
     ;
 
-  //estructura de control while
+//estructura de control while
   control_while ::=
         KW_WHILE OP_WRAPPERPARENTHESISLEFT expression:e OP_WRAPPERPARENTHESISRIGHT OP_WRAPPERKEYPARENTHESISLEFT control_while_body:cwb OP_WRAPPERKEYPARENTHESISRIGHT
         {:
@@ -500,19 +499,19 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
   error_while ::= 
       KW_WHILE:w error:e expression OP_WRAPPERPARENTHESISRIGHT OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT {:
-        parser.generateSyntaxError("Left parenthesis missing", "(", w);
+        parser.generateSyntaxError("While: Left parenthesis missing", "(", w);
       :}
     | 
       KW_WHILE:w OP_WRAPPERPARENTHESISLEFT error:e OP_WRAPPERPARENTHESISRIGHT OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT  {:
-        parser.generateSyntaxError("Expression missing in conditional structure", "expression", e);
+        parser.generateSyntaxError("While: Expression missing in conditional structure", "expression", e);
       :}
     | 
       KW_WHILE:w OP_WRAPPERPARENTHESISLEFT expression error:e OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT {:
-        parser.generateSyntaxError("Right parenthesis missing", ")", w);
+        parser.generateSyntaxError("While: Right parenthesis missing", ")", w);
       :}
     | 
       KW_WHILE:w error:e OP_WRAPPERKEYPARENTHESISLEFT control_while_body OP_WRAPPERKEYPARENTHESISRIGHT  {:
-        parser.generateSyntaxError("Some code between while and conditional expression", "While", e);
+        parser.generateSyntaxError("While: Some code between while and conditional expression", "While", e);
       :}
     ;
 
@@ -654,9 +653,19 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
           RESULT = gb;
         :}
       | expression error:e OP_INSTRUCTIONENDOPERATOR   gramatic_body:gb  
-        {:  System.out.println("\n$Error gramatic body, line 506. \n");
+        {:  
             parser.generateSyntaxError("Error in gramatic body at expression, unknown error", "Gramatic Body", e);
             RESULT = gb;
+        :}
+      | KW_CONTINUE                                   gramatic_body:gb
+        {:
+          parser.generateSyntaxError("Continue instruction out of place", "Function declaration", null);
+          RESULT = gb;
+        :}
+      | KW_BREAK                                      gramatic_body:gb
+        {:
+          parser.generateSyntaxError("Break instruction out of place", "Function declaration", null);
+          RESULT = gb;
         :}
       | {:
         LinkedList<IGramaticInstruction> gramaticBody = new LinkedList<>();
@@ -667,6 +676,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   global ::= 
       variable:v OP_INSTRUCTIONENDOPERATOR {:
         GlobalVarDefinition gvd = new GlobalVarDefinition(v);
+        
         RESULT = gvd;
       :}
       //  | error_variable_definition //definida para atrapar errores
@@ -715,14 +725,14 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   variable_definition ::= 
       IDENT:i {: 
         AssignDefinition ad = new AssignDefinition(i, null);
-        cmp.putVariable(ad);
+        cmp.putVariable(ad, globalMode);
         LinkedList<AssignDefinition> adl = new LinkedList<>();
         adl.addLast(ad);
         RESULT = adl;
       :}					
       | IDENT:i OP_ASIG expression:e {: 
           AssignDefinition ad = new AssignDefinition(i, e);
-          cmp.putVariable(ad);
+          cmp.putVariable(ad, globalMode);
           LinkedList<AssignDefinition> adl = new LinkedList<>();
           adl.addLast(ad);
           RESULT = adl;
@@ -730,19 +740,19 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | IDENT:i OP_COMMA variable_definition:vd {: 
           AssignDefinition ad = new AssignDefinition(i, null);
           vd.addLast(ad); 
-          cmp.putVariable(ad); 
+          cmp.putVariable(ad, globalMode); 
           RESULT = vd; 
       :}
       | IDENT:i OP_ASIG expression:e OP_COMMA variable_definition:vd {:
           AssignDefinition ad = new AssignDefinition(i, e);
-          cmp.putVariable(ad); 
+          cmp.putVariable(ad, globalMode); 
           vd.addLast(ad); 
           RESULT = vd; 
       :}
       //| error_variable_definition
       ;
 
-  error_variable_definition ::= 
+  error_variable_definition ::=
     error:e OP_INSTRUCTIONENDOPERATOR
       {:
         parser.generateSyntaxError("Multiple variable definition require comma as separator", ",", e);
@@ -771,11 +781,13 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
   parameters_definition ::= 
         parameter_definition:pd OP_COMMA parameters_definition:params {:
+          globalMode = false;
           cmp.checkArg(pd, params);
           params.addLast(pd);
           RESULT = params;
         :}
       | parameter_definition:pd {: 
+          globalMode = false;
           LinkedList<ParamDefinition> params = new LinkedList<>();
           params.addLast(pd);
           RESULT = params;
@@ -855,7 +867,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | expression:e1 expression_binary_operators:op expression:e2
         {:
           BinaryExpression bexp = new BinaryExpression(e1, op, e2);
-
+          cmp.checkBinaryExpression(bexp);
           RESULT = bexp;
         :}  
       | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
