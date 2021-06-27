@@ -3,7 +3,7 @@ package iexpressions;
 import model.LiteralToken;
 import utils.TypeUtils;
 
-public class LiteralExponentialExpression implements IExpression {
+public class LiteralExponentialExpression extends IExpression {
 
     private Integer value;
     private LiteralToken token;
@@ -34,4 +34,8 @@ public class LiteralExponentialExpression implements IExpression {
         return "LiteralExponentialExpression [token= " + token + ", value= " + value + "]";
     }
 
+    @Override
+    public String getType() {
+        return "int";
+    }
 }

@@ -2,7 +2,7 @@ package iexpressions;
 
 import model.LiteralToken;
 
-public class LiteralOctalExpression implements IExpression {
+public class LiteralOctalExpression extends IExpression {
 
     private LiteralToken token;
 
@@ -13,5 +13,10 @@ public class LiteralOctalExpression implements IExpression {
     @Override
     public String toString() {
         return "LiteralOctalExpression [token=" + token + "]";
+    }
+
+    @Override
+    public String getType() {
+        return "int";
     }
 }

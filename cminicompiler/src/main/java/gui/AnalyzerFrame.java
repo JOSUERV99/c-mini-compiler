@@ -30,7 +30,7 @@ public class AnalyzerFrame extends JFrame {
 
 	private String errorsAmountStr = "Errors: 0  ";
 	private String fileSelectedStr = "File: No selected  ";
-	private Analyzer analyzer = new Analyzer();
+	// private Analyzer analyzer = new Analyzer();
 	private String selectedFile, fullFilename;
 
 	private JLabel lblErrorsAmount, lblCurrentFile;
@@ -101,10 +101,10 @@ public class AnalyzerFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					analyzer = new Analyzer();
-					analyzer.compile(fullFilename, "");
-					populateLists();
-					updateTags();
+					// analyzer = new Analyzer();
+					// analyzer.compile(fullFilename, "");
+					// populateLists();
+					// updateTags();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -124,8 +124,8 @@ public class AnalyzerFrame extends JFrame {
 
 	private void populateLists() {
 
-		this.lexErrors = this.analyzer.getLexicalErrors();
-		this.synErrors = this.analyzer.getSyntaxErrors();
+		// this.lexErrors = this.analyzer.getLexicalErrors();
+		// this.synErrors = this.analyzer.getSyntaxErrors();
 
 		createTree();
 
@@ -168,7 +168,7 @@ public class AnalyzerFrame extends JFrame {
 			File selectedFile = jfc.getSelectedFile();
 			this.setSelectedFile(selectedFile.getName());
 			this.fullFilename = selectedFile.getCanonicalPath();
-			this.analyzer.setFileInputName(this.fullFilename);
+			// this.analyzer.setFileInputName(this.fullFilename);
 		}
 	}
 

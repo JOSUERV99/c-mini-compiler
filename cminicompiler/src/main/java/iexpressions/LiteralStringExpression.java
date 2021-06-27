@@ -2,7 +2,7 @@ package iexpressions;
 
 import model.LiteralToken;
 
-public class LiteralStringExpression implements IExpression {
+public class LiteralStringExpression extends IExpression {
 
     private LiteralToken token;
 
@@ -13,6 +13,11 @@ public class LiteralStringExpression implements IExpression {
     @Override
     public String toString() {
         return "LiteralStringExpression [token=" + token + "]";
+    }
+
+    @Override
+    public String getType() {
+        return "string";
     }
 
 }

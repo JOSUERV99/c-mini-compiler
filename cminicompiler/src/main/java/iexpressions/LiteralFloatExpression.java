@@ -3,7 +3,7 @@ package iexpressions;
 import model.LiteralToken;
 import utils.TypeUtils;
 
-public class LiteralFloatExpression implements IExpression {
+public class LiteralFloatExpression extends IExpression {
 
     private Float value;
     private LiteralToken token;
@@ -34,4 +34,8 @@ public class LiteralFloatExpression implements IExpression {
         return "LiteralFloatExpression [value=" + value + "]";
     }
 
+    @Override
+    public String getType() {
+        return "float";
+    }
 }

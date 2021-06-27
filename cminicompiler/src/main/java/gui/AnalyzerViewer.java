@@ -132,11 +132,8 @@ public class AnalyzerViewer extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    analyzer.compile(fullnameFile, null);
+                    // analyzer.compile(fullnameFile, null);
                     refreshView();
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
                 } catch (Exception e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();

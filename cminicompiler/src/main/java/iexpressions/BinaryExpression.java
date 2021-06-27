@@ -2,7 +2,7 @@ package iexpressions;
 
 import ioperators.BinaryOperator;
 
-public class BinaryExpression implements IExpression {
+public class BinaryExpression extends IExpression {
 
     private IExpression exp1, exp2;
     private BinaryOperator operator;
@@ -41,6 +41,11 @@ public class BinaryExpression implements IExpression {
     @Override
     public String toString() {
         return "BinaryExpression [exp1=" + exp1 + ", exp2=" + exp2 + ", operator=" + operator + "]";
+    }
+
+    @Override
+    public String getType() {
+        return this.exp1.getType().equals(this.exp2.getType()) ? this.exp2.getType() : "undefined";
     }
 
 }

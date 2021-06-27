@@ -2,11 +2,19 @@ package iexpressions;
 
 import model.LiteralToken;
 
-public class LiteralHexExpression implements IExpression {
+public class LiteralHexExpression extends IExpression {
 
     private LiteralToken token;
 
     public LiteralHexExpression(LiteralToken token) {
+        this.token = token;
+    }
+
+    public LiteralToken getToken() {
+        return token;
+    }
+
+    public void setToken(LiteralToken token) {
         this.token = token;
     }
 
@@ -15,4 +23,8 @@ public class LiteralHexExpression implements IExpression {
         return "LiteralHexExpression [token=" + token + "]";
     }
 
+    @Override
+    public String getType() {
+        return "int";
+    }
 }

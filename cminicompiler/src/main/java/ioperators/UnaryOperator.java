@@ -22,4 +22,9 @@ public class UnaryOperator implements IExpression {
     public String toString() {
         return "UnaryOperator [operator=" + operator + "]";
     }
+
+    @Override
+    public String getType() {
+        return null;
+    }
 }

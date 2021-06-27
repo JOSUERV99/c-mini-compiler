@@ -21,8 +21,12 @@ public class ParamDefinition implements ISemanticRegister, Identificable {
         this.identifier = identifier;
     }
 
-    public ITypeToken getType() {
+    public ITypeToken get_Type() {
         return type;
+    }
+
+    public String getType() {
+        return this.type.toString();
     }
 
     public void setType(ITypeToken type) {
@@ -60,6 +64,28 @@ public class ParamDefinition implements ISemanticRegister, Identificable {
     @Override
     public String reportRepeated() {
         return "The param " + this.getSymbolIdentifier() + " is already in used";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ParamDefinition other = (ParamDefinition) obj;
+        if (identifier == null) {
+            if (other.identifier != null)
+                return false;
+        } else if (!identifier.equals(other.identifier))
+            return false;
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        } else if (!type.equals(other.type))
+            return false;
+        return true;
     }
 
 }

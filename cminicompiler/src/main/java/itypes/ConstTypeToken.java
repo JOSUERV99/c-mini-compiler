@@ -6,12 +6,12 @@ import model.KeywordToken;
 
 public class ConstTypeToken implements ITypeToken {
     private KeywordToken constType;
-    private ITypeToken type;
+    private ITypeToken _type;
     private IExpression expresion;
 
     public ConstTypeToken(KeywordToken constType, ITypeToken type, IExpression expresion) {
         this.constType = constType;
-        this.type = type;
+        this._type = type;
         this.expresion = expresion;
     }
 
@@ -23,12 +23,12 @@ public class ConstTypeToken implements ITypeToken {
         this.constType = constType;
     }
 
-    public ITypeToken getType() {
-        return type;
+    public ITypeToken get_Type() {
+        return _type;
     }
 
-    public void setType(ITypeToken type) {
-        this.type = type;
+    public void set_Type(ITypeToken type) {
+        this._type = type;
     }
 
     public IExpression getExpresion() {
@@ -42,6 +42,11 @@ public class ConstTypeToken implements ITypeToken {
     @Override
     public String toString() {
         return "ConstTypeToken: constType: " + constType + ", expresion: " + expresion + ", type:" + type;
+    }
+
+    @Override
+    public String getType() {
+        return this.get_Type().toString();
     }
 
 }

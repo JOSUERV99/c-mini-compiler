@@ -3,7 +3,7 @@ package interpreter;
 import iexpressions.IExpression;
 import model.IdentifierToken;
 
-public class DeclaredAssignDefinition implements IInstruction {
+public class DeclaredAssignDefinition implements IInstruction, Identificable {
 
     private IdentifierToken identifier;
     private IExpression expression;
@@ -32,6 +32,16 @@ public class DeclaredAssignDefinition implements IInstruction {
     @Override
     public String toString() {
         return "DeclaredAssignDefinition: " + identifier + "=" + expression;
+    }
+
+    @Override
+    public String getSymbolIdentifier() {
+        return this.identifier.getValue();
+    }
+
+    @Override
+    public String reportRepeated() {
+        return this.getSymbolIdentifier() + " is not declared";
     }
 
 }

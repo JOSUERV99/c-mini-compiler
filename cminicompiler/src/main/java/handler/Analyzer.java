@@ -19,8 +19,8 @@ public class Analyzer {
     private CLexer lexer;
     private ArrayList<LexicalError> lexicalErrors = new ArrayList<>();
     private ArrayList<SyntaxError> syntaxErrors = new ArrayList<>();
-
     private String fileInputName;
+    private compiler.Compiler cmp;
 
     public Analyzer(String inputFilename) {
         this.fileInputName = inputFilename;
@@ -35,6 +35,7 @@ public class Analyzer {
 
             this.lexer = new CLexer(new BufferedReader(new FileReader(fileInputName)));
             this.parser = new CParser();
+            this.parser.cmp = this.cmp;
             this.parser.bind(this.lexer, this);
             this.lexer.bind(this);
 
@@ -47,8 +48,13 @@ public class Analyzer {
 
         this.init();
         Symbol tree = this.parser.parse();
+        this.cmp.checkCalls();
         this.displaySummary();
         return tree;
+    }
+
+    public void bindCompiler(compiler.Compiler ref) {
+        this.cmp = ref;
     }
 
     public void addSyntaxError(SyntaxError syntaxError) {

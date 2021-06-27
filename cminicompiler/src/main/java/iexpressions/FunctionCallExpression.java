@@ -3,10 +3,12 @@ package iexpressions;
 import java.util.LinkedList;
 
 import interpreter.Identificable;
+import itypes.ITypeToken;
 import model.IdentifierToken;
 
-public class FunctionCallExpression implements IExpression, Identificable {
+public class FunctionCallExpression extends IExpression implements Identificable {
 
+    private ITypeToken type;
     private IdentifierToken identifier;
     private LinkedList<IExpression> params;
 
@@ -43,7 +45,7 @@ public class FunctionCallExpression implements IExpression, Identificable {
 
     @Override
     public String reportRepeated() {
-        return "The function " + this.getSymbolIdentifier() + " has been declared";
+        return "";
     }
 
 }

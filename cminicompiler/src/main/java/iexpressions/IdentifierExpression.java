@@ -3,7 +3,7 @@ package iexpressions;
 import interpreter.Identificable;
 import model.IdentifierToken;
 
-public class IdentifierExpression implements IExpression, Identificable {
+public class IdentifierExpression extends IExpression implements Identificable {
 
     private IdentifierToken token;
 
@@ -38,6 +38,11 @@ public class IdentifierExpression implements IExpression, Identificable {
 
     public String reportNoDefinition() {
         return "The identifier expression " + this.getSymbolIdentifier() + " is not declared";
+    }
+
+    @Override
+    public String getType() {
+        return "int";
     }
 
 }

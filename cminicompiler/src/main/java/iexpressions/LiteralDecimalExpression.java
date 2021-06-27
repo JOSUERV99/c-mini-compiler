@@ -3,7 +3,7 @@ package iexpressions;
 import model.LiteralToken;
 import utils.TypeUtils;
 
-public class LiteralDecimalExpression implements IExpression {
+public class LiteralDecimalExpression extends IExpression {
 
     private Integer value;
     private LiteralToken token;
@@ -34,4 +34,8 @@ public class LiteralDecimalExpression implements IExpression {
         return "LiteralDecimalExpression [value=" + value + "]";
     }
 
+    @Override
+    public String getType() {
+        return "int";
+    }
 }

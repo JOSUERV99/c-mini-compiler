@@ -18,12 +18,11 @@ parser code {:
 
     public CLexer s;
     public Analyzer a;
-    public Compiler compRef;
+    public Compiler cmp;
 
-    public void bind(CLexer lexer, Analyzer analyzer, Compiler compRef) {
+    public void bind(CLexer lexer, Analyzer analyzer) {
         this.s = lexer;
         this.a = analyzer;
-        this.compRef = compRef;
     }
 
     public void generateSyntaxError(String message, String expected, Object o) {
@@ -55,16 +54,16 @@ scan with {: return this.s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
   terminal IdentifierToken IDENT;
-  terminal KW_AUTO,KW_CASE,KW_CHAR;
-  terminal KW_DEFAULT,KW_DO,KW_DOUBLE,KW_ELSE;
+  terminal KW_AUTO,KW_CASE;
+  terminal KW_DEFAULT,KW_DO,KW_ELSE;
   terminal KeywordToken KW_CONTINUE,
                         KW_BREAK;
-  terminal KW_ENUM,KW_EXTERN,KW_FLOAT,KW_FOR,KW_GOTO;
+  terminal KW_ENUM,KW_EXTERN,KW_FOR,KW_GOTO;
   terminal KW_IF;
-  terminal KeywordToken KW_INT, KW_CONST;
+  terminal KeywordToken KW_INT, KW_CONST, KW_FLOAT, KW_CHAR, KW_VOID, KW_DOUBLE;
   terminal KW_LONG,KW_REGISTER,KW_RETURN;
   terminal KW_SHORT,KW_SIGNED,KW_SIZEOF,KW_STATIC,KW_STRUCT;
-  terminal KW_SWITCH,KW_TYPEDEF,KW_UNION,KW_UNSIGNED,KW_VOID;
+  terminal KW_SWITCH,KW_TYPEDEF,KW_UNION,KW_UNSIGNED;
   terminal KW_VOLATILE,KW_WHILE;
   terminal OperatorToken OP_DIV,OP_PLUS,OP_MINUS;
   terminal OperatorToken OP_MULT,OP_MOD,OP_COMMA,OP_GTE,OP_LTE;
@@ -243,6 +242,7 @@ start_program ::=
 
 program_definition ::= 
     function_declaration:fd program_definition:pd {:
+      cmp.putFunction(fd);
       pd.addFunction(fd);
       RESULT = pd;  
     :}
@@ -715,22 +715,28 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   variable_definition ::= 
       IDENT:i {: 
         AssignDefinition ad = new AssignDefinition(i, null);
+        cmp.putVariable(ad);
         LinkedList<AssignDefinition> adl = new LinkedList<>();
         adl.addLast(ad);
         RESULT = adl;
       :}					
       | IDENT:i OP_ASIG expression:e {: 
           AssignDefinition ad = new AssignDefinition(i, e);
+          cmp.putVariable(ad);
           LinkedList<AssignDefinition> adl = new LinkedList<>();
           adl.addLast(ad);
           RESULT = adl;
       :}		
       | IDENT:i OP_COMMA variable_definition:vd {: 
-          vd.addLast(new AssignDefinition(i, null));  
+          AssignDefinition ad = new AssignDefinition(i, null);
+          vd.addLast(ad); 
+          cmp.putVariable(ad); 
           RESULT = vd; 
       :}
       | IDENT:i OP_ASIG expression:e OP_COMMA variable_definition:vd {:
-          vd.addLast(new AssignDefinition(i, e)); 
+          AssignDefinition ad = new AssignDefinition(i, e);
+          cmp.putVariable(ad); 
+          vd.addLast(ad); 
           RESULT = vd; 
       :}
       //| error_variable_definition
@@ -753,6 +759,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | parameter:p 
       {:
         LinkedList<IExpression> params = new LinkedList<>();
+        params.addLast(p);
         RESULT = params;
       :};
 
@@ -764,6 +771,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 
   parameters_definition ::= 
         parameter_definition:pd OP_COMMA parameters_definition:params {:
+          cmp.checkArg(pd, params);
           params.addLast(pd);
           RESULT = params;
         :}
@@ -777,7 +785,6 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   parameter_definition ::= 
         keyword_types:kt IDENT:id {: 
           ParamDefinition pd = new ParamDefinition(kt, id);
-
           RESULT = pd;
         :}
       /*Funciona en Mingw++ pero no tiene sentido, se saca
@@ -810,6 +817,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   instruction ::=
       IDENT:i OP_ASIG expression:e {:
           DeclaredAssignDefinition dad = new DeclaredAssignDefinition(i, e);
+          cmp.checkSimpleAssignment(dad);
           RESULT = dad;
       :}
       | variable:var {:
@@ -833,12 +841,14 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | expression_unary_operator:eup IDENT:i
         {:
           IdentifierExpression id = new IdentifierExpression(i);
+          cmp.checkIdentificableExpression(id);
           UnaryExpression expUnary =  new UnaryExpression(eup, id, true);
           RESULT = expUnary;
         :} 
       | IDENT:i expression_unary_operator:eup
         {:
           IdentifierExpression id = new IdentifierExpression(i);
+          cmp.checkIdentificableExpression(id);
           UnaryExpression expUnary =  new UnaryExpression(eup, id, false);
           RESULT = expUnary;
         :}
@@ -865,22 +875,31 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   expression_atomic::=
       IDENT:i 
       {:
-        IdentifierExpression id = new IdentifierExpression(i);
-        RESULT = id;
+          IdentifierExpression id = new IdentifierExpression(i);
+          cmp.checkIdentificableExpression(id);
+          cmp.storeExpression(id);
+          RESULT = id;
       :}
       | IDENT:fn OP_WRAPPERPARENTHESISLEFT parameters:params OP_WRAPPERPARENTHESISRIGHT
       {:
-        FunctionCallExpression fce = new FunctionCallExpression(fn, params);
-        RESULT = fce;
+          FunctionCallExpression fce = new FunctionCallExpression(fn, params);
+          cmp.storeCall(fce);
+          cmp.storeExpression(fce);
+          RESULT = fce;
       :} 				
       | IDENT:fn OP_WRAPPERPARENTHESISLEFT OP_WRAPPERPARENTHESISRIGHT 
       {:
           LinkedList<IExpression> emptyParams = new LinkedList<>();
           FunctionCallExpression fce = new FunctionCallExpression(fn, emptyParams);
+          cmp.storeCall(fce);
+          cmp.storeExpression(fce);
           RESULT = fce;
       :}				 
       | LIT_HEXVALUE
-      | LIT_DECIMALVALUE:l {: RESULT = new LiteralDecimalExpression(l); :}
+      | LIT_DECIMALVALUE:l 
+      {: 
+          RESULT = new LiteralDecimalExpression(l); 
+      :}
       | LIT_FLOATVALUE
       | LIT_CHARVALUE
       | LIT_OCTALVALUE
@@ -1094,10 +1113,10 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
 //Keyword types
   keyword_types ::= 
         KW_INT:i  {: RESULT = new IntTypeToken(i); :}
-      | KW_CHAR 
+      | KW_CHAR:c {: RESULT = new IntTypeToken(c); :}
       | KW_LONG 
       | KW_SHORT 
-      | KW_VOID
-      | KW_FLOAT
-      | KW_DOUBLE
+      | KW_VOID:v {: RESULT = new VoidTypeToken(v); :}
+      | KW_FLOAT:f {: RESULT = new FloatTypeToken(f); :}
+      | KW_DOUBLE:d {: RESULT = new DoubleTypeToken(d); :}
       ;

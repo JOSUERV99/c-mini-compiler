@@ -2,7 +2,7 @@ package iexpressions;
 
 import model.LiteralToken;
 
-public class AtomicExpression implements IExpression {
+public class AtomicExpression extends IExpression {
 
     private LiteralToken token;
 

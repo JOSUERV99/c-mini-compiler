@@ -2,11 +2,11 @@ package itypes;
 
 import model.Token;
 
-public class IntTypeToken implements ITypeToken {
+public class FloatTypeToken implements ITypeToken {
 
     private Token token;
 
-    public IntTypeToken(Token token) {
+    public FloatTypeToken(Token token) {
         this.token = token;
     }
 
@@ -25,6 +25,6 @@ public class IntTypeToken implements ITypeToken {
 
     @Override
     public String getType() {
-        return "int";
+        return "float";
     }
 }
