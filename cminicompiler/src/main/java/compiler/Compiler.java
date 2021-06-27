@@ -102,13 +102,6 @@ public class Compiler {
         boolean isDefined = !isDefinedAsLocal || !isDefinedAsGlobal;
 
         if (!isDefined) {
-
-            System.out.println("CheckSimpleAssignment: Reportando error= " + dad.getSymbolIdentifier());
-            // System.out.println("SymbolTable: " + this.symbolTable);
-            // System.out.print(dad.getSymbolIdentifier()+" esta presente
-            // "+this.symbolTable.isGlobalDefined(dad)+" ");
-            // System.out.println("Global list: " + this.getSymbolTable().getGlobalVars());
-
             this.reportError(new SemanticError(dad.reportRepeated()));
         } else {
             Object fromTable = this.symbolTable.get(dad.getIdentifier().getValue());
@@ -158,15 +151,12 @@ public class Compiler {
                 AssignDefinition ad = new AssignDefinition(pd.getIdentifier(), null);
                 ad.setType(pd.get_Type());
                 this.symbolTable.add(ad);
-
-                System.out.println("CHECK ARG");
             }
         }
     }
 
     public void checkIdentificableExpression(IdentifierExpression iexp) {
         if (!this.symbolTable.isDefined(iexp) && !this.symbolTable.isGlobalDefined(iexp)) {
-            System.out.println("CheckIdentificableExpression: Reportando error de= " + iexp);
             this.reportError(new SemanticError("SemanticError: " + iexp.reportNoDefinition()));
         }
     }
