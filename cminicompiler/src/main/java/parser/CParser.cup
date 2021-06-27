@@ -1,18 +1,18 @@
 /* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
-import java_cup.runtime.*;
-import java.util.LinkedList;
-
-import lexer.CLexer;
-import handler.Analyzer;
-import model.Token;
-import errors.SyntaxError;
-import interpreter.*;
-import itypes.*;
-import iexpressions.*;
-import model.*;
-import ioperators.*;
-import icontrolstructures.*;
-import compiler.Compiler;
+//imports
+  import java_cup.runtime.*;
+  import java.util.LinkedList;
+  import lexer.CLexer;
+  import handler.Analyzer;
+  import model.Token;
+  import errors.SyntaxError;
+  import interpreter.*;
+  import itypes.*;
+  import iexpressions.*;
+  import model.*;
+  import ioperators.*;
+  import icontrolstructures.*;
+  import compiler.Compiler;
 
 parser code {:
 
@@ -40,13 +40,11 @@ parser code {:
         }
     }
 
-    public void syntax_error(Symbol cur_token) 
-    {
+    public void syntax_error(Symbol cur_token) {
 	    System.err.println("Syntax error at line: " + (cur_token.right+1) + " at column: " + (cur_token.left+1) + " on: " + cur_token.value);
     }
 
-    public void unrecovered_syntax_error(Symbol cur_token) 
-    {
+    public void unrecovered_syntax_error(Symbol cur_token) {
     	System.err.println("Fatal error at line: " + (cur_token.right+1) + " at column: " + (cur_token.left+1) + " on: " + cur_token.value);
     }
 :}
@@ -672,7 +670,8 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
         RESULT = gramaticBody;
       :}
       ;
-
+      
+//global
   global ::= 
       variable:v OP_INSTRUCTIONENDOPERATOR {:
         GlobalVarDefinition gvd = new GlobalVarDefinition(v);
@@ -685,6 +684,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       //   :}
       ;
 
+//constant
   constant ::=
         KW_CONST keyword_types IDENT OP_ASIG expression_atomic_literal_int OP_INSTRUCTIONENDOPERATOR
       //| error_constant
@@ -714,7 +714,7 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
           parser.generateSyntaxError("Instruction end operator was expected (;)", ";", c);
         :}
       ;
-
+//Variable
   variable ::= 
       keyword_types:kt variable_definition:vd {:
         VarDefinition gv = new VarDefinition(kt, vd);

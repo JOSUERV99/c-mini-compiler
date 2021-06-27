@@ -2,8 +2,6 @@ package compiler;
 
 import java.util.LinkedList;
 
-import org.graalvm.compiler.graph.spi.Canonicalizable.Binary;
-
 import errors.Error;
 import errors.SemanticError;
 import handler.Analyzer;
@@ -59,15 +57,8 @@ public class Compiler {
 
             if (this.symbolTable.isGlobalDefined(assign)) {
 
-                System.out.println("aasd");
-                System.out.println(assign);
-
                 this.symbolTable.add(assign);
                 return;
-            } else {
-                System.out.println("02020202020");
-                System.out.println(assign);
-                System.out.println(this.symbolTable.getGlobalVars());
             }
 
             if (this.symbolTable.isDefined(assign)) {
@@ -105,12 +96,23 @@ public class Compiler {
     }
 
     public void checkSimpleAssignment(DeclaredAssignDefinition dad) {
-        if (!this.symbolTable.isDefined(dad)) {
+        boolean isDefinedAsGlobal = this.symbolTable.isGlobalDefined(dad);
+        boolean isDefinedAsLocal = this.symbolTable.isDefined(dad);
+        boolean isDefined = !isDefinedAsLocal || !isDefinedAsGlobal;
+
+        if (!isDefined) {
+
+            System.out.println("CheckSimpleAssignment: Reportando error= " + dad.getSymbolIdentifier());
+            // System.out.println("SymbolTable: " + this.symbolTable);
+            // System.out.print(dad.getSymbolIdentifier()+" esta presente
+            // "+this.symbolTable.isGlobalDefined(dad)+" ");
+            // System.out.println("Global list: " + this.getSymbolTable().getGlobalVars());
 
             this.reportError(new SemanticError(dad.reportRepeated()));
         } else {
-
-            Object varObj = this.symbolTable.get(dad.getIdentifier().getValue());
+            Object fromTable = this.symbolTable.get(dad.getIdentifier().getValue());
+            Object fromGlobalVar = this.symbolTable.getFromGlobal(dad);
+            Object varObj = isDefinedAsGlobal ? fromGlobalVar : fromTable;
 
             if (varObj instanceof AssignDefinition) {
                 AssignDefinition ad = (AssignDefinition) varObj;
@@ -126,26 +128,29 @@ public class Compiler {
 
         IExpression exp1 = bexp.getExp1();
         IExpression exp2 = bexp.getExp2();
-        System.out.println("Aaja aja Binary expresion opresora");
-        System.out.println(exp1.getType());
-        System.out.println(exp2.getType());
-        System.out.println("Terminada Binary expresion opresora");
+
+        if (exp1.getType().equals(exp2.getType())) {
+            this.reportError(new SemanticError("SemanticError: binary expression types mismatch with "));
+        }
 
     }
 
     public void checkArg(ParamDefinition arg, LinkedList<ParamDefinition> definedArgs) {
 
         for (ParamDefinition pd : definedArgs) {
-            if (arg.equals(pd)) {
+            if (arg.equals(pd) || this.symbolTable.isDefined(arg)) {
                 this.reportError(new SemanticError(
                         "SemanticError: param " + arg.getIdentifier().getValue() + " is already used"));
                 return;
+            } else {
+                this.symbolTable.add(arg);
             }
         }
     }
 
     public void checkIdentificableExpression(IdentifierExpression iexp) {
-        if (!this.symbolTable.isDefined(iexp)) {
+        if (!this.symbolTable.isDefined(iexp) && !this.symbolTable.isGlobalDefined(iexp)) {
+            System.out.println("CheckIdentificableExpression: Reportando error de= " + iexp);
             this.reportError(new SemanticError(iexp.reportNoDefinition()));
         }
     }
