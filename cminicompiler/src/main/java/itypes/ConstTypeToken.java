@@ -41,7 +41,7 @@ public class ConstTypeToken implements ITypeToken {
 
     @Override
     public String toString() {
-        return "ConstTypeToken: constType: " + constType + ", expresion: " + expresion + ", type:" + type;
+        return "ConstTypeToken [_type=" + _type + ", constType=" + constType + ", expresion=" + expresion + "]";
     }
 
     @Override

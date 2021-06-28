@@ -13,11 +13,9 @@ import iexpressions.IdentifierExpression;
 import interpreter.AssignDefinition;
 import interpreter.DeclaredAssignDefinition;
 import interpreter.FunctionDefinition;
-import interpreter.GlobalVarDefinition;
 import interpreter.ISemanticRegister;
 import interpreter.ParamDefinition;
 import interpreter.ProgramDefinition;
-import interpreter.VarDefinition;
 import java_cup.runtime.Symbol;
 import semantic.SemanticStack;
 import semantic.SymbolTable;
@@ -220,8 +218,9 @@ public class Compiler {
 
             this.programDefinition = (ProgramDefinition) tree.value;
             this.codeGenerator = new CodeGenerator(this.programDefinition, this.inputFilename, this.symbolTable);
-            // TODO show lexical, syntactic, semantic errors report
-            this.errorFlag = this.semanticErrors.isEmpty();
+
+            this.errorFlag = this.semanticErrors.isEmpty() && analyzer.getLexicalErrors().isEmpty()
+                    && analyzer.getSyntaxErrors().isEmpty();
 
             this.generateCode();
 
@@ -234,8 +233,6 @@ public class Compiler {
     public void reportError(Error err) {
         if (err instanceof SemanticError)
             this.semanticErrors.add((SemanticError) err);
-
-        // TODO add other errors
     }
 
     public SymbolTable getSymbolTable() {

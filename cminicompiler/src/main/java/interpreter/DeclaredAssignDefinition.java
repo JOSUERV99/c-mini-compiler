@@ -1,10 +1,13 @@
 package interpreter;
 
+import iexpressions.BinaryExpression;
 import iexpressions.IExpression;
+import iexpressions.IdentifierExpression;
+import iexpressions.LiteralDecimalExpression;
 import itypes.ITypeToken;
 import model.IdentifierToken;
 
-public class DeclaredAssignDefinition implements IInstruction, Identificable {
+public class DeclaredAssignDefinition implements IInstruction, Identificable, ISemanticRegister {
 
     private IdentifierToken identifier;
     private IExpression expression;
@@ -41,7 +44,7 @@ public class DeclaredAssignDefinition implements IInstruction, Identificable {
 
     @Override
     public String toString() {
-        return "DeclaredAssignDefinition: " + identifier + "=" + expression;
+        return identifier.getValue() + "=" + expression.toString() + ";";
     }
 
     @Override
@@ -52,6 +55,25 @@ public class DeclaredAssignDefinition implements IInstruction, Identificable {
     @Override
     public String reportRepeated() {
         return this.getSymbolIdentifier() + " is not declared";
+    }
+
+    @Override
+    public String getCode() {
+        String code = "";
+
+        if (expression instanceof LiteralDecimalExpression) {
+            Integer v = ((LiteralDecimalExpression) expression).getValue();
+            code += "\tMOV ax, " + v.toString() + "\n";
+        } else if (expression instanceof BinaryExpression) {
+            BinaryExpression be = ((BinaryExpression) expression);
+            code += be.getCode();
+        } else if (expression instanceof IdentifierExpression) {
+            IdentifierExpression ie = (IdentifierExpression) expression;
+            code += "\tMOV ax, " + ie.getSymbolIdentifier() + "\n";
+        }
+
+        code += "\tMOV " + this.getSymbolIdentifier() + ", ax\n";
+        return code;
     }
 
 }

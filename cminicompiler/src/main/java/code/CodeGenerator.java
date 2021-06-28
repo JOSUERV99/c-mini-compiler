@@ -2,11 +2,11 @@ package code;
 
 import iexpressions.LiteralDecimalExpression;
 import interpreter.AssignDefinition;
+import interpreter.FunctionDefinition;
+import interpreter.ISemanticRegister;
 import interpreter.Identificable;
 import interpreter.ProgramDefinition;
 import semantic.SymbolTable;
-import utils.FileUtils;
-import code.AssemblerStatic;
 
 public class CodeGenerator {
 
@@ -42,9 +42,9 @@ public class CodeGenerator {
             // detecting globals, params, vars
             if (id instanceof AssignDefinition) {
                 AssignDefinition ad = (AssignDefinition) id;
-                code.append(ad.getType().getDefineBytes());
-                code.append(" ");
                 code.append(id.getSymbolIdentifier());
+                code.append(" ");
+                code.append(ad.getType().getDefineBytes());
                 code.append(" ");
 
                 if (ad.getExpression() instanceof LiteralDecimalExpression) {
@@ -68,9 +68,47 @@ public class CodeGenerator {
 
     public void generateCodeSegment() {
         code.append(AssemblerStatic.DefCodeSegment);
+
+        code.append(AssemblerStatic.procAboveEqualThan);
+        code.append(AssemblerStatic.procBelowEqualThan);
+        code.append(AssemblerStatic.procGreaterThan);
+        code.append(AssemblerStatic.procLessThan);
+        code.append(AssemblerStatic.procEqualThan);
+
         code.append(AssemblerStatic.DefMainCode);
+        code.append(this.getFunctionCode());
 
         code.append(AssemblerStatic.DefFinalMainCode);
+    }
+
+    public String getFunctionCode() {
+
+        StringBuilder fCode = new StringBuilder();
+
+        ISemanticRegister rs = (ISemanticRegister) this.pop();
+        int x = 0;
+        while (rs != null) {
+            fCode.append(";\t" + rs.toString() + "\n");
+            fCode.append(rs.getCode());
+            rs = this.pop();
+        }
+
+        return fCode.toString();
+    }
+
+    public ISemanticRegister pop() {
+
+        if (this.pd.getFunctionDefinitions().size() != 1) {
+            System.out.println("No function was found");
+            return null;
+        }
+
+        FunctionDefinition fn = this.pd.getFunctionDefinitions().getLast();
+
+        if (fn.getBody().size() > 0)
+            return (ISemanticRegister) fn.getBody().removeLast();
+
+        return null;
     }
 
     public String getCode() {

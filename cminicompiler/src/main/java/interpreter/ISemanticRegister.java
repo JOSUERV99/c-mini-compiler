@@ -1,10 +1,8 @@
 package interpreter;
 
-public interface ISemanticRegister {
+import iexpressions.IGramaticInstruction;
 
-    public String getCode();
+public interface ISemanticRegister extends IGramaticInstruction {
 
-    public boolean isFinished();
-
-    public String getLabel();
+    public abstract String getCode();
 }

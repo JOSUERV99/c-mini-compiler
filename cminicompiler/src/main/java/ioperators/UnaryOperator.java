@@ -28,4 +28,10 @@ public class UnaryOperator extends IExpression {
     public String getType() {
         return null;
     }
+
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

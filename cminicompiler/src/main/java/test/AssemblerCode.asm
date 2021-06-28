@@ -45,7 +45,7 @@ pila endS
 codigo segment
 	assume cs:codigo,ds:datos,ss:pila
 
-printAX proc
+printAX proc near
 	; imprime a la salida estándar un número que supone estar en el AX
 	; supone que es un número positivo y natural en 16 bits.
 	; lo imprime en decimal.  

@@ -18,18 +18,6 @@ public class ProgramDefinition implements ISemanticRegister {
         return null;
     }
 
-    @Override
-    public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String getLabel() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public LinkedList<FunctionDefinition> getFunctionDefinitions() {
         return functionDefinitions;
     }

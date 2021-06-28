@@ -38,4 +38,10 @@ public class LiteralExponentialExpression extends IExpression {
     public String getType() {
         return "int";
     }
+
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

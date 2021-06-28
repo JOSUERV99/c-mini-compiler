@@ -39,7 +39,36 @@ public class UnaryExpression extends IExpression {
 
     @Override
     public String toString() {
-        return "UnaryExpression: identifier= " + identifier + ", sumDecFirst= " + sumDecFirst + ", uOperator= "
-                + uOperator;
+        return isSumDecFirst() ? this.uOperator.getOperator().getValue() + this.identifier.getToken().getValue() + ";"
+                : this.identifier.getToken().getValue() + this.uOperator.getOperator().getValue() + ";";
+    }
+
+    @Override
+    public String getCode() {
+
+        String op = this.uOperator.getOperator().getValue();
+        String code = "";
+        String id = this.identifier.getSymbolIdentifier();
+
+        code += "\tMOV ax, " + id + "\n";
+        String asm = "";
+        switch (op) {
+            case "++":
+                asm += "\tinc ax\n";
+                break;
+            case "--":
+                asm += "\tdec ax\n";
+                break;
+        }
+
+        if (isSumDecFirst()) {
+            code = asm + code;
+        } else {
+            code += asm;
+        }
+
+        code += "\tMOV " + id + ", ax \n";
+
+        return code;
     }
 }

@@ -864,8 +864,19 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
           RESULT = bexp;
         :}  
       | expression OP_TERNARYOPERATORQUESTIONMARK expression OP_TERNARYOPERATIONDOUBLEDOT expression
-      | OP_NEGATION expression
-      | OP_NOT expression
+      | OP_NEGATION:o expression_atomic:e
+        {:
+          UnaryOperator uOperator = new UnaryOperator(o);
+          BooleanUnaryExpression boolExpUnary =  new BooleanUnaryExpression(uOperator,e);
+          RESULT = boolExpUnary;
+        :}
+      | OP_NOT:o expression_atomic:e 
+        {:
+          UnaryOperator uOperator = new UnaryOperator(o);
+          BooleanUnaryExpression boolExpUnary =  new BooleanUnaryExpression(uOperator,e);
+          RESULT = boolExpUnary;
+        :}
+
       ;
 
   expression_numeric ::=

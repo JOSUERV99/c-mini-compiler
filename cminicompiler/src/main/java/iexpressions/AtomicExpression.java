@@ -24,7 +24,8 @@ public class AtomicExpression extends IExpression {
     }
 
     @Override
-    public Object getExpressionValue() {
+    public String getCode() {
+        // TODO Auto-generated method stub
         return null;
     }
 }

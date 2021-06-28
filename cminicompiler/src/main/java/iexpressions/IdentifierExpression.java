@@ -21,7 +21,7 @@ public class IdentifierExpression extends IExpression implements Identificable {
 
     @Override
     public String toString() {
-        return "IdentifierExpression [" + this.token.getValue() + "]";
+        return this.token.getValue();
     }
 
     @Override
@@ -43,6 +43,12 @@ public class IdentifierExpression extends IExpression implements Identificable {
     @Override
     public String getType() {
         return "int";
+    }
+
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

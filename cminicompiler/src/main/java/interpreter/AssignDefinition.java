@@ -1,6 +1,9 @@
 package interpreter;
 
+import iexpressions.BinaryExpression;
 import iexpressions.IExpression;
+import iexpressions.IdentifierExpression;
+import iexpressions.LiteralDecimalExpression;
 import itypes.ITypeToken;
 import model.IdentifierToken;
 
@@ -41,20 +44,21 @@ public class AssignDefinition implements ISemanticRegister, Identificable {
 
     @Override
     public String getCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        String code = "";
 
-    @Override
-    public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+        if (expression instanceof LiteralDecimalExpression) {
+            Integer v = ((LiteralDecimalExpression) expression).getValue();
+            code += "MOV ax, " + v.toString() + "\n";
+        } else if (expression instanceof BinaryExpression) {
+            BinaryExpression be = ((BinaryExpression) expression);
+            code += be.getCode();
+        } else if (expression instanceof IdentifierExpression) {
+            IdentifierExpression ie = (IdentifierExpression) expression;
+            code += "MOV ax, " + ie.getSymbolIdentifier() + "\n";
+        }
 
-    @Override
-    public String getLabel() {
-        // TODO Auto-generated method stub
-        return null;
+        code += "MOV " + this.getSymbolIdentifier() + ", ax";
+        return code;
     }
 
     @Override

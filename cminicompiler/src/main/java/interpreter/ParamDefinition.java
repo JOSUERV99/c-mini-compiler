@@ -45,18 +45,6 @@ public class ParamDefinition implements ISemanticRegister, Identificable {
     }
 
     @Override
-    public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String getLabel() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public String getSymbolIdentifier() {
         return this.getIdentifier().getValue();
     }

@@ -20,4 +20,10 @@ public class LiteralStringExpression extends IExpression {
         return "string";
     }
 
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

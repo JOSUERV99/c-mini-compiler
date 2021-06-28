@@ -31,11 +31,17 @@ public class LiteralDecimalExpression extends IExpression {
 
     @Override
     public String toString() {
-        return "LiteralDecimalExpression [value=" + value + "]";
+        return this.getValue().toString();
     }
 
     @Override
     public String getType() {
         return "int";
+    }
+
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -38,4 +38,10 @@ public class LiteralFloatExpression extends IExpression {
     public String getType() {
         return "float";
     }
+
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

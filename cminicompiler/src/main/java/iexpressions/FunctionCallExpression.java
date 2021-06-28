@@ -48,4 +48,10 @@ public class FunctionCallExpression extends IExpression implements Identificable
         return "";
     }
 
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

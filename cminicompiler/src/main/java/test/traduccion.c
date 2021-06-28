@@ -1,19 +1,23 @@
 int x;
 int y;
-int a, b,c;
- 
-int main(){
+int a, b, c;
 
-	if (x > 4) { 
-		x= x - 2;
+int main()
+{
+
+	if (x > 4)
+	{
+		x = x - 2;
 	}
 	else
 	{
-	 x--;
+		y = x + 2;
+		x--;
 	}
 
-	while ( x != 10) {
-	  y= x + 1;
-	  x++; 
+	while (x != 10)
+	{
+		y = x + 1;
+		x++;
 	}
 }

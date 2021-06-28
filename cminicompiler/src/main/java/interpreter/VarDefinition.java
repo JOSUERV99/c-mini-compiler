@@ -34,18 +34,6 @@ public class VarDefinition implements ISemanticRegister, Initializable, IGramati
         return null;
     }
 
-    @Override
-    public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String getLabel() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public void assignType() {
 
         if (this.type == null || this.assignments == null || this.assignments.size() == 0)
