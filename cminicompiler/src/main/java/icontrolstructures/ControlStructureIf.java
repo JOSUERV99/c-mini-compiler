@@ -1,5 +1,6 @@
 package icontrolstructures;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 import iexpressions.BinaryExpression;
@@ -83,6 +84,7 @@ public class ControlStructureIf implements IControlStructure, ISemanticRegister 
         code += "\tJMP " + ifelse + "\n";
         code += "\t\t" + ifCuerpo + ":\n";
         // Todo el codigo
+        Collections.reverse(this.ifBody);
         for (IGramaticInstruction f : this.ifBody) {
             ISemanticRegister rs = (ISemanticRegister) f;
             code += ";\t" + rs.toString() + "\n";
@@ -92,6 +94,7 @@ public class ControlStructureIf implements IControlStructure, ISemanticRegister 
         code += "\t\tJMP " + finalif + "\n";
         code += "\t" + ifelse + ":\n";
         // Todo el codigo de else
+        Collections.reverse(this.elseBody);
         for (IGramaticInstruction f : this.elseBody) {
             ISemanticRegister rs = (ISemanticRegister) f;
             code += ";\t" + rs.toString() + "\n";

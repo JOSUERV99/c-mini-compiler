@@ -213,6 +213,7 @@ KW_UNSIGNED = "unsigned"
 KW_VOID = "void"
 KW_VOLATILE = "volatile"
 KW_WHILE = "while"
+KW_WRITE = "write"
 
 /*op*/
 OP_DIV = "/"
@@ -313,7 +314,8 @@ IDENT = {Identifier}
 	{KW_VOID} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_VOID);}
 	{KW_VOLATILE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_VOLATILE);}
 	{KW_WHILE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_WHILE);}
-		
+	{KW_WRITE} { return new KeywordToken(yyline, yycolumn, yytext()).createSymbol(sym.KW_WRITE);}	
+
 	{LIT_HEXVALUE} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_HEXVALUE);}
 	{LIT_DECIMALVALUE} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_DECIMALVALUE);}
 	{LIT_FLOATVALUE} { return new LiteralToken(yyline, yycolumn, yytext()).createSymbol(sym.LIT_FLOATVALUE);}

@@ -33,6 +33,7 @@ public class Compiler {
     private LinkedList<IExpression> expMemo;
     private CodeGenerator codeGenerator;
 
+    private final String outDir = "src/main/java/out/";
     private boolean errorFlag = false;
 
     public Compiler(String inputFilename) {
@@ -198,11 +199,19 @@ public class Compiler {
             System.out.println("The code cannot be generated");
             return;
         } else {
+
             this.codeGenerator.generate();
             System.out.println("Generated code: ");
             System.out.println(this.codeGenerator.getCode());
+
+            this.saveOut();
         }
 
+    }
+
+    public void saveOut() {
+        FileUtils.savePlainTextFile(this.outDir + FileUtils.getCleanedProgramName(this.inputFilename) + ".asm",
+                this.codeGenerator.getCode());
     }
 
     public void execProcess() {

@@ -60,6 +60,7 @@ scan with {: return this.s.next_token(); :};
                         KW_BREAK;
   terminal KW_ENUM,KW_EXTERN,KW_FOR,KW_GOTO;
   terminal KW_IF;
+  terminal KW_WRITE;
   terminal KeywordToken KW_INT, KW_CONST, KW_FLOAT, KW_CHAR, KW_VOID, KW_DOUBLE;
   terminal KW_LONG,KW_REGISTER,KW_RETURN;
   terminal KW_SHORT,KW_SIGNED,KW_SIZEOF,KW_STATIC,KW_STRUCT;
@@ -162,7 +163,7 @@ scan with {: return this.s.next_token(); :};
 
 //Definicion de precedencias
 //precedence gramatic body
-  precedence left     IDENT;
+  precedence left     IDENT, KW_WRITE;
   precedence left     OP_WRAPPERKEYPARENTHESISLEFT, OP_WRAPPERKEYPARENTHESISRIGHT;
   precedence left     OP_WRAPPERPARENTHESISLEFT, OP_WRAPPERPARENTHESISRIGHT;
   precedence nonassoc     LIT_DECIMALVALUE, LIT_FLOATVALUE, LIT_HEXVALUE, LIT_OCTALVALUE, LIT_EXPONENTIALDEF, LIT_CHARVALUE, LIT_STRINGDEF;     
@@ -534,7 +535,6 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       gramatic_body {: 
         parser.generateSyntaxError("FOR: Left parenthesis missing", "(", e); 
       :}
-
     |
       KW_FOR 
       OP_WRAPPERPARENTHESISLEFT 
@@ -642,6 +642,12 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | KW_RETURN            OP_INSTRUCTIONENDOPERATOR gramatic_body:gb 
       {:
       
+        RESULT = gb;
+      :}
+      | KW_WRITE OP_WRAPPERPARENTHESISLEFT IDENT:id OP_WRAPPERPARENTHESISRIGHT gramatic_body:gb
+      {:
+        WriteInstruction wr = new WriteInstruction(id);
+        gb.addLast(wr);
         RESULT = gb;
       :}
       | KW_ELSE error:e gramatic_body:gb 

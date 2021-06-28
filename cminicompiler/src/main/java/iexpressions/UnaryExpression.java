@@ -67,7 +67,7 @@ public class UnaryExpression extends IExpression {
             code += asm;
         }
 
-        code += "\tMOV " + id + ", ax \n";
+        code += "\tMOV " + id + ", ax\n";
 
         return code;
     }

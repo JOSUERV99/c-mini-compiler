@@ -36,7 +36,8 @@ public enum AssemblerStatic {
                         + "BelowEqualThan endP" + "\n"),
         procEqualThan("EqualThan proc near \n" + "\tCMP ax, bx" + "\n" + "\tJE isEqualThan" + "\n" + "\tXOR ax, ax"
                         + "\n" + "\tJMP EqualThanFinal" + "\n" + "\tisEqualThan:" + "\n" + "\t\tMOV ax, 1" + "\n"
-                        + "\tEqualThanFinal:" + "\n" + "\tret " + "\n" + "EqualThan endP" + "\n");
+                        + "\tEqualThanFinal:" + "\n" + "\tret " + "\n" + "EqualThan endP" + "\n"),
+        procPrintAX("");
 
         public String value;
 

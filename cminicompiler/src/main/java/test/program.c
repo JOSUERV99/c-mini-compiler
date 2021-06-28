@@ -5,19 +5,18 @@ int a, b, c;
 
 int main()
 {
+    x = 0;
+    y = 1;
 
-    if (x > 4)
+    while (x < 5)
     {
-        x = x - 2;
-    }
-    else
-    {
-        x--;
-    }
-
-    while (x != 10)
-    {
-        y = x + 1;
         x++;
+        y = y * x;
+
+        write(x);
+        write(y);
     }
+
+    write(x);
+    write(y);
 }

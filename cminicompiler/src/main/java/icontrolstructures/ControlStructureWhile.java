@@ -1,5 +1,6 @@
 package icontrolstructures;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 import iexpressions.BinaryExpression;
@@ -70,6 +71,7 @@ public class ControlStructureWhile implements IControlStructure, ISemanticRegist
         code += "\tJMP " + finalWhile + "\n";
         code += "\t" + whileCuerpo + ":\n";
         // Todo el codigo
+        Collections.reverse(this.gramaticBody);
         for (IGramaticInstruction f : this.gramaticBody) {
             ISemanticRegister rs = (ISemanticRegister) f;
             code += ";\t" + rs.toString() + "\n";

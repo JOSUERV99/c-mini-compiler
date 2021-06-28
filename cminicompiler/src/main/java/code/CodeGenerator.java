@@ -7,12 +7,15 @@ import interpreter.ISemanticRegister;
 import interpreter.Identificable;
 import interpreter.ProgramDefinition;
 import semantic.SymbolTable;
+import utils.FileUtils;
 
 public class CodeGenerator {
 
     private SymbolTable symbolTable;
     private ProgramDefinition pd;
     private StringBuilder code;
+
+    private final String procsPath = "src/main/java/code/procs.asm";
 
     public CodeGenerator(ProgramDefinition pd, String filename, SymbolTable symbolTable) {
         this.pd = pd;
@@ -67,17 +70,14 @@ public class CodeGenerator {
     }
 
     public void generateCodeSegment() {
+
         code.append(AssemblerStatic.DefCodeSegment);
 
-        code.append(AssemblerStatic.procAboveEqualThan);
-        code.append(AssemblerStatic.procBelowEqualThan);
-        code.append(AssemblerStatic.procGreaterThan);
-        code.append(AssemblerStatic.procLessThan);
-        code.append(AssemblerStatic.procEqualThan);
+        String procs = FileUtils.readPlainTextFile(procsPath);
+        code.append(procs);
 
         code.append(AssemblerStatic.DefMainCode);
         code.append(this.getFunctionCode());
-
         code.append(AssemblerStatic.DefFinalMainCode);
     }
 
