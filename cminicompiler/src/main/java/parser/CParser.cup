@@ -723,6 +723,12 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   variable ::= 
       keyword_types:kt variable_definition:vd {:
         VarDefinition gv = new VarDefinition(kt, vd);
+
+        for (AssignDefinition ad : gv.getAssignments())
+        {
+          cmp.putVariable(ad, globalMode);
+        }
+
         RESULT = gv;
       :}
     ;
@@ -730,14 +736,14 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
   variable_definition ::= 
       IDENT:i {: 
         AssignDefinition ad = new AssignDefinition(i, null);
-        cmp.putVariable(ad, globalMode);
+        //cmp.putVariable(ad, globalMode);
         LinkedList<AssignDefinition> adl = new LinkedList<>();
         adl.addLast(ad);
         RESULT = adl;
       :}					
       | IDENT:i OP_ASIG expression:e {: 
           AssignDefinition ad = new AssignDefinition(i, e);
-          cmp.putVariable(ad, globalMode);
+          //cmp.putVariable(ad, globalMode);
           LinkedList<AssignDefinition> adl = new LinkedList<>();
           adl.addLast(ad);
           RESULT = adl;
@@ -745,12 +751,12 @@ Funciones -> Tipo Identifier ( Parametros ) { CuerpoGramatica} | Tipo Identifier
       | IDENT:i OP_COMMA variable_definition:vd {: 
           AssignDefinition ad = new AssignDefinition(i, null);
           vd.addLast(ad); 
-          cmp.putVariable(ad, globalMode); 
+          //cmp.putVariable(ad, globalMode); 
           RESULT = vd; 
       :}
       | IDENT:i OP_ASIG expression:e OP_COMMA variable_definition:vd {:
           AssignDefinition ad = new AssignDefinition(i, e);
-          cmp.putVariable(ad, globalMode); 
+          //cmp.putVariable(ad, globalMode); 
           vd.addLast(ad); 
           RESULT = vd; 
       :}

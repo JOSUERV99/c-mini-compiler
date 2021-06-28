@@ -1,6 +1,4 @@
 datos segment
-x dw 0
-y dw 0
 c dw 0
 b dw 0
 a dw 0
@@ -108,50 +106,6 @@ main: MOV ax, pila
 	MOV ss, ax
 	MOV ax, datos
 	MOV ds, ax
-;	if
-;	x > 4
-	MOV ax, x
-	PUSH bx
-	MOV bx, 4
-	call GreaterThan 
-	POP bx
-	CMP ax, 0
-	JNE ifCuerpo1
-	JMP ifelse1
-		ifCuerpo1:
-;	x=x - 2;
-	MOV ax, x
-	SUB ax, 2
-	MOV x, ax
-		JMP finalif1
-	ifelse1:
-;	x--;
-	MOV ax, x
-	dec ax
-	MOV x, ax
-	finalif1:
-;	while
-	while1:
-	MOV ax, x
-	PUSH bx
-	MOV bx, 10
-	call EqualThan 
-	not ax
-	POP bx
-	CMP ax, 1
-	JE whileCuerpo1
-	JMP finalWhile1
-	whileCuerpo1:
-;	y=x + 1;
-	MOV ax, x
-	ADD ax, 1
-	MOV y, ax
-;	x++;
-	MOV ax, x
-	inc ax
-	MOV x, ax
-	JMP while1
-	finalWhile1:
 	mov ax, 4C00h
 	int 21h
 codigo ends

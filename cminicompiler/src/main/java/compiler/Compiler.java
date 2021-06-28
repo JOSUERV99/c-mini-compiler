@@ -64,7 +64,7 @@ public class Compiler {
             }
 
             if (this.symbolTable.isDefined(assign)) {
-                this.semanticErrors.add(new SemanticError(assign.reportRepeated()));
+                this.semanticErrors.add(new SemanticError("SemanticError: " + assign.reportRepeated()));
             } else {
                 this.symbolTable.add(assign);
             }
@@ -82,7 +82,7 @@ public class Compiler {
 
     public void putFunction(FunctionDefinition funct) {
         if (this.symbolTable.isDefined(funct)) {
-            this.reportError(new SemanticError(funct.reportRepeated()));
+            this.reportError(new SemanticError("SemanticError: " + funct.reportRepeated()));
 
         } else {
             this.symbolTable.add(funct);
@@ -202,7 +202,7 @@ public class Compiler {
 
             this.codeGenerator.generate();
             System.out.println("Generated code: ");
-            System.out.println(this.codeGenerator.getCode());
+            // System.out.println(this.codeGenerator.getCode());
 
             this.saveOut();
         }
@@ -231,6 +231,11 @@ public class Compiler {
             this.errorFlag = this.semanticErrors.isEmpty() && analyzer.getLexicalErrors().isEmpty()
                     && analyzer.getSyntaxErrors().isEmpty();
 
+            for (SemanticError semanticError : this.semanticErrors) {
+                System.out.println(semanticError.toString());
+            }
+            System.out.println("Symbol Table:");
+            System.out.println(this.symbolTable);
             this.generateCode();
 
         } catch (Exception e) {
