@@ -23,4 +23,8 @@ public class AtomicExpression extends IExpression {
         return "AtomicExpression [token=" + token + "]";
     }
 
+    @Override
+    public Object getExpressionValue() {
+        return null;
+    }
 }

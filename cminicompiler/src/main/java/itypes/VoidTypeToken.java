@@ -27,4 +27,9 @@ public class VoidTypeToken implements ITypeToken {
     public String getType() {
         return "void";
     }
+
+    @Override
+    public String getDefineBytes() {
+        return "dw";
+    }
 }

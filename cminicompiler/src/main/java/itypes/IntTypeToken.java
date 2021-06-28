@@ -27,4 +27,9 @@ public class IntTypeToken implements ITypeToken {
     public String getType() {
         return "int";
     }
+
+    @Override
+    public String getDefineBytes() {
+        return "dw";
+    }
 }

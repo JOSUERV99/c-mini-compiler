@@ -49,4 +49,9 @@ public class ConstTypeToken implements ITypeToken {
         return this.get_Type().toString();
     }
 
+    @Override
+    public String getDefineBytes() {
+        return this._type.getDefineBytes();
+    }
+
 }

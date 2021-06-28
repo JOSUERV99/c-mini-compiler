@@ -27,4 +27,9 @@ public class FloatTypeToken implements ITypeToken {
     public String getType() {
         return "float";
     }
+
+    @Override
+    public String getDefineBytes() {
+        return "dw";
+    }
 }

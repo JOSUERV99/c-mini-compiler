@@ -13,4 +13,17 @@ public class FileUtils {
 
         return true;
     }
+
+    public static String getCleanedProgramName(String filename) {
+
+        String cleanName = "";
+
+        String[] dirs = filename.split("/");
+        cleanName = dirs[dirs.length - 1];
+
+        String[] nameParts = cleanName.split(".");
+        cleanName = nameParts[0];
+
+        return cleanName;
+    }
 }

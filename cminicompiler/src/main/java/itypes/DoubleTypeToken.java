@@ -27,4 +27,10 @@ public class DoubleTypeToken implements ITypeToken {
     public String getType() {
         return "double";
     }
+
+    @Override
+    public String getDefineBytes() {
+        return "dw";
+    }
+
 }

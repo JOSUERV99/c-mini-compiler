@@ -2,6 +2,7 @@ package compiler;
 
 import java.util.LinkedList;
 
+import code.CodeGenerator;
 import errors.Error;
 import errors.SemanticError;
 import handler.Analyzer;
@@ -32,6 +33,7 @@ public class Compiler {
 
     private LinkedList<FunctionCallExpression> callsMemo;
     private LinkedList<IExpression> expMemo;
+    private CodeGenerator codeGenerator;
 
     private boolean errorFlag = false;
 
@@ -194,12 +196,13 @@ public class Compiler {
     }
 
     public void generateCode() {
-
         if (errorFlag) {
             System.out.println("The code cannot be generated");
             return;
         } else {
-            System.out.println("PUSH AX");
+            this.codeGenerator.generate();
+            System.out.println("Generated code: ");
+            System.out.println(this.codeGenerator.getCode());
         }
 
     }
@@ -216,10 +219,9 @@ public class Compiler {
             }
 
             this.programDefinition = (ProgramDefinition) tree.value;
-
+            this.codeGenerator = new CodeGenerator(this.programDefinition, this.inputFilename, this.symbolTable);
             // TODO show lexical, syntactic, semantic errors report
-            this.errorFlag = !this.semanticErrors.isEmpty();
-            System.out.println(this.semanticErrors);
+            this.errorFlag = this.semanticErrors.isEmpty();
 
             this.generateCode();
 

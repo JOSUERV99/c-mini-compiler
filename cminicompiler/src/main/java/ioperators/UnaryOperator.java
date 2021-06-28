@@ -3,7 +3,8 @@ package ioperators;
 import iexpressions.IExpression;
 import model.OperatorToken;
 
-public class UnaryOperator implements IExpression {
+public class UnaryOperator extends IExpression {
+
     private OperatorToken operator;
 
     public UnaryOperator(OperatorToken operator) {
