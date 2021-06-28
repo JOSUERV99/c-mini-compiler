@@ -197,3 +197,6 @@ main: MOV ax, pila
 codigo ends
 end main
 ```
+DosBox example execution
+![DosBox example program execution](https://github.com/JOSUERV99/C-MiniCompiler/blob/main/image.png?raw=true)
+
