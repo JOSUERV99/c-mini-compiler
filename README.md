@@ -1,6 +1,6 @@
-# CLexerGenerator
+# C-MiniCompiler
 A mini compiler with lexical, syntactical and semantic analyzer to compile a C subset using JFlex & Cup to generate TASM code.
-As part of the Compilers TEC course
+ITCR - 2021
 
 Example input:
 ```c
